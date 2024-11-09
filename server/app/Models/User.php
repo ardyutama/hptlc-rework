@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasUlids, HasFactory, Notifiable;
+    use HasUlids, HasApiTokens, HasFactory, Notifiable;
     protected $fillable = ['email', 'password'];
 
     public function member(): BelongsTo
