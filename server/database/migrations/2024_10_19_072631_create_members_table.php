@@ -15,9 +15,12 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('university_name');
-            $table->string('phone_number');
-            $table->string('study_program_name');
+            $table->string('university_name')->nullable();
+            $table->string('phone_number')->nullable();
+            $table->string('study_program_name')->nullable();
+            $table->enum('gender', ['Male', 'Female','Other']);
+            $table->date('birth_date')->nullable();
+            $table->date('joined_date');
             $table->foreignUlid('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

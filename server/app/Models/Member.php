@@ -11,7 +11,17 @@ class Member extends Model
 {
     use HasUlids;
 
-    protected $fillable = ['first_name', 'last_name', 'university_name', 'phone_number', 'study_program_name', 'user_id'];
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'university_name',
+        'phone_number',
+        'study_program_name',
+        'gender',
+        'birth_date',
+        'joined_date',
+        'user_id'
+    ];
 
     public function user(): HasOne
     {

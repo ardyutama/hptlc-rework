@@ -19,7 +19,7 @@ class MemberController extends Controller
             $members = Member::all();
             return response()->json($members);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Server Error', 'error' => $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 

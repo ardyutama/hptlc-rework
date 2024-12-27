@@ -10,14 +10,20 @@ class Publication extends Model
 {
     use HasUlids;
 
-    protected $fillable = ['title', 'abstract', 'publication_file', 'content_markdown_file'];
-    public function publicationAuthor(): BelongsToMany
+    protected $fillable = [
+        'title',
+        'abstract',
+        'publication_file',
+        'published_at',
+        'slug'
+    ];
+    public function users(): BelongsToMany
     {
-        return $this->belongsToMany(PublicationAuthor::class);
+        return $this->belongsToMany(User::class, 'publication_user');
     }
 
-    public function publicationTopic(): BelongsToMany
+    public function tags(): BelongsToMany
     {
-        return $this->belongsToMany(PublicationAuthor::class);
+        return $this->belongsToMany(Tag::class, 'publication_tag', 'publication_id', 'tag_id');
     }
 }
