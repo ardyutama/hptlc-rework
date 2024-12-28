@@ -13,26 +13,23 @@ return new class extends Migration
     {
         Schema::create('publications', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->string('title');
+            $table->string('title')->unique();
             $table->text('abstract');
-            $table->string('slug')->unique();
+            $table->string('slug')->unique()->nullable();
             $table->binary('publication_file')->nullable();
-            $table->binary('content_markdown_file')->nullable();
+            $table->dateTime('published_at')->nullable();
             $table->timestamps();
         });
 
-        Schema::create('publication_topics', function (Blueprint $table) {
-            $table->ulid('id')->primary();
-            $table->foreignUlid('general_topic_id')->constrained('general_topics')->onUpdate('cascade')->onDelete('cascade');
+        Schema::create('publication_tag', function (Blueprint $table) {
             $table->foreignUlid('publication_id')->constrained('publications')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUlid('tag_id')->constrained('tags')->onUpdate('cascade')->onDelete('cascade');
         });
 
-        Schema::create('publication_authors', function (Blueprint $table) {
-            $table->ulid('id')->primary();
+        Schema::create('publication_user', function (Blueprint $table) {
             $table->foreignUlid('publication_id')->constrained('publications')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignUlid('member_id')->constrained('members')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUlid('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
         });
-
     }
 
     /**
@@ -41,6 +38,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('publication');
-        Schema::dropIfExists('publication_topics');
+        Schema::dropIfExists('publication_tag');
+        Schema::dropIfExists('publication_user');
     }
 };

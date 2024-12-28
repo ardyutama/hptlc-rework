@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -18,29 +19,41 @@ class AuthController extends Controller
             'university_name' => 'required|string',
             'phone_number' => 'required|string',
             'study_program_name' => 'required|string',
+            'gender' => 'required|string',
+            'birth_date' => 'required|date',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string',
         ]);
 
-        // Create the user
-        $user = User::create([
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-        ]);
+        DB::beginTransaction();
 
-        // Create the member associated with the user
-        $user->member()->create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'university_name' => $request->university_name,
-            'phone_number' => $request->phone_number,
-            'study_program_name' => $request->study_program_name,
-            'user_id' => $user->id,
-        ]);
+        try {
+            $user = User::create([
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+            ]);
 
-        Auth::login($user);
+            // Create the member associated with the user
+            $user->member()->create([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'university_name' => $request->university_name,
+                'phone_number' => $request->phone_number,
+                'study_program_name' => $request->study_program_name,
+                'gender' => $request->gender,
+                'birth_date' => $request->birth_date,
+                'joined_date' => now()->toDate(),
+                'user_id' => $user->id,
+            ]);
 
-        return response()->json(['message' => 'User registered successfully'], 201);
+            DB::commit();
+            Auth::login($user);
+
+            return response()->json(['message' => 'User registered successfully'], 201);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 
     public function login(Request $request): JsonResponse
@@ -62,11 +75,9 @@ class AuthController extends Controller
 
     public function logout(Request $request): JsonResponse
     {
-        Auth::logout();
-
         $request->session()->invalidate();
 
-        $request->session()->regenerateToken();
+        $request->session()->regenerate();
 
         return response()->json(['message' => 'Logged out successfully']);
     }
