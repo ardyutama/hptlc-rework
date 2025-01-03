@@ -1,0 +1,29 @@
+{
+  "name": "haic_rework_monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:server": "cd apps/server && php artisan serve",
+    "dev:client": "cd apps/client && pnpm dev",
+    "install:server": "cd apps/server && composer install",
+    "install:client": "cd apps/client && npm install"
+  },
+  "contributors": [
+    {
+        "name": "Ardy Putra Utama",
+        "email": "ardy.putrautama53@gmail.com"
+    },
+    {
+        "name": "Muhammad Zulkifly Al Firdausy",
+        "url": "https://zulkifly-portofolio.netlify.app/"
+    }
+  ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AZulUye/haic_rework/issues"
+  },
+  "workspaces": [
+    "apps/*"
+  ],
+  "homepage": "https://github.com/AZulUye/haic_rework#readme"
+}
