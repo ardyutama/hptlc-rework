@@ -40,11 +40,15 @@ Route::prefix('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 });
 
-Route::get('/', function () {
-    return Inertia::render('welcome/welcome', [
+Route::get('/welcome', function () {
+    return Inertia::render('welcome/index', [
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
+});
+
+Route::get('/articles', function () {
+    return Inertia::render('articles/index');
 });
 
 
