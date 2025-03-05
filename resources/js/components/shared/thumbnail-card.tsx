@@ -20,9 +20,9 @@ export default function ThumbnailCard({
 			{thumbnailImage && <div className="aspect-video max-h-40 bg-slate-50" />}
 			<p>{topics[0]} </p>
 			<p className="font-bold">{title}</p>
-			<div className="flex justify-between">
-				<p id="date">{date}</p>
-				{downloadPath && <Button variant="ghost">Download PDF</Button>}
+			<div className="flex items-center">
+				<p className="text-base">{date}</p>
+				{downloadPath && <Button variant="ghost" className="ml-4">Download PDF</Button>}
 			</div>
 		</div>
 	);

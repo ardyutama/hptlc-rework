@@ -4,12 +4,11 @@ import FeaturedHero from "@/components/shared/featured-hero";
 import type React from "react";
 import ThumbnailCard from "@/components/shared/thumbnail-card";
 
-const ArticlesPage = () => {
-	return (
-		<>
-			<FeaturedHero title={"Articles"}>
+const PublicationPage = () => {
+    return (
+        <>
+            <FeaturedHero title={"Publications"}>
                 <ThumbnailCard
-                    thumbnailImage={"test"}
                     topics={["Topic"]}
                     title={
                         "Figma ipsum component variant main layer. Boolean content strikethrough\n" +
@@ -17,19 +16,20 @@ const ArticlesPage = () => {
                         "\t\t\t\tvertical group vector thumbnail."
                     }
                     date={"18 Aug 2028"}
+                    downloadPath="#test"
                 />
             </FeaturedHero>
-			<ContentLayout className="min-h-svh">
-				<div className="flex flex-1 flex-col">
-					<div>Articles</div>
-				</div>
-			</ContentLayout>
-		</>
-	);
+            <ContentLayout className="min-h-svh">
+                <div className="flex flex-1 flex-col">
+                    <div>Publications</div>
+                </div>
+            </ContentLayout>
+        </>
+    );
 };
 
-ArticlesPage.layout = (page: React.ReactNode) => (
-	<MainLayout children={page} title="Articles" />
+PublicationPage.layout = (page: React.ReactNode) => (
+    <MainLayout children={page} title="Publication" />
 );
 
-export default ArticlesPage;
+export default PublicationPage;

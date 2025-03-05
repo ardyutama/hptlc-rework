@@ -51,4 +51,8 @@ Route::get('/articles', function () {
     return Inertia::render('articles/index');
 });
 
+Route::get('/publications', function () {
+    return Inertia::render('publications/index');
+});
+
 

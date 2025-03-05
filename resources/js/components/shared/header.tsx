@@ -1,5 +1,6 @@
 import DrawerNavigation from "@/components/custom/drawer-navigation";
 import { Button } from "@/components/ui/button";
+import { Link } from "@inertiajs/react";
 import { Menu } from "lucide-react";
 export default function Header() {
 	return (
@@ -12,13 +13,15 @@ export default function Header() {
 						</Button>
 					</DrawerNavigation>
 				</div>
-				<img
-					src="/assets/img/hptlc-indonesia-logo.png"
-					width="148"
-					alt="hptlc_logo"
-				/>
+				<Link href="/welcome">
+					<img
+						src="/assets/img/hptlc-indonesia-logo.png"
+						width="148"
+						alt="hptlc_logo"
+					/>
+				</Link>
 				<Button variant="outline" className="mr-2 h-8 rounded-2xl">
-					Sign In
+					Join us
 				</Button>
 			</div>
 		</header>
