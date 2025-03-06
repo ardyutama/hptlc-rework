@@ -27,10 +27,4 @@ class Member extends Model
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
-
-    public function publicationAuthor(): BelongsToMany
-    {
-        return $this->belongsToMany(PublicationAuthor::class);
-    }
-
 }

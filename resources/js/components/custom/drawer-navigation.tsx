@@ -3,7 +3,9 @@ import {
 	Drawer,
 	DrawerClose,
 	DrawerContent,
+	DrawerDescription,
 	DrawerHeader,
+	DrawerTitle,
 	DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Separator } from "@/components/ui/separator";
@@ -44,10 +46,10 @@ export default function DrawerNavigation({
 			<DrawerTrigger>{children}</DrawerTrigger>
 			<DrawerContent>
 				<DrawerHeader>
+					<DrawerTitle hidden={true} />
+					<DrawerDescription hidden={true} />
 					<DrawerClose asChild>
-						<Button size="icon" variant="ghost">
-							<X className="size-8" />
-						</Button>
+						<X className="size-8" />
 					</DrawerClose>
 				</DrawerHeader>
 				{items.map((item, index) => (

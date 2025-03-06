@@ -19,7 +19,7 @@ export default function CarouselHero() {
 		>
 			<Carousel>
 				<CarouselContent>
-					{Array.from({ length: 3 }).map((item) => (
+					{Array.from({ length: 3 }).map((_, item) => (
 						<CarouselItem key={`carousel-hero-image-${item}`}>
 							<div className="relative h-[60vh] bg-muted/50">
 								<div className="absolute bottom-0 px-7 pb-4 md:px-12 md:pb-8 md:text-2xl">

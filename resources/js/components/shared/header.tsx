@@ -8,9 +8,7 @@ export default function Header() {
 			<div className="relative flex w-full max-w-screen-md items-center justify-between">
 				<div className="ml-6">
 					<DrawerNavigation>
-						<Button size="icon" variant="ghost">
-							<Menu />
-						</Button>
+						<Menu />
 					</DrawerNavigation>
 				</div>
 				<Link href="/welcome">
