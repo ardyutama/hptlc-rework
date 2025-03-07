@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
-import type { Tag } from "@/types";
 
 interface CardProps {
-	tags: Tag[];
+	tags: string[];
 	thumbnailImage?: string;
 	title: string;
 	date: string;
@@ -24,7 +23,7 @@ export default function ThumbnailCard({
 					<div className="aspect-video max-h-40 bg-slate-50" />
 				)}
 				{tags.map((tag) => (
-					<p> {tag.name} </p>
+					<p key={tag}> {tag} </p>
 				))}
 				<p className="font-bold">{title}</p>
 				<div className="flex items-center">

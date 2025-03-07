@@ -1,13 +1,61 @@
 import type { Config } from "ziggy-js";
 
 //
-// export interface User {
-//     id: number;
-//     name: string;
-//     email: string;
-// }
+export type PublicationTag = {
+	id: string;
+	name: string;
+	pivot: {
+		publication_id: string;
+		tag_id: string;
+	};
+};
 
-export interface Publication {
+export type ArticleTag = {
+	id: string;
+	name: string;
+	pivot: {
+		article_id: string;
+		tag_id: string;
+	};
+};
+
+export type EventTag = {
+	id: string;
+	name: string;
+	pivot: {
+		event_id: string;
+		tag_id: string;
+	};
+};
+
+export type PublicationUser = {
+	id: string;
+	email: string;
+	pivot: {
+		publication_id: string;
+		user_id: string;
+	};
+};
+
+export type ArticleUser = {
+	id: string;
+	email: string;
+	pivot: {
+		article_id: string;
+		user_id: string;
+	};
+};
+
+export type EventUser = {
+	id: string;
+	email: string;
+	pivot: {
+		event_id: string;
+		user_id: string;
+	};
+};
+
+export type Publication = {
 	id: string;
 	title: string;
 	abstract: string;
@@ -16,27 +64,38 @@ export interface Publication {
 	published_at: string;
 	created_at: string;
 	updated_at: string;
-	tags: Tag[];
-	users: User[];
-}
+	tags: PublicationTag[];
+	users: PublicationUser[];
+};
 
-export interface Tag {
+export type Article = {
 	id: string;
-	name: string;
-	pivot: {
-		publication_id: string;
-		tag_id: string;
-	};
-}
+	title: string;
+	slug: string;
+	markdown_file: string;
+	image_url: string;
+	published_at: string;
+	created_at: string;
+	updated_at: string;
+	tags: ArticleTag[];
+	users: ArticleUser[];
+};
 
-export interface User {
+export type Event = {
 	id: string;
-	email: string;
-	pivot: {
-		publication_id: string;
-		user_id: string;
-	};
-}
+	title: string;
+	slug: string;
+	markdown_file: string;
+	image_url: string;
+	created_at: string;
+	updated_at: string;
+	event_date: string;
+	location: string;
+	description: string;
+	registration_link?: string;
+	tags: EventTag[];
+	users: EventUser[];
+};
 
 export type PageProps<
 	T extends Record<string, unknown> = Record<string, unknown>,

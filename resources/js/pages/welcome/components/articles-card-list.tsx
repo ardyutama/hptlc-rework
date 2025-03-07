@@ -1,31 +1,20 @@
 import ThumbnailCard from "@/components/shared/thumbnail-card/thumbnail-card";
 import type React from "react";
+import {articleData} from "@/data/mock-data";
 
-interface Articles {
-	id: string;
-	thumbnailImage: string;
-	tag: string[];
-	title: string;
-	slug: string;
-	date: Date;
-}
-
-interface ArticlesCardListProps {
-	data: Articles[];
-}
-
-export default function ArticlesCardList({ data }: ArticlesCardListProps) {
+export default function ArticlesCardList() {
 	const MAX_CONTENT = 4;
+
 	return (
 		<>
-			{data.slice(0, MAX_CONTENT).map((item: Articles) => (
+			{articleData.slice(0, MAX_CONTENT).map((item) => (
 				<ThumbnailCard
 					key={item.id}
-					thumbnailImage={item.thumbnailImage}
-					topics={item.tag}
+					thumbnailImage={item.image_url}
+					tags={item.tags.map((tag) => tag.name)}
 					slug={item.slug}
 					title={item.title}
-					date={item.date}
+					date={item.published_at}
 				/>
 			))}
 		</>

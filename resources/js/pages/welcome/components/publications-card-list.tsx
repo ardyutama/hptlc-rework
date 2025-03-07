@@ -1,20 +1,17 @@
 import ThumbnailCard from "@/components/shared/thumbnail-card/thumbnail-card";
 import type { Publication } from "@/types";
 import type React from "react";
+import {publicationData} from "@/data/mock-data";
 
-interface PublicationsCardListProps {
-	data: Publication[];
-}
-export default function PublicationsCardList({
-	data,
-}: PublicationsCardListProps) {
+export default function PublicationsCardList() {
 	const MAX_CONTENT = 4;
+
 	return (
 		<>
-			{data.slice(0, MAX_CONTENT).map((item: Publication) => (
+			{publicationData.slice(0, MAX_CONTENT).map((item: Publication) => (
 				<ThumbnailCard
 					key={item.id}
-					tags={item.tags}
+					tags={item.tags.map((tag) => tag.name)}
 					slug={item.slug}
 					title={item.title}
 					date={item.published_at}
