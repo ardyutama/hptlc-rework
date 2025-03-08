@@ -10,7 +10,9 @@ export default function ContentLayout({
 	className,
 }: ContentLayoutProps) {
 	return (
-		<div className={cn("m-7 flex flex-1 justify-center md:mx-10", className)}>
+		<div
+			className={cn("m-7 my-10 flex flex-1 justify-center md:mx-10", className)}
+		>
 			<div className="w-full max-w-4xl">{children}</div>
 		</div>
 	);

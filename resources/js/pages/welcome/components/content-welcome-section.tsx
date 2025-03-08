@@ -18,25 +18,23 @@ export default function ContentWelcomeSection({
 	children,
 }: ContentWelcomeSectionProps) {
 	return (
-		<div className="m-7 flex flex-1 justify-center md:mx-10">
-			<div className="w-full max-w-4xl">
-				<Link href={hrefNav} className="font-bold text-2xl tracking-tight">
-					{title}
-				</Link>
-				{children}
-				<Separator className="mt-10" />
-				<div className="flex justify-center">
-					<Button className="mt-8 items-center">
-						<Link
-							href={hrefNav}
-							className="flex w-full items-center justify-center gap-2"
-						>
-							More {title}
-							<MoveRight />
-						</Link>
-					</Button>
-				</div>
+		<ContentLayout>
+			<Link href={hrefNav} className="font-bold text-2xl tracking-tight">
+				{title}
+			</Link>
+			{children}
+			<Separator className="mt-10" />
+			<div className="flex justify-center">
+				<Button className="mt-8 items-center">
+					<Link
+						href={hrefNav}
+						className="flex w-full items-center justify-center gap-2"
+					>
+						More {title}
+						<MoveRight />
+					</Link>
+				</Button>
 			</div>
-		</div>
+		</ContentLayout>
 	);
 }

@@ -16,19 +16,18 @@ export default function FeaturedHero({ title, children }: FeaturedHeroProps) {
 	const [isHovered, setIsHovered] = useState(false);
 
 	return (
-		<div className="min-h-svh bg-[#141414]">
+		<div className="bg-[#141414]">
 			<div className="mx-6 grid h-full grid-cols-12 grid-rows-2 gap-2 md:mx-24 lg:mx-32">
 				<div className="col-span-4 mt-80">
 					<h3 className="font-bold text-4xl text-white tracking-tight">
 						{`HTPLC ${title}`}
 					</h3>
 				</div>
-				<div className="col-span-full row-start-2 my-8 flex h-full flex-col">
+				<div className="col-span-full row-start-2 my-12 flex flex-col justify-center ">
 					<p className="pb-4 font-bold text-2xl text-white tracking-tight">
 						{`Featured ${title} Today`}
 					</p>
 					<Carousel
-						id="featured-articles-carousel-hero"
 						className="block"
 						onMouseEnter={() => setIsHovered(true)}
 						onMouseLeave={() => setIsHovered(false)}

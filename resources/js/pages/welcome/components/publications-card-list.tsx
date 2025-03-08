@@ -1,7 +1,7 @@
 import ThumbnailCard from "@/components/shared/thumbnail-card/thumbnail-card";
+import { publicationData } from "@/data/mock-data";
 import type { Publication } from "@/types";
 import type React from "react";
-import {publicationData} from "@/data/mock-data";
 
 export default function PublicationsCardList() {
 	const MAX_CONTENT = 4;

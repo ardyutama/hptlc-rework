@@ -1,6 +1,6 @@
 import ThumbnailCard from "@/components/shared/thumbnail-card/thumbnail-card";
+import { articleData } from "@/data/mock-data";
 import type React from "react";
-import {articleData} from "@/data/mock-data";
 
 export default function ArticlesCardList() {
 	const MAX_CONTENT = 4;

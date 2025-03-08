@@ -1,6 +1,10 @@
+import ContentLayout from "@/layouts/content-layout";
+
 export default function Footer() {
 	return (
-		<div className="flex flex-col gap-4 bg-black px-6 py-12 text-white">
+		<div className="bg-black text-white">
+            <ContentLayout className='justify-start'>
+                <div className="flex flex-col gap-4 px-6 py-12">
 			<div className="flex flex-col gap-1">
 				<h4 className="font-bold tracking-tight">
 					HPTLC ASSOCIATION INDONESIA CHAPTER
@@ -26,6 +30,8 @@ export default function Footer() {
 				<p>AbadiNusa</p>
 				<p>Darma Karya Makmur Sentosa</p>
 			</div>
+                </div>
+            </ContentLayout>
 		</div>
 	);
 }
