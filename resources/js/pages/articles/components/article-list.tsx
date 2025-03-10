@@ -32,7 +32,7 @@ export default function ArticleList() {
 				</Button>
 			</div>
 
-			<div className="grid grid-cols-1 gap-6 pt-6 lg:grid-cols-2">
+			<div className="grid grid-cols-1 gap-6 pt-6 md:grid-cols-2">
 				{articleData.slice(0, MAX_CONTENT).map((item) => (
 					<ThumbnailCard
 						key={item.id}

@@ -5,7 +5,7 @@ export const publicationData: Publication[] = [
 		id: "01jj1xyz6ng2abcd1xnmjt",
 		title: "HPTLC Study 1",
 		abstract:
-			"Abstract for HPTLC research 1. This study explores chromatography techniques.",
+			"This study explores advancements in High-Performance Thin Layer Chromatography (HPTLC), a powerful analytical technique used for the separation and quantification of compounds in various samples. HPTLC provides enhanced resolution, improved reproducibility, and the ability to analyze multiple samples simultaneously. This study focuses on recent improvements in stationary phases, solvent systems, and detection methods, making HPTLC an essential tool in pharmaceuticals, forensics, food sciences, and environmental analysis. We present experimental findings, discuss analytical performance, and compare HPTLC with other chromatography techniques. Additionally, the study delves into automation, software integration, and emerging applications of HPTLC in personalized medicine and drug development. (Study 1)",
 		slug: "hptlc-study-1",
 		publication_file:
 			"publications/2025/1/20/01jj1xyz6ng2abcd1xnmjt/hptlc-study-1.pdf",

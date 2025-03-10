@@ -14,7 +14,9 @@ export default function PublicationsCardList() {
 					tags={item.tags.map((tag) => tag.name)}
 					slug={item.slug}
 					title={item.title}
+					description={item.abstract}
 					date={item.published_at}
+					downloadPath={item.publication_file}
 				/>
 			))}
 		</>
