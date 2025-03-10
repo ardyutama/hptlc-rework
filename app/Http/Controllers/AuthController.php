@@ -2,83 +2,105 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Request\Auth\LoginRequest;
+use App\Http\Request\Auth\RegisterRequest;
 use App\Models\User;
+use App\Services\AuthService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AuthController extends Controller
 {
-    public function register(Request $request): JsonResponse
+    protected $authService;
+
+    public function __construct(AuthService $authService)
     {
-        $request->validate([
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'university_name' => 'required|string',
-            'phone_number' => 'required|string',
-            'study_program_name' => 'required|string',
-            'gender' => 'required|string',
-            'birth_date' => 'required|date',
-            'email' => 'required|string|email|unique:users',
-            'password' => 'required|string',
-        ]);
-
-        DB::beginTransaction();
-
-        try {
-            $user = User::create([
-                'email' => $request->email,
-                'password' => bcrypt($request->password),
-            ]);
-
-            // Create the member associated with the user
-            $user->member()->create([
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'university_name' => $request->university_name,
-                'phone_number' => $request->phone_number,
-                'study_program_name' => $request->study_program_name,
-                'gender' => $request->gender,
-                'birth_date' => $request->birth_date,
-                'joined_date' => now()->toDate(),
-                'user_id' => $user->id,
-            ]);
-
-            DB::commit();
-            Auth::login($user);
-
-            return response()->json(['message' => 'User registered successfully'], 201);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return response()->json(['message' => $e->getMessage()], 500);
-        }
+        $this->authService = $authService;
     }
 
-    public function login(Request $request): JsonResponse
+    public function showRegisterForm(): Response
     {
-        $credentials = $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
-
-        if (Auth::attempt($credentials)) {
-            // Regenerate session to prevent session fixation attacks
-            $request->session()->regenerate();
-            return response()->json(['message' => 'User logged in successfully'], 200);
-        }
-
-
-        return response()->json(['message' => 'Invalid credentials'], 401);
+        return Inertia::render('Auth/Register');
     }
 
-    public function logout(Request $request): JsonResponse
+    /**
+     * Handle user registration
+     */
+    public function register(RegisterRequest $request): JsonResponse|RedirectResponse
     {
-        $request->session()->invalidate();
+        $user = $this->authService->registerUser($request->validated());
 
+        if ($request->wantsJson()) {
+            return response()->json([
+                'message' => 'User registered successfully',
+                'user' => $user
+            ], 201);
+        }
+
+        Auth::login($user);
+        return redirect()->route('dashboard');
+    }
+
+    public function login(LoginRequest $request): JsonResponse|RedirectResponse
+    {
+        $request->authenticate();
         $request->session()->regenerate();
 
-        return response()->json(['message' => 'Logged out successfully']);
+        if ($request->wantsJson()) {
+            return response()->json([
+                'message' => 'User logged in successfully',
+                'user' => auth()->user()
+            ]);
+        }
+
+        return redirect()->intended(route('dashboard'));
+    }
+
+    public function logout(Request $request): JsonResponse|RedirectResponse
+    {
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Logged out successfully']);
+        }
+
+        return redirect()->route('welcome');
+    }
+
+    public function user(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $user->load('member');
+
+        return response()->json([
+            'user' => $user,
+        ]);
+    }
+
+    public function token(LoginRequest $request): JsonResponse
+    {
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return response()->json([
+                'message' => 'Invalid credentials'
+            ], 401);
+        }
+
+        $user = User::where('email', $request->email)->firstOrFail();
+        $token = $user->createToken('api-token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Token generated successfully',
+            'token' => $token,
+            'user' => $user->load('member')
+        ]);
     }
 }

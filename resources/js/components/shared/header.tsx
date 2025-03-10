@@ -11,7 +11,7 @@ export default function Header() {
 						<Menu />
 					</DrawerNavigation>
 				</div>
-				<Link href="/welcome">
+				<Link href="/">
 					<img
 						src="/assets/img/hptlc-indonesia-logo.png"
 						width="148"

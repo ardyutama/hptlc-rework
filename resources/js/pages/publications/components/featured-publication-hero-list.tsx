@@ -1,11 +1,11 @@
 import FeaturedHeroItem from "@/components/shared/featured-hero/featured-hero-item";
 import ThumbnailCard from "@/components/shared/thumbnail-card/thumbnail-card";
 import { publicationData } from "@/data/mock-data";
-import type React from "react";
 import { usePage } from "@inertiajs/react";
+import type React from "react";
 
 export default function FeaturedPublicationHeroList() {
-    const { publications } = usePage().props;
+	const { publications } = usePage().props;
 	const MAX_FEATURED_PUBLICATION_HERO = 6;
 
 	return (

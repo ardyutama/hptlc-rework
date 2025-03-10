@@ -1,21 +1,40 @@
 <?php
 
-use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PublicationController;
-use App\Http\Controllers\TagController;
 use App\Http\Controllers\AuthController;
 use Inertia\Inertia;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return Inertia::render('welcome/index');
-})->name('welcome');
 
-Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+
+Route::middleware('guest')->group(function () {
+
+    Route::get('/', function () {
+        return Inertia::render('welcome/index');
+    })->name('welcome');
+
+    Route::resource('publications', PublicationController::class);
+
+    Route::get('/articles', function () {
+        return Inertia::render('articles/index');
+    });
+
+    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+
+    Route::post('/token', [AuthController::class, 'token'])->name('token');
 });
 
-Route::resource('publications', PublicationController::class);
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::post('logout', [AuthController::class, 'logout']);
+
+    Route::get('/user', [AuthController::class, 'user'])->name('current-user');
+});
+
+
 
 //Route::middleware('auth:sanctum')->group(function () {
 //    Route::prefix('members')->group(function () {
