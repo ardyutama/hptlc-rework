@@ -34,11 +34,11 @@ const items = [
 		title: "Events",
 		url: "#",
 	},
-    {
-        id: 5,
-        title: "About Us",
-        url: "#",
-    },
+	{
+		id: 5,
+		title: "About Us",
+		url: "#",
+	},
 ];
 export default function DrawerNavigation({
 	children,

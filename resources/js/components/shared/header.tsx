@@ -18,14 +18,14 @@ export default function Header() {
 						alt="hptlc_logo"
 					/>
 				</Link>
-                <div className="flex gap-2">
-				<Button variant="outline" className="mr-2 h-8 rounded-2xl">
-					Join us
-				</Button>
-                <Button className="mr-2 h-8 rounded-2xl hidden md:inline-flex">
-                    Log in
-                </Button>
-                </div>
+				<div className="flex gap-2">
+					<Button variant="outline" className="mr-2 h-8 rounded-2xl">
+						Join us
+					</Button>
+					<Button className="mr-2 hidden h-8 rounded-2xl md:inline-flex">
+						Log in
+					</Button>
+				</div>
 			</div>
 		</header>
 	);
