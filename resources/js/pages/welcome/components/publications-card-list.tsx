@@ -11,8 +11,9 @@ export default function PublicationsCardList() {
 			{publicationData.slice(0, MAX_CONTENT).map((item: Publication) => (
 				<ThumbnailCard
 					key={item.id}
+					id={item.id}
 					tags={item.tags.map((tag) => tag.name)}
-					slug={item.slug}
+					hrefLink={"publications/show"}
 					title={item.title}
 					description={item.abstract}
 					date={item.published_at}

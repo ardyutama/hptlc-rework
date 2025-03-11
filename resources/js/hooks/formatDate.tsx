@@ -8,7 +8,7 @@ export function formatDate(dateString: string) {
 
 	if (date >= now.minus({ days: 1 }) && date < now) {
 		return date.toRelative();
-	} else {
-		return date.toFormat("yyyy-MM-dd");
 	}
+
+	return date.toFormat("yyyy-MM-dd");
 }

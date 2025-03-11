@@ -76,18 +76,29 @@ class PublicationController extends Controller
         }
     }
 
-    public function show(Publication $publication): Response|JsonResponse
+    public function show(): Response|JsonResponse
     {
-        $publication->load(['tags', 'users']);
+//        $publication->load(['tags', 'users']);
+//
+//        if (request()->wantsJson()) {
+//            return response()->json($publication);
+//        }
 
-        if (request()->wantsJson()) {
-            return response()->json($publication);
-        }
-
-        return Inertia::render('Publications/Show', [
-            'publication' => $publication
-        ]);
+        return Inertia::render('publications/show');
     }
+
+//    public function show(Publication $publication): Response|JsonResponse
+//    {
+//        $publication->load(['tags', 'users']);
+//
+//        if (request()->wantsJson()) {
+//            return response()->json($publication);
+//        }
+//
+//        return Inertia::render('publications/show', [
+//            'publication' => $publication
+//        ]);
+//    }
 
     public function edit(Publication $publication): Response
     {

@@ -10,9 +10,10 @@ export default function ArticlesCardList() {
 			{articleData.slice(0, MAX_CONTENT).map((item) => (
 				<ThumbnailCard
 					key={item.id}
+					id={item.id}
 					thumbnailImage={item.image_url}
 					tags={item.tags.map((tag) => tag.name)}
-					slug={item.slug}
+					hrefLink={item.slug}
 					title={item.title}
 					date={item.published_at}
 				/>

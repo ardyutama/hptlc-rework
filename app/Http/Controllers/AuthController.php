@@ -26,7 +26,7 @@ class AuthController extends Controller
 
     public function showRegisterForm(): Response
     {
-        return Inertia::render('Auth/Register');
+        return Inertia::render('register/index');
     }
 
     /**
@@ -45,6 +45,11 @@ class AuthController extends Controller
 
         Auth::login($user);
         return redirect()->route('dashboard');
+    }
+
+    public function showLoginForm(): Response
+    {
+        return Inertia::render('login/index');
     }
 
     public function login(LoginRequest $request): JsonResponse|RedirectResponse

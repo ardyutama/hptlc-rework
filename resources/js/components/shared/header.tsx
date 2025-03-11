@@ -19,12 +19,16 @@ export default function Header() {
 					/>
 				</Link>
 				<div className="flex gap-2">
-					<Button variant="outline" className="mr-2 h-8 rounded-2xl">
-						Join us
-					</Button>
-					<Button className="mr-2 hidden h-8 rounded-2xl md:inline-flex">
-						Log in
-					</Button>
+					<Link href={"/register"}>
+						<Button variant="outline" className="mr-2 h-8 rounded-2xl">
+							Join us
+						</Button>
+					</Link>
+					<Link href={"/login"}>
+						<Button className="mr-2 hidden h-8 rounded-2xl md:inline-flex">
+							Log in
+						</Button>
+					</Link>
 				</div>
 			</div>
 		</header>

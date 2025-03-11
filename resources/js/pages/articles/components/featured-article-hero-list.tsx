@@ -11,9 +11,10 @@ export default function FeaturedArticleHeroList() {
 			{articleData.slice(0, MAX_FEATURED_ARTICLE_HERO).map((item) => (
 				<FeaturedHeroItem key={item.id}>
 					<ThumbnailCard
+						id={item.id}
 						tags={item.tags.map((tag) => tag.name)}
 						thumbnailImage={item.image_url}
-						slug={item.slug}
+						hrefLink={item.slug}
 						title={item.title}
 						date={item.published_at}
 					/>

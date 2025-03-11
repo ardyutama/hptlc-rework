@@ -13,8 +13,9 @@ export default function FeaturedPublicationHeroList() {
 			{publicationData.slice(0, MAX_FEATURED_PUBLICATION_HERO).map((item) => (
 				<FeaturedHeroItem key={item.id}>
 					<ThumbnailCard
+						id={item.id}
 						tags={item.tags.map((tag) => tag.name)}
-						slug={item.slug}
+						hrefLink={"/publications/show"}
 						title={item.title}
 						date={item.published_at}
 						downloadPath={item.publication_file}
