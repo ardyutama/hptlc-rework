@@ -20,7 +20,6 @@ class AuthService
             $user = User::create([
                 'email' => $data['email'],
                 'password' => bcrypt($data['password']),
-                'name' => $data['first_name'] . ' ' . $data['last_name'],
             ]);
 
             // Create member associated with the user

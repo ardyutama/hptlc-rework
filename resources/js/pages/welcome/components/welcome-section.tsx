@@ -6,13 +6,14 @@ import { cn } from "@/lib/utils";
 import { Link } from "@inertiajs/react";
 import { MoveRight } from "lucide-react";
 import type React from "react";
+import ThumbnailGrid from "@/components/shared/thumbnail-card/thumbnail-grid";
 
 interface ContentWelcomeSectionProps {
 	hrefNav: string;
 	title: string;
 	children: React.ReactNode;
 }
-export default function ContentWelcomeSection({
+export default function WelcomeSection({
 	hrefNav,
 	title,
 	children,
@@ -22,10 +23,12 @@ export default function ContentWelcomeSection({
 			<Link href={hrefNav} className="font-bold text-2xl tracking-tight">
 				{title}
 			</Link>
-			{children}
+            <ThumbnailGrid className="pt-7">
+			    {children}
+            </ThumbnailGrid>
 			<Separator className="mt-10" />
 			<div className="flex justify-center">
-				<Button className="mt-8 items-center">
+				<Button className="mt-8 items-center" asChild>
 					<Link
 						href={hrefNav}
 						className="flex w-full items-center justify-center gap-2"

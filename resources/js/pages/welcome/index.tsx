@@ -1,27 +1,23 @@
-import ThumbnailCardsContent from "@/components/shared/thumbnail-card/thumbnail-cards-content";
+import ThumbnailGrid from "@/components/shared/thumbnail-card/thumbnail-grid";
 import { MainLayout } from "@/layouts/main-layout";
 import AboutUs from "@/pages/welcome/components/about-us";
-import ArticlesCardList from "@/pages/welcome/components/articles-card-list";
-import ContentWelcomeSection from "@/pages/welcome/components/content-welcome-section";
-import PublicationsCardList from "@/pages/welcome/components/publications-card-list";
-import type React from "react";
+import ArticlesSection from "@/pages/welcome/components/articles-section";
+import WelcomeSection from "@/pages/welcome/components/welcome-section";
+import PublicationsSection from "@/pages/welcome/components/publications-section";
+import React, {Suspense} from "react";
 import EventCarouselHero from "./components/event-carousel-hero";
 
 const WelcomePage = () => {
 	return (
 		<>
 			<EventCarouselHero />
-			<ContentWelcomeSection hrefNav={"/articles"} title={"Articles"}>
-				<ThumbnailCardsContent className="pt-7">
-					<ArticlesCardList />
-				</ThumbnailCardsContent>
-			</ContentWelcomeSection>
+			<WelcomeSection hrefNav={"/articles"} title={"Articles"}>
+                <ArticlesSection />
+			</WelcomeSection>
 			<AboutUs />
-			<ContentWelcomeSection hrefNav={"/publications"} title={"Publications"}>
-				<ThumbnailCardsContent className="pt-7">
-					<PublicationsCardList />
-				</ThumbnailCardsContent>
-			</ContentWelcomeSection>
+			<WelcomeSection hrefNav={"/publications"} title={"Publications"}>
+                <PublicationsSection />
+			</WelcomeSection>
 		</>
 	);
 };

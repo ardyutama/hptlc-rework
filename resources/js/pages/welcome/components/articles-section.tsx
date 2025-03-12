@@ -2,7 +2,7 @@ import ThumbnailCard from "@/components/shared/thumbnail-card/thumbnail-card";
 import { articleData } from "@/data/mock-data";
 import type React from "react";
 
-export default function ArticlesCardList() {
+export default function ArticlesSection() {
 	const MAX_CONTENT = 4;
 
 	return (

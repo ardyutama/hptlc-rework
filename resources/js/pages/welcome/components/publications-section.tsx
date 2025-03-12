@@ -3,8 +3,9 @@ import { publicationData } from "@/data/mock-data";
 import type { Publication } from "@/types";
 import type React from "react";
 
-export default function PublicationsCardList() {
-	const MAX_CONTENT = 4;
+const MAX_CONTENT = 4;
+
+export default function PublicationsSection() {
 
 	return (
 		<>

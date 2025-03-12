@@ -25,7 +25,7 @@ export default function ThumbnailCard({
 	downloadPath,
 }: CardProps) {
 	return (
-		<div>
+		<article>
 			{thumbnailImage && (
 				<div className="my-4 aspect-[4/3] max-h-52 w-full bg-slate-50" />
 			)}
@@ -48,6 +48,6 @@ export default function ThumbnailCard({
 					</Button>
 				)}
 			</div>
-		</div>
+		</article>
 	);
 }

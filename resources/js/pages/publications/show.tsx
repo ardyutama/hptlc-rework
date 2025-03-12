@@ -6,8 +6,14 @@ import PublicationPage from "@/pages/publications/index";
 import { Link } from "@inertiajs/react";
 import { ChevronLeft, Download } from "lucide-react";
 import type React from "react";
+import ThumbnailGrid from "@/components/shared/thumbnail-card/thumbnail-grid";
+import {publicationData} from "@/data/mock-data";
+import type {Publication} from "@/types";
+import ThumbnailCard from "@/components/shared/thumbnail-card/thumbnail-card";
+import {Separator} from "@/components/ui/separator";
 
 function PublicationShow() {
+    const MAX_CONTENT = 4;
 	return (
 		<ContentLayout className="my-24 min-h-screen">
 			<div className="my-2">
@@ -15,7 +21,7 @@ function PublicationShow() {
 			</div>
 			<Badge>#High-Performance Thin Layer Chromatography</Badge>
 			<div className="my-4">
-				<p className="text-gray-800">Abstract</p>
+				<p className="text-gray-800 py-2 font-semibold">Abstract</p>
 				<p className="text-justify font-semibold text-lg">
 					"This study explores advancements in High-Performance Thin Layer
 					Chromatography (HPTLC), a powerful analytical technique used for the
@@ -33,7 +39,7 @@ function PublicationShow() {
 				</p>
 			</div>
 			<div className="my-4">
-				<p className="text-gray-800">Download File</p>
+				<p className="text-gray-800 py-2 font-semibold">Download File</p>
 				<div className="inline-flex items-center gap-6">
 					<Button className="my-2">
 						Nama File.pdf
@@ -41,6 +47,24 @@ function PublicationShow() {
 					</Button>
 				</div>
 			</div>
+            <Separator orientation='horizontal'/>
+            <div className="my-4">
+                <p className="text-gray-800 py-2 font-bold text-lg tracking-tight">Related Publications</p>
+                <ThumbnailGrid>
+                    {publicationData.slice(0, MAX_CONTENT).map((item: Publication) => (
+                        <ThumbnailCard
+                            key={item.id}
+                            id={item.id}
+                            tags={item.tags.map((tag) => tag.name)}
+                            hrefLink={"publications/show"}
+                            title={item.title}
+                            description={item.abstract}
+                            date={item.published_at}
+                            downloadPath={item.publication_file}
+                        />
+                    ))}
+                </ThumbnailGrid>
+            </div>
 		</ContentLayout>
 	);
 }

@@ -1,11 +1,10 @@
 import type React from "react";
-import { ComponentProps } from "react";
 
 interface ThumbnailCardsContentProps {
 	className?: string;
 	children: React.ReactNode;
 }
-export default function ThumbnailCardsContent({
+export default function ThumbnailGrid({
 	className,
 	children,
 }: ThumbnailCardsContentProps) {
