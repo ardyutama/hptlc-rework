@@ -2,27 +2,30 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { useForm } from "@inertiajs/react";
 import type React from "react";
-import {useForm} from "@inertiajs/react";
 
 export function RegisterForm({
 	className,
 	...props
 }: React.ComponentPropsWithoutRef<"form">) {
+	const { data, setData, post, processing, errors } = useForm({
+		email: "",
+		password: "",
+		remember: false,
+	});
 
-    const { data, setData, post, processing, errors } = useForm({
-        email: '',
-        password: '',
-        remember: false,
-    })
-
-    function submit(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault()
-        post(route('/register'))
-    }
+	function submit(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+		post(route("/register"));
+	}
 
 	return (
-		<form className={cn("flex flex-col gap-6", className)} {...props} onSubmit={submit}>
+		<form
+			className={cn("flex flex-col gap-6", className)}
+			{...props}
+			onSubmit={submit}
+		>
 			<div className="flex flex-col gap-2">
 				<h1 className="font-bold text-xl tracking-tight">
 					Create Your HPTLC Account
@@ -42,15 +45,15 @@ export function RegisterForm({
 						required
 					/>
 				</div>
-                <div className="grid gap-2">
-                    <Label htmlFor="last_name">Last Name</Label>
-                    <Input
-                        id="last_name"
-                        type="text"
-                        placeholder="Enter your last name"
-                        required
-                    />
-                </div>
+				<div className="grid gap-2">
+					<Label htmlFor="last_name">Last Name</Label>
+					<Input
+						id="last_name"
+						type="text"
+						placeholder="Enter your last name"
+						required
+					/>
+				</div>
 				<div className="grid gap-2">
 					<Label htmlFor="email">Email</Label>
 					<Input

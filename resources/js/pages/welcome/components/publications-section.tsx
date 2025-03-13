@@ -6,7 +6,6 @@ import type React from "react";
 const MAX_CONTENT = 4;
 
 export default function PublicationsSection() {
-
 	return (
 		<>
 			{publicationData.slice(0, MAX_CONTENT).map((item: Publication) => (

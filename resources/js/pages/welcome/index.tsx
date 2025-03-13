@@ -2,9 +2,9 @@ import ThumbnailGrid from "@/components/shared/thumbnail-card/thumbnail-grid";
 import { MainLayout } from "@/layouts/main-layout";
 import AboutUs from "@/pages/welcome/components/about-us";
 import ArticlesSection from "@/pages/welcome/components/articles-section";
-import WelcomeSection from "@/pages/welcome/components/welcome-section";
 import PublicationsSection from "@/pages/welcome/components/publications-section";
-import React, {Suspense} from "react";
+import WelcomeSection from "@/pages/welcome/components/welcome-section";
+import type React from "react";
 import EventCarouselHero from "./components/event-carousel-hero";
 
 const WelcomePage = () => {
@@ -12,11 +12,11 @@ const WelcomePage = () => {
 		<>
 			<EventCarouselHero />
 			<WelcomeSection hrefNav={"/articles"} title={"Articles"}>
-                <ArticlesSection />
+				<ArticlesSection />
 			</WelcomeSection>
 			<AboutUs />
 			<WelcomeSection hrefNav={"/publications"} title={"Publications"}>
-                <PublicationsSection />
+				<PublicationsSection />
 			</WelcomeSection>
 		</>
 	);
