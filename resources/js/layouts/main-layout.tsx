@@ -1,0 +1,21 @@
+import Footer from "@/components/shared/footer";
+import Header from "@/components/shared/header";
+import { Head } from "@inertiajs/react";
+import type React from "react";
+
+interface MainLayoutProps {
+	title?: string;
+	children: React.ReactNode;
+}
+export function MainLayout({ title, children }: MainLayoutProps) {
+	return (
+		<>
+			<Head title={title} />
+			<main className="relative flex min-h-svh flex-1 flex-col bg-background">
+				<Header />
+				{children}
+				<Footer />
+			</main>
+		</>
+	);
+}

@@ -1,29 +1,41 @@
 {
-  "name": "haic_rework_monorepo",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "dev:server": "cd apps/server && php artisan serve",
-    "dev:client": "cd apps/client && pnpm dev",
-    "install:server": "cd apps/server && composer install",
-    "install:client": "cd apps/client && npm install"
-  },
-  "contributors": [
-    {
-        "name": "Ardy Putra Utama",
-        "email": "ardy.putrautama53@gmail.com"
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite",
+        "biome:check": "npx @biomejs/biome check --write ./resources/js/"
     },
-    {
-        "name": "Muhammad Zulkifly Al Firdausy",
-        "url": "https://zulkifly-portofolio.netlify.app/"
+    "devDependencies": {
+        "@biomejs/biome": "1.9.4",
+        "@tailwindcss/vite": "^4.0.6",
+        "@types/luxon": "^3.4.2",
+        "@types/node": "^22.13.1",
+        "@types/react": "19.0.10",
+        "@types/react-dom": "19.0.4",
+        "@vitejs/plugin-react": "^1.3.2",
+        "autoprefixer": "^10.4.20",
+        "concurrently": "^9.0.1",
+        "laravel-vite-plugin": "^1.0",
+        "tailwindcss": "^4.0.6",
+        "tailwindcss-animate": "^1.0.7",
+        "typescript": "^5.7.3",
+        "vite": "^5.0"
+    },
+    "dependencies": {
+        "@inertiajs/react": "^2.0.3",
+        "@radix-ui/react-label": "^2.1.2",
+        "@radix-ui/react-separator": "^1.1.2",
+        "@radix-ui/react-tabs": "^1.1.3",
+        "axios": "^1.7.4",
+        "class-variance-authority": "^0.7.1",
+        "clsx": "^2.1.1",
+        "embla-carousel-react": "^8.5.2",
+        "lucide-react": "^0.475.0",
+        "luxon": "^3.5.0",
+        "react": "19.0.0",
+        "react-dom": "19.0.0",
+        "tailwind-merge": "^3.0.2",
+        "vaul": "^1.1.2"
     }
-  ],
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/AZulUye/haic_rework/issues"
-  },
-  "workspaces": [
-    "apps/*"
-  ],
-  "homepage": "https://github.com/AZulUye/haic_rework#readme"
 }
