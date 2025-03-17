@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Member;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class MemberController extends Controller
 {
@@ -41,34 +44,30 @@ class MemberController extends Controller
         }
     }
 
-    public function updateMemberInformation(Request $request, $memberId): JsonResponse
-    {
-        $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'university_name' => 'required|string|max:255',
-            'study_program_name' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:15',
-        ]);
-
-        try {
-            $member = Member::find($memberId);
-
-            if (!$member) {
-                return response()->json(['message' => 'Member Not Found'], 404);
-            }
-
-            $member->update($request->only([
-                'first_name',
-                'last_name',
-                'university_name',
-                'study_program_name',
-                'phone_number',
-            ]));
-
-            return response()->json(['message' => 'Update Successful', 'member' => $member]);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Server Error', 'error' => $e->getMessage()], 500);
+        public function edit()
+        {
+            return Inertia::render('profile/edit', [
+                'user' => Auth::user()->load('member')
+            ]);
         }
-    }
+
+        public function updateMemberInformation(Request $request): JsonResponse | RedirectResponse
+        {
+            $user = Auth::user();
+            $member = $user->member;
+
+            $validated = $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'university_name' => 'nullable|string|max:255',
+                'phone_number' => 'nullable|string|max:20',
+                'study_program_name' => 'nullable|string|max:255',
+                'gender' => 'nullable|string|in:male,female,other',
+                'birth_date' => 'nullable|date|before:today',
+            ]);
+
+            $member->update($validated);
+
+            return back()->with('success', 'Profile information updated successfully.');
+        }
 }
