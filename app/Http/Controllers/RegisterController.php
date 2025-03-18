@@ -32,21 +32,7 @@ class RegisterController extends Controller
      */
     public function register(RegisterRequest $request): JsonResponse|RedirectResponse
     {
-        $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'password_confirmation' => 'required|string',
-        ]);
-
-        $data = array_merge($request->validated(), [
-            'university_name' => '',
-            'phone_number' => '',
-            'study_program_name' => '',
-            'gender' => 'other', // Default value
-            'birth_date' => now()->subYears(18)->toDateString()
-        ]);
+        $data = $request->validated();
 
         $user = $this->authService->registerUser($data);
 
@@ -54,6 +40,6 @@ class RegisterController extends Controller
 
         Log::info('Redirecting after registration');
 
-        return redirect()->route('welcome');
+        return to_route('welcome');
     }
 }

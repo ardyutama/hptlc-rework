@@ -11,11 +11,9 @@ import {
 import type { PageProps } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
 import { LogOut, Menu, Settings, User, UserPlus } from "lucide-react";
-import { useEffect, useState } from "react";
 
 export default function Header() {
 	const { auth } = usePage<PageProps>().props;
-	const [showMobileMenu, setShowMobileMenu] = useState(false);
 
 	// Get initials for avatar
 	const getInitials = (name: string) => {
@@ -33,8 +31,8 @@ export default function Header() {
 		: "";
 
 	return (
-		<header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur flex justify-center">
-			<div className="container flex h-16 items-center justify-between py-4 px-4">
+		<header className="sticky top-0 z-40 flex w-full justify-center border-b bg-background/95 backdrop-blur">
+			<div className="container flex h-16 items-center justify-between px-4 py-4">
 				<div className="flex items-center gap-4">
 					<div className="md:hidden">
 						<DrawerNavigation>

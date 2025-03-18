@@ -26,11 +26,6 @@ class AuthService
             $user->member()->create([
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
-                'university_name' => $data['university_name'],
-                'phone_number' => $data['phone_number'],
-                'study_program_name' => $data['study_program_name'],
-                'gender' => $data['gender'],
-                'birth_date' => $data['birth_date'],
                 'joined_date' => now()->toDate(),
                 'user_id' => $user->id,
             ]);

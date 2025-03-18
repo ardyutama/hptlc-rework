@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {useForm, usePage} from "@inertiajs/react";
+import { useForm } from "@inertiajs/react";
 import type React from "react";
 import { FormFields } from "./form-fields";
 import { FormFooter } from "./form-footer";
@@ -34,7 +34,7 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
 	function submit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		form.post(route("register"));
-    }
+	}
 
 	return (
 		<form
@@ -44,7 +44,11 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
 		>
 			<FormHeader />
 
-			<FormFields data={form.data} errors={form.errors} handleChange={handleChange} />
+			<FormFields
+				data={form.data}
+				errors={form.errors}
+				handleChange={handleChange}
+			/>
 
 			<Button type="submit" className="w-full" disabled={form.processing}>
 				Register
