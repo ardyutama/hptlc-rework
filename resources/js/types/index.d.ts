@@ -1,6 +1,10 @@
 import type { Config } from "ziggy-js";
 
-//
+type User = {
+	first_name: string;
+	last_name: string;
+	email: string;
+};
 export type PublicationTag = {
 	id: string;
 	name: string;
@@ -100,8 +104,8 @@ export type Event = {
 export type PageProps<
 	T extends Record<string, unknown> = Record<string, unknown>,
 > = T & {
-	// auth: {
-	//     user: User;
-	// };
+	auth: {
+		user: User;
+	};
 	ziggy: Config & { location: string };
 };

@@ -23,6 +23,10 @@ class Member extends Model
         'user_id'
     ];
 
+    protected $casts = [
+        'gender' => 'string',
+    ];
+
     public function user(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'user_id');
