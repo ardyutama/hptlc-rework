@@ -1,48 +1,77 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { useForm } from "@inertiajs/react";
+import type React from "react";
+import FormFields from "./form-fields";
+import FormFooter from "./form-footer";
+import FormHeader from "./form-header";
+
+interface LoginFormData {
+	email: string;
+	password: string;
+	remember: boolean;
+}
 
 export function LoginForm({
 	className,
 	...props
 }: React.ComponentPropsWithoutRef<"form">) {
+	const form = useForm({
+		email: "",
+		password: "",
+		remember: false,
+	});
+
+	function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+		const { id, value } = e.target;
+
+		form.setData(id as keyof LoginFormData, value);
+	}
+
+	function submit(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+		form.post(route("login"));
+	}
+
+	// @ts-ignore
+	// @ts-ignore
 	return (
-		<form className={cn("flex flex-col gap-6", className)} {...props}>
-			<div className="flex flex-col gap-2">
-				<h1 className="font-bold text-xl tracking-tight">
-					Welcome Back to Your HPTLC Portal
-				</h1>
-				<p className="text-balance text-muted-foreground text-sm">
-					Access your personalized chromatography resources, analysis tools, and
-					research materials
-				</p>
-			</div>
+		<form
+			className={cn("flex flex-col gap-6", className)}
+			onSubmit={submit}
+			{...props}
+		>
+			<FormHeader />
+
 			<div className="grid gap-6">
-				<div className="grid gap-2">
-					<Label htmlFor="email">Email</Label>
-					<Input id="email" type="email" placeholder="m@example.com" required />
+				<FormFields
+					data={form.data}
+					errors={form.errors}
+					handleChange={handleChange}
+				/>
+
+				<div className="flex items-center space-x-2">
+					<Checkbox
+						id="remember"
+						checked={form.data.remember}
+						onCheckedChange={(checked) =>
+							//@ts-ignore
+							form.setData("remember", checked as boolean)
+						}
+					/>
+					<label
+						htmlFor="remember"
+						className="font-medium text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+					>
+						Remember Me
+					</label>
 				</div>
-				<div className="grid gap-2">
-					<div className="flex items-center">
-						<Label htmlFor="password">Password</Label>
-						<p className="ml-auto text-sm underline-offset-4 hover:underline">
-							Forgot your password?
-						</p>
-					</div>
-					<Input id="password" type="password" required />
-				</div>
-				<Button type="submit" className="w-full">
+				<Button type="submit" className="w-full" disabled={form.processing}>
 					Login
 				</Button>
 			</div>
-			<div className="text-center text-sm">
-				New to HPTLC? <br />
-				<a href="/register" className="underline underline-offset-4">
-					Register for an account to access our complete suite of chromatography
-					tools
-				</a>
-			</div>
+			<FormFooter />
 		</form>
 	);
 }

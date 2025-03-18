@@ -5,7 +5,7 @@ interface FormFieldProps {
 	id: string;
 	label: string;
 	type: string;
-	placeholder: string;
+	placeholder?: string;
 	required: boolean;
 	value: string;
 	error?: string;
@@ -16,7 +16,7 @@ export function FormField({
 	id,
 	label,
 	type,
-	placeholder,
+	placeholder = "",
 	required,
 	value,
 	error,

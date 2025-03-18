@@ -15,6 +15,7 @@ import { LogOut, Menu, Settings, User, UserPlus } from "lucide-react";
 export default function Header() {
 	const { auth } = usePage<PageProps>().props;
 
+	console.log(auth);
 	// Get initials for avatar
 	const getInitials = (name: string) => {
 		if (!name) return "U";

@@ -1,7 +1,8 @@
 import { FormField } from "@/components/custom/form-field";
+import type React from "react";
 
 interface FormFieldsProps {
-	data: Record<string, string>;
+	data: Record<string, any>;
 	errors: Record<string, string>;
 	handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -10,45 +11,26 @@ interface FieldConfig {
 	id: string;
 	label: string;
 	type: string;
-	placeholder: string;
+	placeholder?: string;
 	required: boolean;
 }
 
-export function FormFields({ data, errors, handleChange }: FormFieldsProps) {
+export default function FormFields({
+	data,
+	errors,
+	handleChange,
+}: FormFieldsProps) {
 	const fields: FieldConfig[] = [
-		{
-			id: "first_name",
-			label: "First Name",
-			type: "text",
-			placeholder: "Enter your first name",
-			required: true,
-		},
-		{
-			id: "last_name",
-			label: "Last Name",
-			type: "text",
-			placeholder: "Enter your last name",
-			required: true,
-		},
 		{
 			id: "email",
 			label: "Email",
 			type: "email",
-			placeholder: "Enter your professional or personal email address",
 			required: true,
 		},
 		{
 			id: "password",
 			label: "Password",
 			type: "password",
-			placeholder: "Create a secure password (minimum 8 characters)",
-			required: true,
-		},
-		{
-			id: "password_confirmation",
-			label: "Confirmation Password",
-			type: "password",
-			placeholder: "Verify your password",
 			required: true,
 		},
 	];
