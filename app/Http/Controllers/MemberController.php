@@ -7,7 +7,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class MemberController extends Controller
 {
@@ -44,16 +47,29 @@ class MemberController extends Controller
         }
     }
 
-        public function edit()
+        public function edit(): Response
         {
-            return Inertia::render('profile/edit', [
-                'user' => Auth::user()->load('member')
+            $user = Auth::user();
+            $member = $user->member;
+
+            return Inertia::render('profile/index', [
+                'user' => $user,
+                'member' => $member,
             ]);
         }
 
-        public function updateMemberInformation(Request $request): JsonResponse | RedirectResponse
-        {
+    public function update(Request $request): JsonResponse | RedirectResponse
+    {
+        try {
             $user = Auth::user();
+
+            if (!$user || !$user->member) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Member not found'
+                ], 404);
+            }
+
             $member = $user->member;
 
             $validated = $request->validate([
@@ -66,8 +82,54 @@ class MemberController extends Controller
                 'birth_date' => 'nullable|date|before:today',
             ]);
 
-            $member->update($validated);
+            $filteredData = array_filter($validated, function ($value) {
+                return $value !== null;
+            });
 
-            return back()->with('success', 'Profile information updated successfully.');
+            // Only update fields that have changed to minimize database operations
+            $changedData = array_filter($filteredData, function ($value, $key) use ($member) {
+                return $member->{$key} !== $value;
+            }, ARRAY_FILTER_USE_BOTH);
+
+            if (!empty($changedData)) {
+                // Use database transaction for atomicity
+                DB::beginTransaction();
+                try {
+                    $member->update($changedData);
+                    DB::commit();
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                    return $request->wantsJson()
+                        ? response()->json([
+                            'success' => false,
+                            'message' => 'Failed to update profile information'
+                        ], 500)
+                        : back()->with('error', 'Failed to update profile information');
+                }
+            }
+
+            return $request->wantsJson()
+                ? response()->json([
+                    'success' => true,
+                    'message' => 'Profile information updated successfully',
+                    'data' => $member->fresh()
+                ])
+                : back()->with('success', 'Profile information updated successfully.');
+        } catch (ValidationException $e) {
+            return $request->wantsJson()
+                ? response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $e->errors()
+                ], 422)
+                : back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            return $request->wantsJson()
+                ? response()->json([
+                    'success' => false,
+                    'message' => 'An error occurred'
+                ], 500)
+                : back()->with('error', 'An error occurred');
         }
+    }
 }

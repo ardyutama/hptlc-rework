@@ -5,6 +5,44 @@ type User = {
 	last_name: string;
 	email: string;
 };
+
+export interface UserData {
+	email: string;
+	id: string;
+}
+
+export interface GenderEnum {
+	value: "male" | "female" | "other";
+}
+
+export interface MemberData {
+	id: string;
+	first_name: string;
+	last_name: string;
+	university_name: string | null;
+	phone_number: string | null;
+	study_program_name: string | null;
+	gender: GenderEnum["value"] | null;
+	birth_date: Date | null;
+	joined_date: string;
+	user_id: string;
+}
+
+export interface UserProfileProps extends PageProps {
+	member: MemberData;
+	user: UserData;
+}
+
+interface ProfileFormData {
+	first_name: string;
+	last_name: string;
+	university_name: string;
+	phone_number: string;
+	study_program_name: string;
+	gender: string;
+	birth_date: Date | null;
+}
+
 export type PublicationTag = {
 	id: string;
 	name: string;

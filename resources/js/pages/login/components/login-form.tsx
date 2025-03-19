@@ -7,26 +7,29 @@ import FormFields from "./form-fields";
 import FormFooter from "./form-footer";
 import FormHeader from "./form-header";
 
-interface LoginFormData {
+export interface LoginFormData {
 	email: string;
 	password: string;
 	remember: boolean;
 }
 
-export function LoginForm({
-	className,
-	...props
-}: React.ComponentPropsWithoutRef<"form">) {
+type LoginFormProps = React.ComponentPropsWithoutRef<"form">;
+
+export function LoginForm({ className, ...props }: LoginFormProps) {
 	const form = useForm({
 		email: "",
 		password: "",
-		remember: false,
+		remember: false as boolean,
 	});
 
 	function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-		const { id, value } = e.target;
+		const { id, value, type, checked } = e.target;
 
-		form.setData(id as keyof LoginFormData, value);
+		if (type === "checkbox") {
+			form.setData(id as keyof LoginFormData, checked);
+		} else {
+			form.setData(id as keyof LoginFormData, value);
+		}
 	}
 
 	function submit(e: React.FormEvent<HTMLFormElement>) {
@@ -34,8 +37,6 @@ export function LoginForm({
 		form.post(route("login"));
 	}
 
-	// @ts-ignore
-	// @ts-ignore
 	return (
 		<form
 			className={cn("flex flex-col gap-6", className)}
@@ -49,6 +50,7 @@ export function LoginForm({
 					data={form.data}
 					errors={form.errors}
 					handleChange={handleChange}
+					disabled={form.processing}
 				/>
 
 				<div className="flex items-center space-x-2">
@@ -56,7 +58,6 @@ export function LoginForm({
 						id="remember"
 						checked={form.data.remember}
 						onCheckedChange={(checked) =>
-							//@ts-ignore
 							form.setData("remember", checked as boolean)
 						}
 					/>
