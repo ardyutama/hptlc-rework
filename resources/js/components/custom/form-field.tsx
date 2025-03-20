@@ -4,10 +4,11 @@ import { Label } from "@/components/ui/label";
 interface FormFieldProps {
 	id: string;
 	label: string;
-	type: string;
+	type?: string;
 	placeholder?: string;
-	required: boolean;
+	required?: boolean;
 	value: string;
+	disabled: boolean;
 	error?: string;
 	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -15,10 +16,11 @@ interface FormFieldProps {
 export function FormField({
 	id,
 	label,
-	type,
+	type = "text",
 	placeholder = "",
-	required,
+	required = false,
 	value,
+	disabled,
 	error,
 	onChange,
 }: FormFieldProps) {
@@ -35,6 +37,7 @@ export function FormField({
 				required={required}
 				value={value}
 				onChange={onChange}
+				disabled={disabled}
 			/>
 		</div>
 	);

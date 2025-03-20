@@ -1,14 +1,16 @@
 import { FormField } from "@/components/custom/form-field";
+import type { LoginFormData } from "@/pages/login/components/login-form";
 import type React from "react";
 
 interface FormFieldsProps {
-	data: Record<string, any>;
+	data: LoginFormData;
 	errors: Record<string, string>;
 	handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	disabled: boolean;
 }
 
 interface FieldConfig {
-	id: string;
+	id: keyof Omit<LoginFormData, "remember">;
 	label: string;
 	type: string;
 	placeholder?: string;
@@ -19,6 +21,7 @@ export default function FormFields({
 	data,
 	errors,
 	handleChange,
+	disabled,
 }: FormFieldsProps) {
 	const fields: FieldConfig[] = [
 		{
@@ -47,6 +50,7 @@ export default function FormFields({
 					required={field.required}
 					value={data[field.id] || ""}
 					error={errors[field.id]}
+					disabled={disabled}
 					onChange={handleChange}
 				/>
 			))}
