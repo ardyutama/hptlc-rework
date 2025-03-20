@@ -5,6 +5,7 @@ import type { ProfileFormData } from "@/types";
 import { Save } from "lucide-react";
 import EducationTab from "./education-tab";
 import PersonalInfoTab from "./personal-info-tab";
+import React from "react";
 
 export default function ProfileForm({
 	isEditing,
@@ -18,10 +19,10 @@ export default function ProfileForm({
 }: {
 	isEditing: boolean;
 	data: ProfileFormData;
-	setData: (key: keyof ProfileFormData, value: string | Date | null) => void;
+	setData: (key: keyof ProfileFormData, value: string | null) => void;
 	errors: Record<string, string>;
 	processing: boolean;
-	handleSubmit: (e: React.FormEvent) => void;
+	handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 	selectedTab: string;
 	setSelectedTab: (tab: string) => void;
 }) {

@@ -14,13 +14,13 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 
-const DATE_FORMAT = "dd/MM/yyyy";
-const DATE_FORMAT_DISPLAY = "DD/MM/YYYY";
+const DATE_FORMAT = "yyyy-MM-dd";
+const DATE_FORMAT_DISPLAY = "YYYY-MM-DD";
 
 interface BirthDatePickerProps {
 	label?: string;
-	value: Date | null;
-	onChange: (date: Date | null) => void;
+	value: string | null;
+	onChange: (date: string | null) => void;
 	onError?: (error: string | null) => void;
 	disabled?: boolean;
 	error?: string;
@@ -64,7 +64,11 @@ const BirthDatePicker = ({
 
 	const handleCalendarChange = (date: Date | undefined) => {
 		const selectedDate = date || null;
-		onChange(selectedDate);
+
+        if (selectedDate) {
+            onChange(format(selectedDate, DATE_FORMAT));
+        }
+
 		if (date) {
 			setInputValue(format(date, DATE_FORMAT));
 			setFormatError(null);
@@ -76,7 +80,7 @@ const BirthDatePicker = ({
 
 	const validateDate = (
 		dateStr: string,
-	): { isValid: boolean; error: string | null; date: Date | null } => {
+	): { isValid: boolean; error: string | null; date: string | null } => {
 		if (!dateStr) {
 			return { isValid: true, error: null, date: null };
 		}
@@ -108,7 +112,7 @@ const BirthDatePicker = ({
 				};
 			}
 
-			return { isValid: true, error: null, date: parsedDate };
+			return { isValid: true, error: null, date: format(parsedDate, DATE_FORMAT) };
 		} catch (error) {
 			return {
 				isValid: false,
@@ -118,7 +122,6 @@ const BirthDatePicker = ({
 		}
 	};
 
-	// Handle manual input
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const newValue = e.target.value;
 		setInputValue(newValue);
@@ -203,7 +206,7 @@ const BirthDatePicker = ({
 					<PopoverContent className="w-auto p-0">
 						<Calendar
 							mode="single"
-							selected={value || undefined}
+							selected={value && parse(value, DATE_FORMAT, new Date())|| undefined}
 							onSelect={handleCalendarChange}
 							disabled={disabled || { after: maxDate, before: minDate }}
 							initialFocus

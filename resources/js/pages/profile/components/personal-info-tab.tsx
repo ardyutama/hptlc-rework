@@ -11,7 +11,7 @@ const PersonalInfoTab = ({
 	isEditing,
 }: {
 	data: ProfileFormData;
-	setData: (key: keyof ProfileFormData, value: string | Date | null) => void;
+	setData: (key: keyof ProfileFormData, value: string | null) => void;
 	errors: Record<string, string>;
 	isEditing: boolean;
 }) => (

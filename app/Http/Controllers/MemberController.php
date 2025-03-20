@@ -60,76 +60,22 @@ class MemberController extends Controller
 
     public function update(Request $request): JsonResponse | RedirectResponse
     {
-        try {
-            $user = Auth::user();
+        $user = Auth::user();
 
-            if (!$user || !$user->member) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Member not found'
-                ], 404);
-            }
+        $member = $user->member;
 
-            $member = $user->member;
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'university_name' => 'nullable|string|max:255',
+            'phone_number' => 'nullable|string|max:20',
+            'study_program_name' => 'nullable|string|max:255',
+            'gender' => 'nullable|string|in:male,female,other',
+            'birth_date' => 'nullable|date|before:today',
+        ]);
 
-            $validated = $request->validate([
-                'first_name' => 'required|string|max:255',
-                'last_name' => 'required|string|max:255',
-                'university_name' => 'nullable|string|max:255',
-                'phone_number' => 'nullable|string|max:20',
-                'study_program_name' => 'nullable|string|max:255',
-                'gender' => 'nullable|string|in:male,female,other',
-                'birth_date' => 'nullable|date|before:today',
-            ]);
+        $member->update($validated);
 
-            $filteredData = array_filter($validated, function ($value) {
-                return $value !== null;
-            });
-
-            // Only update fields that have changed to minimize database operations
-            $changedData = array_filter($filteredData, function ($value, $key) use ($member) {
-                return $member->{$key} !== $value;
-            }, ARRAY_FILTER_USE_BOTH);
-
-            if (!empty($changedData)) {
-                // Use database transaction for atomicity
-                DB::beginTransaction();
-                try {
-                    $member->update($changedData);
-                    DB::commit();
-                } catch (\Exception $e) {
-                    DB::rollBack();
-                    return $request->wantsJson()
-                        ? response()->json([
-                            'success' => false,
-                            'message' => 'Failed to update profile information'
-                        ], 500)
-                        : back()->with('error', 'Failed to update profile information');
-                }
-            }
-
-            return $request->wantsJson()
-                ? response()->json([
-                    'success' => true,
-                    'message' => 'Profile information updated successfully',
-                    'data' => $member->fresh()
-                ])
-                : back()->with('success', 'Profile information updated successfully.');
-        } catch (ValidationException $e) {
-            return $request->wantsJson()
-                ? response()->json([
-                    'success' => false,
-                    'message' => 'Validation failed',
-                    'errors' => $e->errors()
-                ], 422)
-                : back()->withErrors($e->errors())->withInput();
-        } catch (\Exception $e) {
-            return $request->wantsJson()
-                ? response()->json([
-                    'success' => false,
-                    'message' => 'An error occurred'
-                ], 500)
-                : back()->with('error', 'An error occurred');
-        }
+        return back()->with('success', 'Profile information updated successfully.');
     }
 }

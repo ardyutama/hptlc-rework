@@ -1,9 +1,10 @@
 import ProfileForm from "@/pages/profile/components/profile-form";
 import type { UserProfileProps } from "@/types";
 import { useForm, usePage } from "@inertiajs/react";
-import { useState } from "react";
+import React, { useState } from "react";
 import ProfileHeader from "./profile-header";
 import ProfileSidebar from "./profile-sidebar";
+import {format} from "date-fns";
 
 export default function UserProfile(): React.ReactElement {
 	const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -16,10 +17,10 @@ export default function UserProfile(): React.ReactElement {
 		phone_number: member.phone_number || "",
 		study_program_name: member.study_program_name || "",
 		gender: member.gender || "other",
-		birth_date: member.birth_date ? new Date(member.birth_date) : null,
+		birth_date: member.birth_date || "",
 	});
 
-	const handleSubmit = (e: React.FormEvent): void => {
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
 		e.preventDefault();
 		post(route("profile.update"), {
 			onSuccess: () => {

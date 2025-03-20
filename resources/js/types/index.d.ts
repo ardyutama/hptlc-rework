@@ -23,7 +23,7 @@ export interface MemberData {
 	phone_number: string | null;
 	study_program_name: string | null;
 	gender: GenderEnum["value"] | null;
-	birth_date: Date | null;
+	birth_date: string | null;
 	joined_date: string;
 	user_id: string;
 }
@@ -40,7 +40,7 @@ interface ProfileFormData {
 	phone_number: string;
 	study_program_name: string;
 	gender: string;
-	birth_date: Date | null;
+	birth_date: string | null;
 }
 
 export type PublicationTag = {
