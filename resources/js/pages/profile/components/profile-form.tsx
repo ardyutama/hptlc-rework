@@ -3,9 +3,9 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { ProfileFormData } from "@/types";
 import { Save } from "lucide-react";
+import type React from "react";
 import EducationTab from "./education-tab";
 import PersonalInfoTab from "./personal-info-tab";
-import React from "react";
 
 export default function ProfileForm({
 	isEditing,

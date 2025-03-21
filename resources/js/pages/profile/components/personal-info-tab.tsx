@@ -1,4 +1,4 @@
-import { FormField } from "@/components/custom/form-field";
+import { FormField } from "@/components/shared/form-field";
 import SelectField from "@/components/shared/select-field";
 import { TabsContent } from "@/components/ui/tabs";
 import DatePickerField from "@/pages/profile/components/birthdate-picker";

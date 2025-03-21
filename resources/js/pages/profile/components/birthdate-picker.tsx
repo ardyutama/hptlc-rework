@@ -65,9 +65,9 @@ const BirthDatePicker = ({
 	const handleCalendarChange = (date: Date | undefined) => {
 		const selectedDate = date || null;
 
-        if (selectedDate) {
-            onChange(format(selectedDate, DATE_FORMAT));
-        }
+		if (selectedDate) {
+			onChange(format(selectedDate, DATE_FORMAT));
+		}
 
 		if (date) {
 			setInputValue(format(date, DATE_FORMAT));
@@ -112,7 +112,11 @@ const BirthDatePicker = ({
 				};
 			}
 
-			return { isValid: true, error: null, date: format(parsedDate, DATE_FORMAT) };
+			return {
+				isValid: true,
+				error: null,
+				date: format(parsedDate, DATE_FORMAT),
+			};
 		} catch (error) {
 			return {
 				isValid: false,
@@ -206,7 +210,9 @@ const BirthDatePicker = ({
 					<PopoverContent className="w-auto p-0">
 						<Calendar
 							mode="single"
-							selected={value && parse(value, DATE_FORMAT, new Date())|| undefined}
+							selected={
+								(value && parse(value, DATE_FORMAT, new Date())) || undefined
+							}
 							onSelect={handleCalendarChange}
 							disabled={disabled || { after: maxDate, before: minDate }}
 							initialFocus

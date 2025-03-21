@@ -1,10 +1,7 @@
-import EllipsisBadge from "@/components/custom/ellipsis-badge";
+import EllipsisBadge from "@/components/shared/ellipsis-badge";
 import ThumbnailCard from "@/components/shared/thumbnail-card/thumbnail-card";
-import ThumbnailGrid from "@/components/shared/thumbnail-card/thumbnail-grid";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { publicationData } from "@/data/mock-data";
 import ContentLayout from "@/layouts/content-layout";
 import { MainLayout } from "@/layouts/main-layout";
@@ -20,7 +17,7 @@ function PublicationShow() {
 		<ContentLayout className="min-h-screen py-6 md:py-12 lg:py-16">
 			{/* Back Button */}
 			<Link
-				href="/publications"
+				href={'/publications'}
 				className="group mb-6 inline-flex items-center gap-2 font-medium text-gray-600 text-sm hover:text-gray-900"
 			>
 				<ChevronLeft className="group-hover:-translate-x-1 h-4 w-4 transition-transform" />
