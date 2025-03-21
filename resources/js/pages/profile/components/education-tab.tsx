@@ -1,4 +1,4 @@
-import { FormField } from "@/components/custom/form-field";
+import { FormField } from "@/components/shared/form-field";
 import { TabsContent } from "@/components/ui/tabs";
 import type { ProfileFormData } from "@/types";
 

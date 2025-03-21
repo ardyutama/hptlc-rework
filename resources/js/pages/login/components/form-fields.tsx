@@ -1,4 +1,4 @@
-import { FormField } from "@/components/custom/form-field";
+import { FormField } from "@/components/shared/form-field";
 import type { LoginFormData } from "@/pages/login/components/login-form";
 import type React from "react";
 

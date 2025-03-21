@@ -1,11 +1,12 @@
-import { Badge } from "@/components/ui/badge";
+import EllipsisBadge from "@/components/shared/ellipsis-badge";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/hooks/formatDate";
 import { Link } from "@inertiajs/react";
-import { DateTime } from "luxon";
+import { Tag } from "lucide-react";
+import type React from "react";
 
 type CardProps = {
-	id: string;
+	id?: string;
 	tags: string[];
 	thumbnailImage?: string;
 	title: string;
@@ -31,7 +32,14 @@ export default function ThumbnailCard({
 			)}
 			<div className="my-2">
 				{tags.map((tag) => (
-					<Badge key={tag}>#{tag}</Badge>
+					<EllipsisBadge
+						key={tag}
+						icon={<Tag className="h-3 w-3 flex-shrink-0" />}
+						maxWidth="max-w-[200px] md:max-w-[300px]"
+					>
+						High-Performance Thin Layer Chromatography With A Very Long Name
+						That Will Truncate
+					</EllipsisBadge>
 				))}
 			</div>
 			<Link href={hrefLink}>

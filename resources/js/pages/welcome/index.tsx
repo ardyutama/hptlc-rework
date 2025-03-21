@@ -1,4 +1,3 @@
-import ThumbnailGrid from "@/components/shared/thumbnail-card/thumbnail-grid";
 import { MainLayout } from "@/layouts/main-layout";
 import AboutUs from "@/pages/welcome/components/about-us";
 import ArticlesSection from "@/pages/welcome/components/articles-section";

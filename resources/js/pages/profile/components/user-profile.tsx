@@ -1,10 +1,10 @@
 import ProfileForm from "@/pages/profile/components/profile-form";
 import type { UserProfileProps } from "@/types";
 import { useForm, usePage } from "@inertiajs/react";
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
 import ProfileHeader from "./profile-header";
 import ProfileSidebar from "./profile-sidebar";
-import {format} from "date-fns";
 
 export default function UserProfile(): React.ReactElement {
 	const [isEditing, setIsEditing] = useState<boolean>(false);

@@ -1,4 +1,4 @@
-import DrawerNavigation from "@/components/custom/drawer-navigation";
+import DrawerNavigation from "@/components/shared/drawer-navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,10 +12,27 @@ import type { PageProps } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
 import { LogOut, Menu, Settings, User, UserPlus } from "lucide-react";
 
+const navItems = [
+	{
+		id: 1,
+		title: "Publications",
+		url: "/publications",
+	},
+	{
+		id: 2,
+		title: "Articles",
+		url: "/articles",
+	},
+	{
+		id: 5,
+		title: "About Us",
+		url: "#",
+	},
+];
+
 export default function Header() {
 	const { auth } = usePage<PageProps>().props;
 
-	// Get initials for avatar
 	const getInitials = (name: string) => {
 		if (!name) return "U";
 		return name
@@ -35,7 +52,7 @@ export default function Header() {
 			<div className="container flex h-16 items-center justify-between px-4 py-4">
 				<div className="flex items-center gap-4">
 					<div className="md:hidden">
-						<DrawerNavigation>
+						<DrawerNavigation items={navItems}>
 							<Menu className="h-5 w-5" />
 						</DrawerNavigation>
 					</div>
@@ -47,18 +64,14 @@ export default function Header() {
 						/>
 					</Link>
 					<nav className="hidden items-center gap-6 text-sm md:flex">
-						<Link
-							href="/publications"
-							className="text-muted-foreground transition-colors hover:text-foreground"
-						>
-							Publications
-						</Link>
-						<Link
-							href="/articles"
-							className="text-muted-foreground transition-colors hover:text-foreground"
-						>
-							Articles
-						</Link>
+						{navItems.map((item) => (
+							<Link
+								href={item.url}
+								className="text-muted-foreground transition-colors hover:text-foreground"
+							>
+								{item.title}
+							</Link>
+						))}
 					</nav>
 				</div>
 
@@ -86,13 +99,13 @@ export default function Header() {
 								</div>
 								<DropdownMenuSeparator />
 								<DropdownMenuItem asChild>
-									<Link href="/profile" className="w-full cursor-pointer">
+									<Link href={"/profile"} className="w-full cursor-pointer">
 										<User className="mr-2 h-4 w-4" />
 										Profile
 									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuItem asChild>
-									<Link href="/profile" className="w-full cursor-pointer">
+									<Link href={"/profile"} className="w-full cursor-pointer">
 										<Settings className="mr-2 h-4 w-4" />
 										Settings
 									</Link>
@@ -100,7 +113,7 @@ export default function Header() {
 								<DropdownMenuSeparator />
 								<DropdownMenuItem asChild>
 									<Link
-										href="/logout"
+										href={"/logout"}
 										method="post"
 										as="button"
 										className="w-full cursor-pointer text-red-500 hover:text-red-600"
@@ -113,14 +126,16 @@ export default function Header() {
 						</DropdownMenu>
 					) : (
 						<>
-							<Link href="/register">
+							<Link href={"/register"}>
 								<Button variant="outline" size="sm" className="hidden md:flex">
 									<UserPlus className="mr-2 h-4 w-4" />
 									Join Us
 								</Button>
 							</Link>
-							<Link href="/login">
-								<Button size="sm">Login</Button>
+							<Link href={"/login"}>
+								<Button size="sm" className="bg-blue-500">
+									Login
+								</Button>
 							</Link>
 						</>
 					)}
