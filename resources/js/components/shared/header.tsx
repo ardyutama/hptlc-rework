@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { PageProps } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
-import { LogOut, Menu, Settings, User, UserPlus } from "lucide-react";
+import {LogOut, Menu, Newspaper, User, UserPlus} from "lucide-react";
 
 const navItems = [
 	{
@@ -105,9 +105,9 @@ export default function Header() {
 									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuItem asChild>
-									<Link href={"/profile"} className="w-full cursor-pointer">
-										<Settings className="mr-2 h-4 w-4" />
-										Settings
+									<Link href={"/articles/create"} className="w-full cursor-pointer">
+										<Newspaper className="mr-2 h-4 w-4" />
+										Create Article
 									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuSeparator />
