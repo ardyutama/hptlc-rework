@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('markdown_file')->nullable();
             $table->string('image_url')->nullable();
+            $table->text('excerpt')->nullable();
+            $table->integer('reading_time')->default(1);
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
         });
