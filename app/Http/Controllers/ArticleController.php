@@ -16,13 +16,11 @@ use Inertia\Response;
 
 class ArticleController extends Controller
 {
-    protected $articleService;
+    protected ArticleService $articleService;
 
     public function __construct(ArticleService $articleService)
     {
         $this->articleService = $articleService;
-
-        $this->middleware('auth')->except(['index', 'show']);
     }
 
     public function index(Request $request)
@@ -74,11 +72,9 @@ class ArticleController extends Controller
     public function create(): Response|RedirectResponse
     {
         try {
-            $this->authorize('create', Article::class);
-
             $tags = Tag::orderBy('name')->get(['id', 'name']);
 
-            return Inertia::render('Articles/Create', [
+            return Inertia::render('articles/create', [
                 'tags' => $tags,
             ]);
         } catch (\Exception $e) {
@@ -92,8 +88,6 @@ class ArticleController extends Controller
     public function store(ArticleStoreRequest $request): RedirectResponse
     {
         try {
-            $this->authorize('create', Article::class);
-
             DB::beginTransaction();
 
             $validated = $request->validated();
@@ -138,7 +132,7 @@ class ArticleController extends Controller
             $markdownContent = $this->articleService->getFileContent($article->markdown_file);
             $relatedArticles = $article->getRelatedArticles($article);
 
-            return Inertia::render('Articles/Show', [
+            return Inertia::render('articles/show', [
                 'article' => $article,
                 'markdownContent' => $markdownContent,
                 'relatedArticles' => $relatedArticles,
@@ -157,13 +151,15 @@ class ArticleController extends Controller
     public function edit(Article $article): Response|RedirectResponse
     {
         try {
-            $this->authorize('update', $article);
+            if (!auth()->user()->can('update', $article)) {
+                return abort(403, 'Unauthorized action.');
+            }
 
             $article->load('tags');
             $tags = Tag::orderBy('name')->get(['id', 'name']);
             $markdownContent = $this->articleService->getFileContent($article->markdown_file);
 
-            return Inertia::render('Articles/Edit', [
+            return Inertia::render('articles/edit', [
                 'article' => $article,
                 'markdownContent' => $markdownContent,
                 'tags' => $tags,
@@ -183,7 +179,6 @@ class ArticleController extends Controller
     public function update(Request $request, Article $article): RedirectResponse
     {
         try {
-            $this->authorize('update', $article);
 
             DB::beginTransaction();
 
@@ -222,9 +217,11 @@ class ArticleController extends Controller
     public function destroy(Article $article): RedirectResponse
     {
         try {
-            $this->authorize('delete', $article);
-
             DB::beginTransaction();
+
+            if (!auth()->user()->can('delete', $article)) {
+                return abort(403, 'Unauthorized action.');
+            }
 
             $this->articleService->deleteArticle($article);
 
