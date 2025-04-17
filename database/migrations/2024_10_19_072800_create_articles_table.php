@@ -15,12 +15,18 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->string('title');
             $table->string('slug')->unique();
-            $table->string('markdown_file')->nullable();
-            $table->string('image_url')->nullable();
+            $table->string('markdown_path')->nullable();
+            $table->string('featured_image')->nullable();
             $table->text('excerpt')->nullable();
             $table->integer('reading_time')->default(1);
+            $table->integer('view_count')->default(0);
+            $table->enum('status', ['draft', 'published', 'archived'])->default('draft');
+            $table->integer('reading_time')->default(1);
             $table->timestamp('published_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
+
+            $table->index(['status', 'published_at']);
         });
 
         Schema::create('article_tag', function (Blueprint $table) {

@@ -25,8 +25,20 @@ class User extends Authenticatable
         return $this->hasOne(Member::class, 'user_id', 'id');
     }
 
-    public function publication(): BelongsToMany
+    /**
+     * Get the articles authored by the user.
+     */
+    public function articles(): BelongsToMany
     {
-        return $this->belongsToMany(Publication::class, 'publication_user');
+        return $this->belongsToMany(Article::class, 'article_user')
+            ->withTimestamps();
+    }
+
+    /**
+     * Check if the user is an admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
     }
 }

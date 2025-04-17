@@ -7,59 +7,39 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class Article extends Model
 {
-    use HasFactory, HasUlids;
+    use HasFactory, HasUlids, SoftDeletes;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'title',
         'slug',
-        'markdown_file',
-        'image_url',
-        'published_at',
+        'markdown_path',
+        'featured_image',
         'excerpt',
         'reading_time',
+        'status',
+        'published_at',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
-        'published_at' => 'datetime',
         'reading_time' => 'integer',
+        'view_count' => 'integer',
+        'published_at' => 'datetime',
     ];
-
-    protected $appends = [
-        'is_published',
-        'formatted_date',
-        'has_image',
-    ];
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($article) {
-            if (empty($article->slug)) {
-                $article->slug = Str::slug($article->title);
-            }
-
-            if (!empty($article->markdown_file)) {
-                $article->reading_time = self::calculateReadingTime($article->markdown_file);
-                $article->excerpt = self::generateExcerpt($article->markdown_file);
-            }
-        });
-
-        static::updating(function ($article) {
-            if ($article->isDirty('title') && empty($article->slug)) {
-                $article->slug = Str::slug($article->title);
-            }
-
-            if ($article->isDirty('markdown_file') && !empty($article->markdown_file)) {
-                $article->reading_time = self::calculateReadingTime($article->markdown_file);
-                $article->excerpt = self::generateExcerpt($article->markdown_file);
-            }
-        });
-    }
 
     public function getRouteKeyName(): string
     {
@@ -78,51 +58,44 @@ class Article extends Model
             ->withTimestamps();
     }
 
-    public function isPublished(): bool
+    /**
+     * Get the authors of the article.
+     */
+    public function authors(): BelongsToMany
     {
-        return $this->published_at !== null && $this->published_at <= now();
+        return $this->users();
     }
 
+    /**
+     * Scope a query to only include published articles.
+     */
     public function scopePublished($query)
     {
-        return $query->whereNotNull('published_at')->where('published_at', '<=', now());
+        return $query->where('status', 'published')
+            ->where('published_at', '<=', now());
     }
 
-    private static function calculateReadingTime(string $content): int
+    /**
+     * Scope a query to only include draft articles.
+     */
+    public function scopeDraft($query)
     {
-        $wordCount = str_word_count(strip_tags($content));
-        $minutes = ceil($wordCount / 200);
-        return max(1, $minutes);
+        return $query->where('status', 'draft');
     }
 
-    private static function generateExcerpt(string $content, int $length = 160): string
+    /**
+     * Scope a query to only include archived articles.
+     */
+    public function scopeArchived($query)
     {
-        $text = preg_replace('/[#*`_\[\]\(\)]+/', '', $content);
-        $text = strip_tags($text);
-
-        if (strlen($text) <= $length) {
-            return $text;
-        }
-
-        return substr($text, 0, $length) . '...';
+        return $query->where('status', 'archived');
     }
 
-    public function getRelatedArticles(Article $article, int $limit = 3): Collection
+    /**
+     * Increment the view count of the article.
+     */
+    public function incrementViewCount(): void
     {
-        $tagIds = $article->tags->pluck('id')->toArray();
-
-        if (empty($tagIds)) {
-            return Collection::make([]);
-        }
-
-        return Article::with('tags')
-            ->published()
-            ->where('id', '!=', $article->id)
-            ->whereHas('tags', function ($query) use ($tagIds) {
-                $query->whereIn('tags.id', $tagIds);
-            })
-            ->latest('published_at')
-            ->limit($limit)
-            ->get();
+        $this->increment('view_count');
     }
 }

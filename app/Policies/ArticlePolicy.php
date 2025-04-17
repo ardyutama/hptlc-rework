@@ -21,15 +21,15 @@ class ArticlePolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(?User $user, Article $article): bool
+    public function view(User $user, Article $article): bool
     {
         // Published articles can be viewed by anyone
-        if ($article->isPublished()) {
+        if ($article->status === 'published') {
             return true;
         }
 
-        // Drafts can only be viewed by authorized users
-        return $user && ($this->isAuthor($user, $article) || $user->hasRole('admin'));
+        // Draft and archived articles can only be viewed by authors or admins
+        return $this->isAuthorOrAdmin($user, $article);
     }
 
     /**
@@ -37,8 +37,7 @@ class ArticlePolicy
      */
     public function create(User $user): bool
     {
-        // Users with proper permissions can create articles
-        return $user->hasPermissionTo('create articles') || $user->hasRole('admin');
+        return true;
     }
 
     /**
@@ -46,24 +45,30 @@ class ArticlePolicy
      */
     public function update(User $user, Article $article): bool
     {
-        // Authors and admins can update articles
-        return $this->isAuthor($user, $article) || $user->hasRole('admin');
+        return $this->isAuthorOrAdmin($user, $article);
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Determine whether the user can restore the model.
      */
-    public function delete(User $user, Article $article): bool
+    public function restore(User $user, Article $article): bool
     {
-        // Authors and admins can delete articles
-        return $this->isAuthor($user, $article) || $user->hasRole('admin');
+        return $this->isAuthorOrAdmin($user, $article);
     }
 
     /**
-     * Determine if the user is an author of the article.
+     * Determine whether the user can change the status of the model.
      */
-    private function isAuthor(User $user, Article $article): bool
+    public function changeStatus(User $user, Article $article): bool
     {
-        return $article->users()->where('user_id', $user->id)->exists();
+        return $this->isAuthorOrAdmin($user, $article);
+    }
+
+    /**
+     * Determine whether the user is an author of the article or an admin.
+     */
+    private function isAuthorOrAdmin(User $user, Article $article): bool
+    {
+        return $user->isAdmin() || $article->users->contains($user->id);
     }
 }
