@@ -1,6 +1,4 @@
 import FeaturedHero from "@/components/shared/featured-hero/featured-hero";
-import ThumbnailCard from "@/components/shared/thumbnail-card/thumbnail-card";
-import ContentLayout from "@/layouts/content-layout";
 import { MainLayout } from "@/layouts/main-layout";
 import ArticleList from "@/pages/articles/components/article-list";
 import FeaturedArticleHeroList from "@/pages/articles/components/featured-article-hero-list";

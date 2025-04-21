@@ -19,7 +19,8 @@ export default function Footer() {
 								<a
 									href="https://www.instagram.com/hptlc.id"
 									className="text-white transition-colors hover:text-green-400"
-                                    target="_blank"
+									target="_blank"
+									rel="noreferrer"
 								>
 									<div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-700">
 										<Instagram size={16} />
@@ -39,8 +40,9 @@ export default function Footer() {
 										<p className="text-gray-300">Email:</p>
 										<a
 											href="mailto:info@hptlc-indonesia.org"
-                                            target="_blank"
+											target="_blank"
 											className="transition-colors hover:text-green-400"
+											rel="noreferrer"
 										>
 											info@hptlc-indonesia.org
 										</a>
@@ -52,8 +54,9 @@ export default function Footer() {
 										<p className="text-gray-300">Phone:</p>
 										<a
 											href="tel:+62213101825"
-                                            target="_blank"
+											target="_blank"
 											className="transition-colors hover:text-green-400"
+											rel="noreferrer"
 										>
 											+6221 3101825
 										</a>
@@ -84,7 +87,8 @@ export default function Footer() {
 									<a
 										href="https://www.abadinusa.co.id/en"
 										className="flex items-center justify-between"
-                                        target="_blank"
+										target="_blank"
+										rel="noreferrer"
 									>
 										<span>AbadiNusa</span>
 										<ExternalLink size={14} className="text-green-500" />
@@ -94,7 +98,8 @@ export default function Footer() {
 									<a
 										href="https://id111311-pt-dharma-karya-makmur-sentosa.contact.page/"
 										className="flex items-center justify-between"
-                                        target="_blank"
+										target="_blank"
+										rel="noreferrer"
 									>
 										<span>Darma Karya Makmur Sentosa</span>
 										<ExternalLink size={14} className="text-green-500" />

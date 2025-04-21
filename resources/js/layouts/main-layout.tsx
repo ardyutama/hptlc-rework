@@ -1,5 +1,6 @@
 import Footer from "@/components/shared/footer";
 import Header from "@/components/shared/header";
+import { Toaster } from "@/components/ui/sonner";
 import { Head } from "@inertiajs/react";
 import type React from "react";
 
@@ -15,6 +16,7 @@ export function MainLayout({ title, children }: MainLayoutProps) {
 				<Header />
 				{children}
 				<Footer />
+				<Toaster />
 			</main>
 		</>
 	);

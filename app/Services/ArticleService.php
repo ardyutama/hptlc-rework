@@ -22,8 +22,7 @@ class ArticleService
      */
     public function getAllArticles(int $perPage = 10, array $filters = []): LengthAwarePaginator
     {
-        $query = Article::with(['tags', 'authors'])
-            ->withCount('comments');
+        $query = Article::with(['tags', 'authors']);
 
         // Apply status filter
         if (!empty($filters['status'])) {

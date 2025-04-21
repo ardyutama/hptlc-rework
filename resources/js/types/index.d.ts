@@ -139,6 +139,22 @@ export type Event = {
 	users: EventUser[];
 };
 
+interface ArticleFormProps {
+	article?: {
+		id: string;
+		title: string;
+		excerpt: string;
+		slug: string;
+		featured_image: string;
+		status: string;
+		tags: { id: string; name: string }[];
+	};
+	markdownContent?: string;
+	tags: { id: string; name: string }[];
+	statuses: string[];
+	isEdit?: boolean;
+}
+
 export type PageProps<
 	T extends Record<string, unknown> = Record<string, unknown>,
 > = T & {

@@ -21,7 +21,6 @@ return new class extends Migration
             $table->integer('reading_time')->default(1);
             $table->integer('view_count')->default(0);
             $table->enum('status', ['draft', 'published', 'archived'])->default('draft');
-            $table->integer('reading_time')->default(1);
             $table->timestamp('published_at')->nullable();
             $table->softDeletes();
             $table->timestamps();

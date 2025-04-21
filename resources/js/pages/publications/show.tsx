@@ -17,7 +17,7 @@ function PublicationShow() {
 		<ContentLayout className="min-h-screen py-6 md:py-12 lg:py-16">
 			{/* Back Button */}
 			<Link
-				href={'/publications'}
+				href={"/publications"}
 				className="group mb-6 inline-flex items-center gap-2 font-medium text-gray-600 text-sm hover:text-gray-900"
 			>
 				<ChevronLeft className="group-hover:-translate-x-1 h-4 w-4 transition-transform" />
