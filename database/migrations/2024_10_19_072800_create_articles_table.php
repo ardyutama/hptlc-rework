@@ -29,9 +29,15 @@ return new class extends Migration
         });
 
         Schema::create('article_tag', function (Blueprint $table) {
-            $table->foreignUlid('article_id')->constrained('articles')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignUlid('tag_id')->constrained('tags')->onUpdate('cascade')->onDelete('cascade');
-            $table->primary(['article_id', 'tag_id']);
+            $table->ulid('id')->primary();
+            $table->foreignUlid('article_id')->constrained()->onDelete('cascade');
+            $table->foreignUlid('tag_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
+
+            $table->unique(['article_id', 'tag_id']);
+
+            $table->index('article_id');
+            $table->index('tag_id');
         });
 
         Schema::create('article_user', function (Blueprint $table) {

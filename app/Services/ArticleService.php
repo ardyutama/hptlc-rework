@@ -3,33 +3,29 @@
 namespace App\Services;
 
 use App\Models\Article;
-use App\Models\User;
-use Illuminate\Contracts\Auth\Authenticatable;
+use App\Models\Tag;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ArticleService
 {
-    /**
-     * Get all articles with filtering options.
-     *
-     * @param int $perPage
-     * @param array $filters
-     * @return LengthAwarePaginator
-     */
+    protected string $disk = 'local';
+    protected string $markdownPath = 'articles/markdown';
+    protected string $featuredImagePath = 'articles/featured_image';
+
     public function getAllArticles(int $perPage = 10, array $filters = []): LengthAwarePaginator
     {
         $query = Article::with(['tags', 'authors']);
 
-        // Apply status filter
         if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
-        // Apply search filter
         if (!empty($filters['search'])) {
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {
@@ -38,21 +34,18 @@ class ArticleService
             });
         }
 
-        // Apply tag filter
         if (!empty($filters['tag'])) {
             $query->whereHas('tags', function ($q) use ($filters) {
                 $q->where('tags.id', $filters['tag']);
             });
         }
 
-        // Apply author filter
         if (!empty($filters['author'])) {
             $query->whereHas('authors', function ($q) use ($filters) {
                 $q->where('users.id', $filters['author']);
             });
         }
 
-        // Apply date range filter
         if (!empty($filters['from_date'])) {
             $query->where('created_at', '>=', $filters['from_date']);
         }
@@ -60,7 +53,6 @@ class ArticleService
             $query->where('created_at', '<=', $filters['to_date']);
         }
 
-        // Apply sorting
         $sortField = $filters['sort_by'] ?? 'created_at';
         $sortDirection = $filters['sort_direction'] ?? 'desc';
         $query->orderBy($sortField, $sortDirection);
@@ -68,173 +60,152 @@ class ArticleService
         return $query->paginate($perPage);
     }
 
-    /**
-     * Create a new article.
-     *
-     * @param array $data
-     * @param User $user
-     * @return Article
-     */
-    public function createArticle(array $data, User $user): Article
+    public function createArticle(array $data): Article
     {
-        return DB::transaction(function () use ($data, $user) {
-            // Generate slug from title
+        DB::beginTransaction();
+
+        try {
             $slug = $this->generateUniqueSlug($data['title']);
 
-            // Save markdown file
             $markdownPath = null;
             if (isset($data['markdown_content'])) {
                 $markdownPath = $this->saveMarkdownContent($data['markdown_content'], $slug);
             }
 
-            // Process featured image if provided
-            $featuredImage = null;
+            $featuredImagePath = null;
             if (isset($data['featured_image']) && $data['featured_image'] instanceof UploadedFile) {
-                $featuredImage = $this->saveFeaturedImage($data['featured_image'], $slug);
+                $featuredImagePath = $this->saveFeaturedImage($data['featured_image'], $slug);
             }
 
-            // Calculate reading time if markdown content provided
             $readingTime = isset($data['markdown_content'])
                 ? $this->calculateReadingTime($data['markdown_content'])
                 : 1;
 
-            // Create article
+            $excerpt = Str::limit(strip_tags($data['markdown_content'] ?? ''), 150);
+
             $article = Article::create([
                 'title' => $data['title'],
                 'slug' => $slug,
                 'markdown_path' => $markdownPath,
-                'featured_image' => $featuredImage,
-                'excerpt' => $data['excerpt'] ?? Str::limit(strip_tags(
-                        $data['markdown_content'] ?? ''
-                    ), 150),
+                'featured_image' => $featuredImagePath,
+                'excerpt' => $excerpt,
                 'reading_time' => $readingTime,
                 'status' => $data['status'] ?? 'draft',
                 'published_at' => ($data['status'] ?? '') === 'published' ? now() : null,
             ]);
 
-            // Associate author
-            $article->authors()->attach($user->id);
+            $article->authors()->attach(auth()->id());
 
-            // Associate tags
-            if (isset($data['tags']) && is_array($data['tags'])) {
-                $this->syncArticleTags($article, $data['tags']);
-            }
+            $existingTagIds = $data['existing_tag_ids'] ?? [];
+            $newTagNames = $data['new_tag_names'] ?? [];
+
+            $this->syncArticleTags($article, $existingTagIds, $newTagNames);
+
+            DB::commit();
 
             return $article;
-        });
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            if (isset($markdownPath)) {
+                $this->deleteMarkdownFile($markdownPath);
+            }
+
+            if (isset($featuredImagePath)) {
+                $this->deleteFeaturedImage($featuredImagePath);
+            }
+
+            Log::error('Error creating article: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
-    /**
-     * Update an existing article.
-     *
-     * @param Article $article
-     * @param array $data
-     * @return Article
-     */
     public function updateArticle(Article $article, array $data): Article
     {
-        return DB::transaction(function () use ($article, $data) {
-            $updates = [
-                'title' => $data['title'],
-                'excerpt' => $data['excerpt'] ?? $article->excerpt,
-            ];
+        DB::beginTransaction();
 
-            // Generate new slug if title has changed
-            if ($article->title !== $data['title']) {
-                $updates['slug'] = $this->generateUniqueSlug($data['title'], $article->id);
+        try {
+            if (isset($data['title']) && $data['title'] !== $article->title) {
+                $data['slug'] = $this->generateUniqueSlug($data['title'], $article->id);
+            } else {
+                unset($data['slug']);
             }
 
-            // Update markdown content if changed
-            if (isset($data['markdown_content']) &&
-                (!$article->markdown_path ||
-                    $this->getMarkdownContent($article) !== $data['markdown_content'])) {
-                $updates['markdown_path'] = $this->saveMarkdownContent(
-                    $data['markdown_content'],
-                    $updates['slug'] ?? $article->slug
-                );
+            if ($article->markdown_path) {
+                $this->deleteMarkdownFile($article->markdown_path);
+            }
 
-                // Calculate new reading time
-                $updates['reading_time'] = $this->calculateReadingTime($data['markdown_content']);
+            $markdownPath = $this->saveMarkdownContent($article->slug, $data['markdown_content']);
+            $data['markdown_path'] = $markdownPath;
 
-                // Delete old markdown file if exists
-                if ($article->markdown_path && Storage::disk('public')->exists($article->markdown_path)) {
-                    Storage::disk('public')->delete($article->markdown_path);
+            if($data['remove_featured_image']) {
+                $this->deleteFeaturedImage($data['featured_image']);
+                $data['featured_image'] = null;
+
+                if ($data['featured_image'] instanceof UploadedFile !== $article['featured_image']) {
+                    $data['featured_image'] = $this->saveFeaturedImage($data['featured_image'], $data['slug']);
                 }
             }
 
-            // Handle featured image
-            if (!empty($data['remove_featured_image']) && $article->featured_image) {
-                // Remove existing featured image
-                if (Storage::disk('public')->exists($article->featured_image)) {
-                    Storage::disk('public')->delete($article->featured_image);
-                }
-                $updates['featured_image'] = null;
-            } elseif (isset($data['featured_image']) && $data['featured_image'] instanceof UploadedFile) {
-                // Upload new featured image
-                $updates['featured_image'] = $this->saveFeaturedImage(
-                    $data['featured_image'],
-                    $updates['slug'] ?? $article->slug
-                );
+            $article->fill(Arr::except($data, ['markdown_content']));
 
-                // Delete old featured image if exists
-                if ($article->featured_image && Storage::disk('public')->exists($article->featured_image)) {
-                    Storage::disk('public')->delete($article->featured_image);
-                }
+            if ($article->isDirty('status') && $article->status === 'published' && is_null($article->published_at)) {
+                $article->published_at = now();
             }
 
-            // Handle status change
-            if (isset($data['status']) && $data['status'] !== $article->status) {
-                $updates['status'] = $data['status'];
+            $article->save();
 
-                // Update published_at date if publishing
-                if ($data['status'] === 'published' && !$article->published_at) {
-                    $updates['published_at'] = now();
-                }
-            }
+            $existingTagIds = $data['existing_tag_ids'] ?? [];
+            $newTagNames = $data['new_tag_names'] ?? [];
+            $this->syncArticleTags($article, $existingTagIds, $newTagNames);
 
-            // Update article
-            $article->update($updates);
-
-            // Sync tags if provided
-            if (isset($data['tags']) && is_array($data['tags'])) {
-                $this->syncArticleTags($article, $data['tags']);
-            }
+            DB::commit();
 
             return $article;
-        });
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            if (isset($markdownPath)) {
+                $this->deleteMarkdownFile($markdownPath);
+            }
+
+            if (isset($featuredImagePath)) {
+                $this->deleteFeaturedImage($featuredImagePath);
+            }
+
+            Log::error('Error updating article: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
-    /**
-     * Delete an article and its associated files.
-     *
-     * @param Article $article
-     * @return bool
-     */
-    public function deleteArticle(Article $article): bool
+    public function deleteArticle(Article $article): void
     {
-        return DB::transaction(function () use ($article) {
-            // Delete markdown file if exists
-            if ($article->markdown_path && Storage::disk('public')->exists($article->markdown_path)) {
-                Storage::disk('public')->delete($article->markdown_path);
+        DB::beginTransaction();
+
+        try {
+            $article->tags()->detach();
+
+            $article->authors()->detach();
+
+            if ($article->markdown_path) {
+                $this->deleteMarkdownFile($article->markdown_path);
             }
 
-            // Delete featured image if exists
-            if ($article->featured_image && Storage::disk('public')->exists($article->featured_image)) {
-                Storage::disk('public')->delete($article->featured_image);
+            if ($article->featured_image) {
+                $this->deleteFeaturedImage($article->featured_image);
             }
 
-            // Delete article and return result
-            return (bool) $article->delete();
-        });
+            $article->delete();
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error deleting article: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
-    /**
-     * Change article status.
-     *
-     * @param Article $article
-     * @param string $status
-     * @return Article
-     */
     public function changeArticleStatus(Article $article, string $status): Article
     {
         if (!in_array($status, ['draft', 'published', 'archived'])) {
@@ -252,13 +223,6 @@ class ArticleService
         return $article;
     }
 
-    /**
-     * Generate a unique slug from a title.
-     *
-     * @param string $title
-     * @param string|null $excludeId
-     * @return string
-     */
     protected function generateUniqueSlug(string $title, ?string $excludeId = null): string
     {
         $slug = Str::slug($title);
@@ -282,41 +246,37 @@ class ArticleService
         return $slug;
     }
 
-    /**
-     * Save markdown content to a file.
-     *
-     * @param string $content
-     * @param string $slug
-     * @return string
-     */
     protected function saveMarkdownContent(string $content, string $slug): string
     {
-        // Validate content is markdown - simple check for non-HTML content
         if (strip_tags($content) !== $content) {
             throw new \InvalidArgumentException('Only markdown content is allowed.');
         }
 
         $filename = $slug . '-' . time() . '.md';
-        $path = 'articles/markdown/' . $filename;
+        $path = $this->markdownPath . '/' . $filename;
 
-        if (!Storage::disk('public')->put($path, $content)) {
-            throw new \RuntimeException('Failed to save markdown content.');
+        if (Storage::disk($this->disk)->put($path, $content)) {
+            return $path;
         }
 
-        return $path;
+        throw new \Exception('Failed to store markdown file.');
     }
 
-    /**
-     * Save featured image.
-     *
-     * @param UploadedFile $file
-     * @param string $slug
-     * @return string
-     */
+    protected function deleteMarkdownFile(?string $path): void
+    {
+        if ($path && Storage::disk($this->disk)->exists($path)) {
+            Storage::disk($this->disk)->delete($path);
+        }
+    }
+
     protected function saveFeaturedImage(UploadedFile $file, string $slug): string
     {
         $filename = $slug . '-' . time() . '.' . $file->getClientOriginalExtension();
-        $path = $file->storeAs('articles/images', $filename, 'public');
+        $path = $this->featuredImagePath . '/' . $filename;
+
+        if (Storage::disk($this->disk)->put($path, $file)) {
+            return $path;
+        }
 
         if (!$path) {
             throw new \RuntimeException('Failed to save featured image.');
@@ -325,12 +285,13 @@ class ArticleService
         return $path;
     }
 
-    /**
-     * Calculate reading time based on content.
-     *
-     * @param string $content
-     * @return int
-     */
+    protected function deleteFeaturedImage(?string $path): void
+    {
+        if ($path && Storage::disk($this->disk)->exists($path)) {
+            Storage::disk($this->disk)->delete($path);
+        }
+    }
+
     protected function calculateReadingTime(string $content): int
     {
         $wordCount = str_word_count(strip_tags($content));
@@ -338,24 +299,26 @@ class ArticleService
         return max(1, $minutesToRead);
     }
 
-    /**
-     * Sync article tags.
-     *
-     * @param Article $article
-     * @param array $tagIds
-     * @return void
-     */
-    protected function syncArticleTags(Article $article, array $tagIds): void
+    protected function syncArticleTags(Article $article, array $existingTagIds, array $newTagNames): void
     {
-        $article->tags()->sync($tagIds);
+        $allTagIdsToAttach = $existingTagIds;
+
+        foreach ($newTagNames as $tagName) {
+            $tagName = trim($tagName);
+            if (!empty($tagName)) {
+                $normalizedName = Str::lower($tagName);
+                $slug = Str::slug($normalizedName);
+
+                $tag = Tag::firstOrCreate(
+                    ['slug' => $slug],
+                    ['name' => $tagName]
+                );
+                $allTagIdsToAttach[] = $tag->id;
+            }
+        }
+        $article->tags()->sync(array_unique($allTagIdsToAttach));
     }
 
-    /**
-     * Get markdown content of an article.
-     *
-     * @param Article $article
-     * @return string|null
-     */
     public function getMarkdownContent(Article $article): ?string
     {
         if (!$article->markdown_path) {
