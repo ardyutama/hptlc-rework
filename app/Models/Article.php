@@ -12,6 +12,18 @@ class Article extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
 
+    public const STATUS_DRAFT = 'draft';
+
+    public const STATUS_PUBLISHED = 'published';
+
+    public const STATUS_ARCHIVED = 'archived';
+
+    public const AVAILABLE_STATUSES = [
+        self::STATUS_DRAFT,
+        self::STATUS_PUBLISHED,
+        self::STATUS_ARCHIVED,
+    ];
+
     protected $fillable = [
         'title',
         'slug',
@@ -21,12 +33,12 @@ class Article extends Model
         'reading_time',
         'status',
         'published_at',
+        'view_count',
     ];
 
     protected $casts = [
-        'reading_time' => 'integer',
-        'view_count' => 'integer',
         'published_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     public function getRouteKeyName(): string

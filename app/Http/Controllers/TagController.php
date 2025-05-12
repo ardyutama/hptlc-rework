@@ -23,7 +23,7 @@ class TagController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:50'],
+            'name' => ['required', 'string', 'max:50', 'unique:tags,name'],
         ]);
 
         $normalizedName = Str::lower(trim($validated['name']));
@@ -41,40 +41,6 @@ class TagController extends Controller
             'type' => $type,
             'message' => $message,
             'data' => $tag,
-        ]);
-    }
-
-    public function findOrCreate(Request $request): RedirectResponse
-    {
-        $validated = $request->validate([
-            'tags' => ['required', 'array'],
-            'tags.*' => ['required', 'string', 'max:50'],
-        ]);
-
-        $tags = [];
-        $createdCount = 0;
-
-        foreach ($validated['tags'] as $tagName) {
-            $normalizedName = Str::lower(trim($tagName));
-
-            $tag = Tag::firstOrCreate(
-                ['slug' => Str::slug($normalizedName)],
-                ['name' => $tagName]
-            );
-
-            if ($tag->wasRecentlyCreated) {
-                $createdCount++;
-            }
-
-            $tags[] = $tag;
-        }
-
-        return redirect()->back()->with('flash', [
-            'type' => 'success',
-            'message' => $createdCount > 0
-                ? "{$createdCount} new tags created"
-                : 'All tags already exist',
-            'data' => $tags,
         ]);
     }
 

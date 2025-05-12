@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Request\Article\ArticleStoreRequest;
+use App\Http\Request\Article\ArticleUpdateRequest;
 use App\Models\Article;
 use App\Models\Tag;
 use App\Services\ArticleService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 
@@ -24,9 +24,7 @@ class ArticleController extends Controller
 
     public function index(Request $request): InertiaResponse
     {
-        if (! Gate::allows('viewAny', Article::class)) {
-            abort(Response::HTTP_FORBIDDEN);
-        }
+        Gate::authorize('viewAny', Article::class);
 
         $filters = $request->only([
             'search',
@@ -39,7 +37,7 @@ class ArticleController extends Controller
             'sort_direction',
         ]);
 
-        $perPage = $request->input('per_page', 10);
+        $perPage = (int) $request->input('per_page', 10);
         $articles = $this->articleService->getAllArticles($perPage, $filters);
 
         $tags = Tag::orderBy('name')->get(['id', 'name']);
@@ -48,41 +46,27 @@ class ArticleController extends Controller
             'articles' => $articles,
             'filters' => $filters,
             'tags' => $tags,
-            'statuses' => ['draft', 'published', 'archived'],
+            'statuses' => Article::AVAILABLE_STATUSES,
         ]);
     }
 
     public function create(): InertiaResponse
     {
-        if (! Gate::allows('create', Article::class)) {
-            abort(Response::HTTP_FORBIDDEN);
-        }
+        Gate::authorize('create', Article::class);
 
         $tags = Tag::orderBy('name')->get(['id', 'name']);
 
         return Inertia::render('articles/create', [
             'tags' => $tags,
-            'statuses' => ['draft', 'published', 'archived'],
+            'statuses' => Article::AVAILABLE_STATUSES,
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(ArticleStoreRequest $request): RedirectResponse
     {
-        if (! Gate::allows('create', Article::class)) {
-            abort(Response::HTTP_FORBIDDEN);
-        }
+        Gate::authorize('create', Article::class);
 
-        $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'excerpt' => ['nullable', 'string', 'max:500'],
-            'markdown_content' => ['required', 'string'],
-            'featured_image' => ['nullable', 'image', 'max:2048'],
-            'status' => ['required', Rule::in(['draft', 'published', 'archived'])],
-            'existing_tag_ids' => ['nullable', 'array'],
-            'existing_tag_ids.*' => ['exists:tags,id'],
-            'new_tag_names' => ['nullable', 'array'],
-            'new_tag_names.*' => ['required', 'string', 'max:50', Rule::unique('tags', 'name')],
-        ]);
+        $validated = $request->validated();
 
         try {
             $article = $this->articleService->createArticle($validated);
@@ -101,53 +85,40 @@ class ArticleController extends Controller
 
     public function show(Article $article): InertiaResponse
     {
-        if (! Gate::allows('view', $article)) {
-            abort(Response::HTTP_FORBIDDEN);
-        }
+        Gate::authorize('view', Article::class);
 
-        $markdownContent = $this->articleService->getMarkdownContent($article);
+        $article->load('tags', 'authors');
         $article->incrementViewCount();
 
+        $markdownContent = $this->articleService->getMarkdownContent($article);
+
         return Inertia::render('articles/show', [
-            'article' => $article->load('tags', 'authors'),
+            'article' => $article,
             'markdownContent' => $markdownContent,
         ]);
     }
 
     public function edit(Article $article): InertiaResponse
     {
-        if (! Gate::allows('update', $article)) {
-            abort(Response::HTTP_FORBIDDEN);
-        }
+        Gate::authorize('update', Article::class);
 
         $tags = Tag::orderBy('name')->get(['id', 'name']);
-
+        $article->load('tags');
         $markdownContent = $this->articleService->getMarkdownContent($article);
 
         return Inertia::render('articles/edit', [
-            'article' => $article->load('tags'),
+            'article' => $article,
             'markdownContent' => $markdownContent,
             'tags' => $tags,
-            'statuses' => ['draft', 'published', 'archived'],
+            'statuses' => Article::AVAILABLE_STATUSES,
         ]);
     }
 
-    public function update(Request $request, Article $article): RedirectResponse
+    public function update(ArticleUpdateRequest $request, Article $article): RedirectResponse
     {
-        if (! Gate::allows('update', $article)) {
-            abort(Response::HTTP_FORBIDDEN);
-        }
+        Gate::authorize('update', Article::class);
 
-        $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'excerpt' => ['nullable', 'string', 'max:500'],
-            'markdown_content' => ['required', 'string'],
-            'featured_image' => ['nullable', 'image', 'max:2048'], // 2MB max
-            'tags' => ['nullable', 'array'],
-            'tags.*' => ['exists:tags,id'],
-            'status' => ['required', 'in:draft,published,archived'],
-            'remove_featured_image' => ['nullable', 'boolean'],
-        ]);
+        $validated = $request->validated();
 
         try {
             $this->articleService->updateArticle($article, $validated);
@@ -166,9 +137,7 @@ class ArticleController extends Controller
 
     public function destroy(Article $article): RedirectResponse
     {
-        if (! Gate::allows('delete', $article)) {
-            abort(Response::HTTP_FORBIDDEN);
-        }
+        Gate::authorize('delete', Article::class);
 
         try {
             $this->articleService->deleteArticle($article);
