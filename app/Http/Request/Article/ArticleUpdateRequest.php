@@ -16,7 +16,7 @@ class ArticleUpdateRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:articles,slug,' . $article->id,
+            'slug' => 'nullable|string|max:255|unique:articles,slug,'.$article->id,
             'markdown_file' => 'nullable|file|mimes:md,txt|max:10240', // 10MB max
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB max
             'remove_image' => 'nullable|boolean',

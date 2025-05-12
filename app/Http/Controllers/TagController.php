@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Tag;
@@ -15,7 +16,7 @@ class TagController extends Controller
         $tags = Tag::orderBy('name')->get();
 
         return Inertia::render('Tags/Index', [
-            'tags' => $tags
+            'tags' => $tags,
         ]);
     }
 
@@ -39,7 +40,7 @@ class TagController extends Controller
         return redirect()->back()->with('flash', [
             'type' => $type,
             'message' => $message,
-            'data' => $tag
+            'data' => $tag,
         ]);
     }
 
@@ -72,8 +73,8 @@ class TagController extends Controller
             'type' => 'success',
             'message' => $createdCount > 0
                 ? "{$createdCount} new tags created"
-                : "All tags already exist",
-            'data' => $tags
+                : 'All tags already exist',
+            'data' => $tags,
         ]);
     }
 
@@ -84,7 +85,7 @@ class TagController extends Controller
 
         return redirect()->back()->with('flash', [
             'type' => 'success',
-            'message' => 'Tag deleted successfully.'
+            'message' => 'Tag deleted successfully.',
         ]);
     }
 }

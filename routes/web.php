@@ -1,12 +1,12 @@
 <?php
 
 use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\TagController;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('welcome/index');

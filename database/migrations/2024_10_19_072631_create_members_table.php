@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('university_name')->nullable();
             $table->string('phone_number')->nullable();
             $table->string('study_program_name')->nullable();
-            $table->enum('gender', ['male', 'female','other'])->nullable();
+            $table->enum('gender', ['male', 'female', 'other'])->nullable();
             $table->date('birth_date')->nullable();
             $table->date('joined_date');
             $table->foreignUlid('user_id')->constrained('users')->onDelete('cascade');

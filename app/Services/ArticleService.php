@@ -11,22 +11,25 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 class ArticleService
 {
     protected string $disk = 'local';
+
     protected string $markdownPath = 'articles/markdown';
+
     protected string $featuredImagePath = 'articles/featured_image';
 
     public function getAllArticles(int $perPage = 10, array $filters = []): LengthAwarePaginator
     {
         $query = Article::with(['tags', 'authors']);
 
-        if (!empty($filters['status'])) {
+        if (! empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
-        if (!empty($filters['search'])) {
+        if (! empty($filters['search'])) {
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
@@ -34,22 +37,22 @@ class ArticleService
             });
         }
 
-        if (!empty($filters['tag'])) {
+        if (! empty($filters['tag'])) {
             $query->whereHas('tags', function ($q) use ($filters) {
                 $q->where('tags.id', $filters['tag']);
             });
         }
 
-        if (!empty($filters['author'])) {
+        if (! empty($filters['author'])) {
             $query->whereHas('authors', function ($q) use ($filters) {
                 $q->where('users.id', $filters['author']);
             });
         }
 
-        if (!empty($filters['from_date'])) {
+        if (! empty($filters['from_date'])) {
             $query->where('created_at', '>=', $filters['from_date']);
         }
-        if (!empty($filters['to_date'])) {
+        if (! empty($filters['to_date'])) {
             $query->where('created_at', '<=', $filters['to_date']);
         }
 
@@ -115,7 +118,7 @@ class ArticleService
                 $this->deleteFeaturedImage($featuredImagePath);
             }
 
-            Log::error('Error creating article: ' . $e->getMessage());
+            Log::error('Error creating article: '.$e->getMessage());
             throw $e;
         }
     }
@@ -138,11 +141,11 @@ class ArticleService
             $markdownPath = $this->saveMarkdownContent($article->slug, $data['markdown_content']);
             $data['markdown_path'] = $markdownPath;
 
-            if($data['remove_featured_image']) {
+            if ($data['remove_featured_image']) {
                 $this->deleteFeaturedImage($data['featured_image']);
                 $data['featured_image'] = null;
 
-                if ($data['featured_image'] instanceof UploadedFile !== $article['featured_image']) {
+                if ($article['featured_image'] !== $data['featured_image'] instanceof UploadedFile) {
                     $data['featured_image'] = $this->saveFeaturedImage($data['featured_image'], $data['slug']);
                 }
             }
@@ -173,8 +176,8 @@ class ArticleService
                 $this->deleteFeaturedImage($featuredImagePath);
             }
 
-            Log::error('Error updating article: ' . $e->getMessage());
-            throw $e;
+            Log::error('Error updating article: '.$e->getMessage());
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -201,25 +204,26 @@ class ArticleService
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error deleting article: ' . $e->getMessage());
-            throw $e;
+            Log::error('Error deleting article: '.$e->getMessage());
+            throw new Exception($e->getMessage());
         }
     }
 
     public function changeArticleStatus(Article $article, string $status): Article
     {
-        if (!in_array($status, ['draft', 'published', 'archived'])) {
-            throw new \InvalidArgumentException("Invalid status: {$status}");
+        if (! in_array($status, ['draft', 'published', 'archived'])) {
+            throw new InvalidArgumentException("Invalid status: $status");
         }
 
         $updates = ['status' => $status];
 
         // Set published_at date if publishing for the first time
-        if ($status === 'published' && !$article->published_at) {
+        if ($status === 'published' && ! $article->published_at) {
             $updates['published_at'] = now();
         }
 
         $article->update($updates);
+
         return $article;
     }
 
@@ -235,7 +239,7 @@ class ArticleService
         }
 
         while ($query->exists()) {
-            $slug = $originalSlug . '-' . $count++;
+            $slug = $originalSlug.'-'.$count++;
             $query = Article::where('slug', $slug);
 
             if ($excludeId) {
@@ -252,14 +256,14 @@ class ArticleService
             throw new \InvalidArgumentException('Only markdown content is allowed.');
         }
 
-        $filename = $slug . '-' . time() . '.md';
-        $path = $this->markdownPath . '/' . $filename;
+        $filename = $slug.'-'.time().'.md';
+        $path = $this->markdownPath.'/'.$filename;
 
         if (Storage::disk($this->disk)->put($path, $content)) {
             return $path;
         }
 
-        throw new \Exception('Failed to store markdown file.');
+        throw new Exception('Failed to store markdown file.');
     }
 
     protected function deleteMarkdownFile(?string $path): void
@@ -271,15 +275,15 @@ class ArticleService
 
     protected function saveFeaturedImage(UploadedFile $file, string $slug): string
     {
-        $filename = $slug . '-' . time() . '.' . $file->getClientOriginalExtension();
-        $path = $this->featuredImagePath . '/' . $filename;
+        $filename = $slug.'-'.time().'.'.$file->getClientOriginalExtension();
+        $path = $this->featuredImagePath.'/'.$filename;
 
         if (Storage::disk($this->disk)->put($path, $file)) {
             return $path;
         }
 
-        if (!$path) {
-            throw new \RuntimeException('Failed to save featured image.');
+        if (! $path) {
+            throw new RuntimeException('Failed to save featured image.');
         }
 
         return $path;
@@ -296,6 +300,7 @@ class ArticleService
     {
         $wordCount = str_word_count(strip_tags($content));
         $minutesToRead = ceil($wordCount / 200); // Average reading speed: 200 words per minute
+
         return max(1, $minutesToRead);
     }
 
@@ -305,7 +310,7 @@ class ArticleService
 
         foreach ($newTagNames as $tagName) {
             $tagName = trim($tagName);
-            if (!empty($tagName)) {
+            if (! empty($tagName)) {
                 $normalizedName = Str::lower($tagName);
                 $slug = Str::slug($normalizedName);
 
@@ -321,7 +326,7 @@ class ArticleService
 
     public function getMarkdownContent(Article $article): ?string
     {
-        if (!$article->markdown_path) {
+        if (! $article->markdown_path) {
             return null;
         }
 

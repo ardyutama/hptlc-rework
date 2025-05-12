@@ -31,10 +31,11 @@ class AuthService
             ]);
 
             DB::commit();
+
             return $user->load('member');
         } catch (Exception $e) {
             DB::rollback();
-            Log::error('User registration error: ' . $e->getMessage());
+            Log::error('User registration error: '.$e->getMessage());
             throw $e;
         }
     }

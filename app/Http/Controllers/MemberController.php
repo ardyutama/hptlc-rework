@@ -7,8 +7,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -16,13 +14,12 @@ class MemberController extends Controller
 {
     /**
      * Get all members.
-     *
-     * @return JsonResponse
      */
     public function getAllMembers(): JsonResponse
     {
         try {
             $members = Member::all();
+
             return response()->json($members);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -32,12 +29,11 @@ class MemberController extends Controller
     public function getMemberInformation($memberId): JsonResponse
     {
         try {
-            $member = Member::with(['user' => function ($query)
-            {
+            $member = Member::with(['user' => function ($query) {
                 $query->select('id', 'email');
             }])->findOrFail($memberId);
 
-            if (!$member) {
+            if (! $member) {
                 return response()->json(['message' => 'Member Not Found'], 404);
             }
 
@@ -47,18 +43,18 @@ class MemberController extends Controller
         }
     }
 
-        public function edit(): Response
-        {
-            $user = Auth::user();
-            $member = $user->member;
+    public function edit(): Response
+    {
+        $user = Auth::user();
+        $member = $user->member;
 
-            return Inertia::render('profile/index', [
-                'user' => $user,
-                'member' => $member,
-            ]);
-        }
+        return Inertia::render('profile/index', [
+            'user' => $user,
+            'member' => $member,
+        ]);
+    }
 
-    public function update(Request $request): JsonResponse | RedirectResponse
+    public function update(Request $request): JsonResponse|RedirectResponse
     {
         $user = Auth::user();
 

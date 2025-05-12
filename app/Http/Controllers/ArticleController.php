@@ -24,7 +24,7 @@ class ArticleController extends Controller
 
     public function index(Request $request): InertiaResponse
     {
-        if (!Gate::allows('viewAny', Article::class)) {
+        if (! Gate::allows('viewAny', Article::class)) {
             abort(Response::HTTP_FORBIDDEN);
         }
 
@@ -54,7 +54,7 @@ class ArticleController extends Controller
 
     public function create(): InertiaResponse
     {
-        if (!Gate::allows('create', Article::class)) {
+        if (! Gate::allows('create', Article::class)) {
             abort(Response::HTTP_FORBIDDEN);
         }
 
@@ -68,7 +68,7 @@ class ArticleController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        if (!Gate::allows('create', Article::class)) {
+        if (! Gate::allows('create', Article::class)) {
             abort(Response::HTTP_FORBIDDEN);
         }
 
@@ -86,6 +86,7 @@ class ArticleController extends Controller
 
         try {
             $article = $this->articleService->createArticle($validated);
+
             return redirect()->route('articles.edit', $article)->with('flash', [
                 'type' => 'success',
                 'message' => 'Article created successfully!',
@@ -93,18 +94,19 @@ class ArticleController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->withInput()->with('flash', [
                 'type' => 'error',
-                'message' => 'An error occurred while creating the article. ' . $e->getMessage(), // Optionally show specific error or a generic one
+                'message' => 'An error occurred while creating the article. '.$e->getMessage(), // Optionally show specific error or a generic one
             ]);
         }
     }
 
     public function show(Article $article): InertiaResponse
     {
-        if (!Gate::allows('view', $article)) {
+        if (! Gate::allows('view', $article)) {
             abort(Response::HTTP_FORBIDDEN);
         }
 
         $markdownContent = $this->articleService->getMarkdownContent($article);
+        $article->incrementViewCount();
 
         return Inertia::render('articles/show', [
             'article' => $article->load('tags', 'authors'),
@@ -114,7 +116,7 @@ class ArticleController extends Controller
 
     public function edit(Article $article): InertiaResponse
     {
-        if (!Gate::allows('update', $article)) {
+        if (! Gate::allows('update', $article)) {
             abort(Response::HTTP_FORBIDDEN);
         }
 
@@ -132,7 +134,7 @@ class ArticleController extends Controller
 
     public function update(Request $request, Article $article): RedirectResponse
     {
-        if (!Gate::allows('update', $article)) {
+        if (! Gate::allows('update', $article)) {
             abort(Response::HTTP_FORBIDDEN);
         }
 
@@ -149,6 +151,7 @@ class ArticleController extends Controller
 
         try {
             $this->articleService->updateArticle($article, $validated);
+
             return redirect()->route('articles.index')->with('flash', [
                 'type' => 'success',
                 'message' => 'Article updated successfully!',
@@ -156,19 +159,20 @@ class ArticleController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->withInput()->with('flash', [
                 'type' => 'error',
-                'message' => 'An error occurred while updating the article. ' . $e->getMessage(), // Optionally show specific error
+                'message' => 'An error occurred while updating the article. '.$e->getMessage(), // Optionally show specific error
             ]);
         }
     }
 
     public function destroy(Article $article): RedirectResponse
     {
-        if (!Gate::allows('delete', $article)) {
+        if (! Gate::allows('delete', $article)) {
             abort(Response::HTTP_FORBIDDEN);
         }
 
         try {
             $this->articleService->deleteArticle($article);
+
             return redirect()->route('articles.index')->with('flash', [
                 'type' => 'success',
                 'message' => 'Article deleted successfully.',
@@ -176,7 +180,7 @@ class ArticleController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
                 'type' => 'error',
-                'message' => 'An error occurred while deleting the article. ' . $e->getMessage(), // Optionally show specific error
+                'message' => 'An error occurred while deleting the article. '.$e->getMessage(), // Optionally show specific error
             ]);
         }
     }
