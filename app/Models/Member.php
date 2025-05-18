@@ -22,6 +22,11 @@ class Member extends Model
         'user_id',
     ];
 
+    protected $casts = [
+        'birth_date' => 'date',
+        'joined_date' => 'date',
+    ];
+
     public function user(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'user_id');

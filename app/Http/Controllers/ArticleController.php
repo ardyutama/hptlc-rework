@@ -87,7 +87,7 @@ class ArticleController extends Controller
     {
         Gate::authorize('view', Article::class);
 
-        $article->load('tags', 'authors');
+        $article->load('tags', 'authors.member');
         $article->incrementViewCount();
 
         $markdownContent = $this->articleService->getMarkdownContent($article);

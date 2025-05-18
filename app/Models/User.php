@@ -13,7 +13,7 @@ class User extends Authenticatable
 {
     use HasFactory, HasUlids, Notifiable;
 
-    protected $fillable = ['email', 'password'];
+    protected $fillable = ['email', 'password', 'role'];
 
     protected $hidden = [
         'password',
@@ -25,9 +25,6 @@ class User extends Authenticatable
         return $this->hasOne(Member::class, 'user_id', 'id');
     }
 
-    /**
-     * Get the articles authored by the user.
-     */
     public function articles(): BelongsToMany
     {
         return $this->belongsToMany(Article::class, 'article_user')
