@@ -24,11 +24,23 @@ return new class extends Migration
         Schema::create('publication_tag', function (Blueprint $table) {
             $table->foreignUlid('publication_id')->constrained('publications')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUlid('tag_id')->constrained('tags')->onUpdate('cascade')->onDelete('cascade');
+            $table->timestamps();
+
+            $table->primary(['publication_id', 'tag_id']);
+
+            $table->index('publication_id');
+            $table->index('tag_id');
         });
 
         Schema::create('publication_user', function (Blueprint $table) {
             $table->foreignUlid('publication_id')->constrained('publications')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUlid('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->timestamps();
+
+            $table->primary(['publication_id', 'user_id']);
+
+            $table->index('publication_id');
+            $table->index('user_id');
         });
     }
 

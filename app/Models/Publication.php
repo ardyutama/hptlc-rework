@@ -28,6 +28,11 @@ class Publication extends Model
         return $this->belongsToMany(User::class, 'publication_user');
     }
 
+    public function authors(): BelongsToMany
+    {
+        return $this->users();
+    }
+
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, 'publication_tag', 'publication_id', 'tag_id');

@@ -1,13 +1,16 @@
 import ThumbnailCard from "@/components/shared/thumbnail-card/thumbnail-card";
-import { articleData } from "@/data/mock-data";
 import type React from "react";
+import {usePage} from "@inertiajs/react";
+import {Article, PageProps} from "@/types";
 
 export default function ArticlesSection() {
 	const MAX_CONTENT = 4;
+    const { latestArticles } = usePage().props;
 
-	return (
+    console.log(latestArticles)
+    return (
 		<>
-			{articleData.slice(0, MAX_CONTENT).map((item) => (
+			{latestArticles.slice(0, MAX_CONTENT).map((item) => (
 				<ThumbnailCard
 					key={item.id}
 					id={item.id}

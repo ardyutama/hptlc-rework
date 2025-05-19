@@ -43,8 +43,12 @@ return new class extends Migration
         Schema::create('article_user', function (Blueprint $table) {
             $table->foreignUlid('article_id')->constrained('articles')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUlid('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->timestamps();
 
             $table->primary(['article_id', 'user_id']);
+
+            $table->index('article_id');
+            $table->index('user_id');
         });
     }
 
