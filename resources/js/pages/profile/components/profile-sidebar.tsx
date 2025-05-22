@@ -5,7 +5,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import type { MemberData, UserData } from "@/types";
+import type { Member, UserData } from "@/types";
 import { format } from "date-fns";
 import { Book, Cake, CalendarIcon, Phone, School, User } from "lucide-react";
 
@@ -27,7 +27,7 @@ const InfoItem = ({
 export default function ProfileSidebar({
 	member,
 	user,
-}: { member: MemberData; user: UserData }) {
+}: { member: Member; user: UserData }) {
 	return (
 		<Card>
 			<CardHeader>
@@ -47,7 +47,11 @@ export default function ProfileSidebar({
 						<InfoItem
 							icon={CalendarIcon}
 							label="Member since"
-							value={format(new Date(member.joined_date), "MMM d, yyyy")}
+							value={
+								member.joined_date
+									? format(member.joined_date, "MMM d, yyyy")
+									: "Not provided"
+							}
 						/>
 						<InfoItem
 							icon={Phone}

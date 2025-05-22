@@ -20,17 +20,17 @@ class HomeController extends Controller
             ->whereNotNull('published_at')
             ->where('published_at', '<=', Carbon::now())
             ->orderBy('published_at', 'desc')
-             ->orderBy('view_count', 'desc')
+            ->orderBy('view_count', 'desc')
             ->limit($limit)
             ->get();
 
-        $latestPublications = Publication::query()
-            ->with('tags','authors')
-            ->whereNotNull('published_at')
-            ->where('published_at', '<=', Carbon::now())
-            ->orderBy('published_at', 'desc')
-            ->limit($limit)
-            ->get();
+//        $latestPublications = Publication::query()
+//            ->with('tags','authors')
+//            ->whereNotNull('published_at')
+//            ->where('published_at', '<=', Carbon::now())
+//            ->orderBy('published_at', 'desc')
+//            ->limit($limit)
+//            ->get();
 
         return Inertia::render('welcome/index', [
             'latestArticles' => $latestArticles,

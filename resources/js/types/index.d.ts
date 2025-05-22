@@ -1,31 +1,31 @@
+import type { ARTICLE_STATUSES, GENDER } from "@/constants";
 import type { Config } from "ziggy-js";
 
-type User = {
-	first_name: string;
-	last_name: string;
+export interface User {
+	id: string;
 	email: string;
-};
+	role?: string;
+	member?: Member | null;
+}
 
 export interface UserData {
 	email: string;
 	id: string;
 }
 
-export interface GenderEnum {
-	value: "male" | "female" | "other";
-}
-
-export interface MemberData {
+export interface Member {
 	id: string;
 	first_name: string;
 	last_name: string;
 	university_name: string | null;
 	phone_number: string | null;
 	study_program_name: string | null;
-	gender: GenderEnum["value"] | null;
+	gender: GENDER | null;
 	birth_date: string | null;
-	joined_date: string;
+	joined_date: string | null;
 	user_id: string;
+	created_at: string;
+	updated_at: string;
 }
 
 export interface UserProfileProps extends PageProps {
@@ -43,59 +43,49 @@ interface ProfileFormData {
 	birth_date: string | null;
 }
 
-export type PublicationTag = {
+export interface Tag {
 	id: string;
 	name: string;
-	pivot: {
-		publication_id: string;
-		tag_id: string;
-	};
-};
+	slug: string;
+	created_at: string;
+	updated_at: string;
+}
 
-export type ArticleTag = {
-	id: string;
-	name: string;
-	pivot: {
+export interface ArticleTag extends Tag {
+	pivot?: {
 		article_id: string;
 		tag_id: string;
+		created_at: string;
+		updated_at: string;
 	};
-};
+}
 
-export type EventTag = {
-	id: string;
-	name: string;
-	pivot: {
-		event_id: string;
+export interface PublicationTag extends Tag {
+	pivot?: {
+		publication_id: string;
 		tag_id: string;
+		created_at: string;
+		updated_at: string;
 	};
-};
+}
 
-export type PublicationUser = {
-	id: string;
-	email: string;
-	pivot: {
+export interface PublicationUser extends User {
+	pivot?: {
 		publication_id: string;
 		user_id: string;
+		created_at: string;
+		updated_at: string;
 	};
-};
+}
 
-export type ArticleUser = {
-	id: string;
-	email: string;
-	pivot: {
+export interface AuthorUser extends User {
+	pivot?: {
 		article_id: string;
 		user_id: string;
+		created_at: string;
+		updated_at: string;
 	};
-};
-
-export type EventUser = {
-	id: string;
-	email: string;
-	pivot: {
-		event_id: string;
-		user_id: string;
-	};
-};
+}
 
 export type Publication = {
 	id: string;
@@ -107,52 +97,26 @@ export type Publication = {
 	created_at: string;
 	updated_at: string;
 	tags: PublicationTag[];
-	users: PublicationUser[];
+	authors: PublicationUser[];
 };
 
-export type Article = {
+export interface Article {
 	id: string;
 	title: string;
 	slug: string;
-	markdown_file: string;
-	image_url: string;
-	published_at: string;
+	markdown_path: string | null;
+	featured_image: string | null;
+	excerpt: string | null;
+	reading_time: number;
+	view_count: number;
+	status: (typeof ARTICLE_STATUSES)[keyof typeof ARTICLE_STATUSES];
+	published_at: string | null;
+	deleted_at: string | null;
 	created_at: string;
 	updated_at: string;
 	tags: ArticleTag[];
-	users: ArticleUser[];
-};
-
-export type Event = {
-	id: string;
-	title: string;
-	slug: string;
-	markdown_file: string;
-	image_url: string;
-	created_at: string;
-	updated_at: string;
-	event_date: string;
-	location: string;
-	description: string;
-	registration_link?: string;
-	tags: EventTag[];
-	users: EventUser[];
-};
-
-interface ArticleFormProps {
-	article?: {
-		id: string;
-		title: string;
-		excerpt: string;
-		slug: string;
-		featured_image: string;
-		status: string;
-		tags: { id: string; name: string }[];
-	};
-	markdownContent?: string;
-	tags: { id: string; name: string }[];
-	statuses: string[];
-	isEdit?: boolean;
+	authors: AuthorUser[];
+	featured_image_url?: string | null;
 }
 
 export type PageProps<

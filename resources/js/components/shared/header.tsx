@@ -44,7 +44,9 @@ export default function Header() {
 	};
 
 	const userInitials = auth?.user
-		? getInitials(`${auth.user.first_name} ${auth.user.last_name}`)
+		? getInitials(
+				`${auth.user.member?.first_name} ${auth.user.member?.last_name}`,
+			)
 		: "";
 
 	return (
@@ -91,7 +93,7 @@ export default function Header() {
 							<DropdownMenuContent align="end" className="w-56">
 								<div className="flex flex-col space-y-1 p-2">
 									<p className="font-medium text-sm">
-										{auth.user.first_name} {auth.user.last_name}
+										{auth.user.member?.first_name} {auth.user.member?.last_name}
 									</p>
 									<p className="truncate text-muted-foreground text-xs">
 										{auth.user.email}
