@@ -30,49 +30,42 @@ class ArticleTagSeeder extends Seeder
         $now = Carbon::now();
         $pivotData = [
             [
-                'id' => (string) Str::ulid(), // Generate ULID for the pivot record
                 'article_id' => $article1Id,
                 'tag_id' => $tagTechId,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
             [
-                'id' => (string) Str::ulid(),
                 'article_id' => $article1Id,
                 'tag_id' => $tagProgrammingId,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
             [
-                'id' => (string) Str::ulid(),
                 'article_id' => $article2Id,
                 'tag_id' => $tagTechId,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
             [
-                'id' => (string) Str::ulid(),
                 'article_id' => $article2Id,
                 'tag_id' => $tagResearchId,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
             [
-                'id' => (string) Str::ulid(),
                 'article_id' => $article3Id,
                 'tag_id' => $tagTechId, // Draft article also tagged
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
             [
-                'id' => (string) Str::ulid(),
                 'article_id' => $article5Id,
                 'tag_id' => $tagProgrammingId,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
             [
-                'id' => (string) Str::ulid(),
                 'article_id' => $article5Id,
                 'tag_id' => $tagResearchId,
                 'created_at' => $now,

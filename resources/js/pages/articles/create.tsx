@@ -1,3 +1,4 @@
+import ContentLayout from "@/layouts/content-layout";
 import { MainLayout } from "@/layouts/main-layout";
 import type { PageProps } from "@/types";
 import type React from "react";
@@ -10,7 +11,7 @@ interface ArticleCreatePageProps extends PageProps {
 
 function ArticleCreatePage({ tags, statuses }: ArticleCreatePageProps) {
 	return (
-		<div className="px-4 py-6 sm:px-6 lg:px-8">
+		<ContentLayout>
 			<div className="mb-8">
 				<h1 className="font-bold text-3xl tracking-tight">
 					Create New Article
@@ -19,9 +20,8 @@ function ArticleCreatePage({ tags, statuses }: ArticleCreatePageProps) {
 					Compose a new article using Markdown formatting.
 				</p>
 			</div>
-
 			<ArticleForm tags={tags} statuses={statuses} isEdit={false} />
-		</div>
+		</ContentLayout>
 	);
 }
 

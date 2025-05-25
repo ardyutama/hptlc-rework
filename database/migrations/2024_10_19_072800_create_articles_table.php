@@ -29,7 +29,6 @@ return new class extends Migration
         });
 
         Schema::create('article_tag', function (Blueprint $table) {
-            $table->ulid('id')->primary();
             $table->foreignUlid('article_id')->constrained()->onDelete('cascade');
             $table->foreignUlid('tag_id')->constrained()->onDelete('cascade');
             $table->timestamps();
