@@ -4,12 +4,12 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "biome:check": "npx @biomejs/biome check --write ./resources/js/"
+        "lint:client": "npx @biomejs/biome check --write ./resources/js/",
+        "lint:server": "./vendor/bin/pint"
     },
     "devDependencies": {
         "@biomejs/biome": "1.9.4",
         "@tailwindcss/vite": "^4.0.6",
-        "@types/luxon": "^3.4.2",
         "@types/node": "^22.13.1",
         "@types/react": "19.0.10",
         "@types/react-dom": "19.0.4",

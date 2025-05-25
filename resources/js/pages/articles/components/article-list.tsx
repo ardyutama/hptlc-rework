@@ -1,15 +1,20 @@
 import ThumbnailCard from "@/components/shared/thumbnail-card/thumbnail-card";
 import { Button } from "@/components/ui/button";
-import { articleData } from "@/data/mock-data";
 import ContentLayout from "@/layouts/content-layout";
+import type { Article, PageProps, PaginatedCollection } from "@/types";
+import { usePage } from "@inertiajs/react";
 import { ChevronLeft, ChevronRight, SlidersHorizontal } from "lucide-react";
 import React, { useState } from "react";
+
+interface ArticleHeroProps extends PageProps {
+	articles: PaginatedCollection<Article>;
+}
 
 export default function ArticleList() {
 	const MAX_CONTENT = 8;
 	const [currentPage, setCurrentPage] = useState(1);
 	const totalPages = 145;
-
+	const { articles } = usePage<ArticleHeroProps>().props;
 	const handlePrevPage = () => {
 		if (currentPage > 1) {
 			setCurrentPage(currentPage - 1);
@@ -33,11 +38,11 @@ export default function ArticleList() {
 			</div>
 
 			<div className="grid grid-cols-1 gap-6 pt-6 md:grid-cols-2">
-				{articleData.slice(0, MAX_CONTENT).map((item) => (
+				{articles.data.slice(0, MAX_CONTENT).map((item) => (
 					<ThumbnailCard
 						key={item.id}
 						id={item.id}
-						thumbnailImage={item.image_url}
+						thumbnailImage={item.featured_image}
 						tags={item.tags.map((tag) => tag.name)}
 						hrefLink={item.slug}
 						title={item.title}

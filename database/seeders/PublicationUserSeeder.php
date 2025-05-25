@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Publication;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -23,7 +22,6 @@ class PublicationUserSeeder extends Seeder
         $user2Id = User::where('email', 'user2@example.com')->first()->id;
         $adminId = User::where('email', 'admin@example.com')->first()->id;
         $author1Id = User::where('email', 'author1@example.com')->first()->id;
-
 
         // Pivot data
         $pivotData = [

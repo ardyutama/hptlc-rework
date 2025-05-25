@@ -13,9 +13,7 @@ Route::get('/', [HomeController::class, 'index'])->name('welcome');
 
 Route::resource('publications', PublicationController::class);
 
-Route::get('articles', function () {
-    return Inertia::render('articles/index');
-})->name('articles');
+Route::get('/articles', [ArticleController::class, 'index'])->name('articles');
 
 Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);

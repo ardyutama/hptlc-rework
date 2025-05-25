@@ -1,20 +1,23 @@
 import ThumbnailCard from "@/components/shared/thumbnail-card/thumbnail-card";
+import type { Article, PageProps } from "@/types";
+import { usePage } from "@inertiajs/react";
 import type React from "react";
-import {usePage} from "@inertiajs/react";
-import {Article, PageProps} from "@/types";
+
+interface ArticlesPageProps extends PageProps {
+	latestArticles: Article[];
+}
 
 export default function ArticlesSection() {
 	const MAX_CONTENT = 4;
-    const { latestArticles } = usePage().props;
+	const { latestArticles } = usePage<ArticlesPageProps>().props;
 
-    console.log(latestArticles)
-    return (
+	return (
 		<>
 			{latestArticles.slice(0, MAX_CONTENT).map((item) => (
 				<ThumbnailCard
 					key={item.id}
 					id={item.id}
-					thumbnailImage={item.image_url}
+					thumbnailImage={item.featured_image}
 					tags={item.tags.map((tag) => tag.name)}
 					hrefLink={item.slug}
 					title={item.title}

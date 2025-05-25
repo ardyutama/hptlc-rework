@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Article;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -25,7 +24,6 @@ class ArticleUserSeeder extends Seeder
         $user1Id = User::where('email', 'user1@example.com')->first()->id;
         $user2Id = User::where('email', 'user2@example.com')->first()->id;
         $author1Id = User::where('email', 'author1@example.com')->first()->id;
-
 
         // Pivot data - composite primary key
         $pivotData = [

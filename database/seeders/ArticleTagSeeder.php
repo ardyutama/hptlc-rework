@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Article;
 use App\Models\Tag;
 use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -26,7 +25,6 @@ class ArticleTagSeeder extends Seeder
         $tagResearchId = Tag::where('slug', 'research')->first()->id;
         $tagOpenSourceId = Tag::where('slug', 'open-source')->first()->id;
         $tagProgrammingId = Tag::where('slug', 'programming')->first()->id;
-
 
         // Pivot data - explicit ID and timestamps needed per schema
         $now = Carbon::now();

@@ -35,16 +35,16 @@ const ThumbnailCard = React.memo(function ThumbnailCard({
 
 	return (
 		<article className="flex h-full flex-col">
-			{imageUrl && (
-				<div className="my-4 aspect-[4/3] max-h-52 w-full flex-shrink-0 overflow-hidden bg-slate-50">
+			<div className="aspect-[4/3] w-full flex-shrink-0 overflow-hidden bg-slate-100 dark:bg-slate-800">
+				{imageUrl && (
 					<img
 						src={imageUrl}
 						alt={title}
 						className="h-full w-full object-cover"
 						loading="lazy"
 					/>
-				</div>
-			)}
+				)}
+			</div>
 			<div className="my-2 flex flex-wrap gap-1">
 				{tags.map((tag) => (
 					<EllipsisBadge
@@ -63,7 +63,7 @@ const ThumbnailCard = React.memo(function ThumbnailCard({
 			</Link>
 			{description && <p className="truncate py-2 text-sm">{description}</p>}
 			<div className="mt-auto flex items-center">
-				{/*<p className="text-base">{formatDate(date)}</p>*/}
+				<p className="text-base">{date ? formatDate(date) : ""}</p>
 				{downloadPath && (
 					<Button variant="ghost" className="ml-4">
 						Download PDF

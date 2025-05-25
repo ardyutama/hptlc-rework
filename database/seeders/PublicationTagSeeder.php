@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Publication;
 use App\Models\Tag;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -22,7 +21,6 @@ class PublicationTagSeeder extends Seeder
         $tagTechId = Tag::where('slug', 'technology')->first()->id;
         $tagScienceId = Tag::where('slug', 'science')->first()->id;
         $tagResearchId = Tag::where('slug', 'research')->first()->id;
-
 
         // Pivot data
         $pivotData = [

@@ -1,7 +1,6 @@
 import {
 	Carousel,
 	CarouselContent,
-	CarouselItem,
 	CarouselNext,
 	CarouselPrevious,
 } from "@/components/ui/carousel";
@@ -32,7 +31,7 @@ export default function FeaturedHero({ title, children }: FeaturedHeroProps) {
 						onMouseEnter={() => setIsHovered(true)}
 						onMouseLeave={() => setIsHovered(false)}
 					>
-						<CarouselContent className="-ml-4 md:-ml-8">
+						<CarouselContent className="-ml-4 md:-ml-4">
 							{children}
 						</CarouselContent>
 						<CarouselPrevious

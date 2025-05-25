@@ -1,19 +1,25 @@
 import FeaturedHeroItem from "@/components/shared/featured-hero/featured-hero-item";
 import ThumbnailCard from "@/components/shared/thumbnail-card/thumbnail-card";
-import { articleData } from "@/data/mock-data";
+import type { Article, PageProps } from "@/types";
+import { usePage } from "@inertiajs/react";
 import type React from "react";
+
+interface FeaturedArticleHero extends PageProps {
+	heroArticles: Article[];
+}
 
 export default function FeaturedArticleHeroList() {
 	const MAX_FEATURED_ARTICLE_HERO = 6;
-
+	const { heroArticles } = usePage<FeaturedArticleHero>().props;
 	return (
 		<>
-			{articleData.slice(0, MAX_FEATURED_ARTICLE_HERO).map((item) => (
+			{heroArticles.slice(0, MAX_FEATURED_ARTICLE_HERO).map((item) => (
 				<FeaturedHeroItem key={item.id}>
 					<ThumbnailCard
+						key={item.id}
 						id={item.id}
+						thumbnailImage={item.featured_image}
 						tags={item.tags.map((tag) => tag.name)}
-						thumbnailImage={item.image_url}
 						hrefLink={item.slug}
 						title={item.title}
 						date={item.published_at}

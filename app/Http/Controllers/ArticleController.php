@@ -38,11 +38,13 @@ class ArticleController extends Controller
         ]);
 
         $perPage = (int) $request->input('per_page', 10);
+        $heroArticles = $this->articleService->getHeroArticles();
         $articles = $this->articleService->getAllArticles($perPage, $filters);
 
         $tags = Tag::orderBy('name')->get(['id', 'name']);
 
         return Inertia::render('articles/index', [
+            'heroArticles' => $heroArticles,
             'articles' => $articles,
             'filters' => $filters,
             'tags' => $tags,

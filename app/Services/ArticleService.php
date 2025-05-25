@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Models\Article;
 use App\Models\Tag;
+use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -22,13 +24,25 @@ class ArticleService
 
     protected const WORDS_PER_MINUTE = 200; // Constant for reading time calculation
 
+    public function getHeroArticles(int $limit = 4): Collection
+    {
+        return Article::query()
+            ->with(['tags', 'authors.member'])
+            ->where('status', Article::STATUS_PUBLISHED)
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', Carbon::now())
+            ->orderBy('published_at', 'desc')
+            ->limit($limit)
+            ->get();
+    }
+
     public function getAllArticles(int $perPage = 10, array $filters = []): LengthAwarePaginator
     {
-        $query = Article::with(['tags', 'authors.member']);
-
-        if (! empty($filters['status'])) {
-            $query->where('status', $filters['status']);
-        }
+        $query = Article::query()
+            ->with(['tags', 'authors.member']) // Eager load media for Spatie
+            ->where('status', Article::STATUS_PUBLISHED) // Only show published articles for public view
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', Carbon::now()); // Only show articles where published_at is in the past
 
         if (! empty($filters['search'])) {
             $search = $filters['search'];
@@ -39,29 +53,31 @@ class ArticleService
         }
 
         if (! empty($filters['tag'])) {
-            $query->whereHas('tags', function ($q) use ($filters) {
-                $q->where('tags.id', $filters['tag']);
+            $tagIds = is_array($filters['tag']) ? $filters['tag'] : [$filters['tag']];
+            $query->whereHas('tags', function ($q) use ($tagIds) {
+                $q->whereIn('tags.id', $tagIds);
             });
         }
 
         if (! empty($filters['author'])) {
-            $query->whereHas('authors', function ($q) use ($filters) {
-                $q->where('users.id', $filters['author']);
+            $authorIds = is_array($filters['author']) ? $filters['author'] : [$filters['author']];
+            $query->whereHas('authors', function ($q) use ($authorIds) {
+                $q->whereIn('users.id', $authorIds);
             });
         }
 
         if (! empty($filters['from_date'])) {
-            $query->where('created_at', '>=', $filters['from_date']);
+            $query->where('published_at', '>=', Carbon::parse($filters['from_date'])->startOfDay());
         }
         if (! empty($filters['to_date'])) {
-            $query->where('created_at', '<=', $filters['to_date']);
+            $query->where('published_at', '<=', Carbon::parse($filters['to_date'])->endOfDay());
         }
 
-        $sortField = $filters['sort_by'] ?? 'created_at';
+        $sortField = $filters['sort_by'] ?? 'published_at';
         $sortDirection = $filters['sort_direction'] ?? 'desc';
-        $allowedSortFields = ['created_at', 'published_at', 'title', 'view_count', 'reading_time']; // Add other allowed fields
+        $allowedSortFields = ['published_at', 'title', 'view_count', 'reading_time'];
         if (! in_array($sortField, $allowedSortFields)) {
-            $sortField = 'created_at';
+            $sortField = 'published_at';
         }
 
         $query->orderBy($sortField, $sortDirection);

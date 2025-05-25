@@ -119,6 +119,29 @@ export interface Article {
 	featured_image_url?: string | null;
 }
 
+export interface PaginationLink {
+	url: string | null;
+	label: string;
+	active: boolean;
+}
+
+export interface PaginationMeta {
+	current_page: number;
+	from: number;
+	last_page: number;
+	links: PaginationLink[];
+	path: string;
+	per_page: number;
+	to: number;
+	total: number;
+}
+
+export interface PaginatedCollection<T> {
+	data: T[];
+	links: PaginationLink[];
+	meta: PaginationMeta;
+}
+
 export type PageProps<
 	T extends Record<string, unknown> = Record<string, unknown>,
 > = T & {
@@ -126,4 +149,11 @@ export type PageProps<
 		user: User;
 	};
 	ziggy: Config & { location: string };
+	flash: {
+		message?: string;
+		success?: string;
+		error?: string;
+		warning?: string;
+		info?: string;
+	};
 };

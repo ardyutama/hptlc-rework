@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Member;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class MemberSeeder extends Seeder
@@ -18,7 +17,6 @@ class MemberSeeder extends Seeder
         $user1Id = User::where('email', 'user1@example.com')->first()->id;
         $user2Id = User::where('email', 'user2@example.com')->first()->id;
         $author1Id = User::where('email', 'author1@example.com')->first()->id;
-
 
         $membersData = [
             [
