@@ -3,27 +3,55 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tag;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class TagController extends Controller
 {
-    public function store(Request $request): JsonResponse
+    public function index(): Response
     {
-        $tag = Tag::create([
-            'name' => $request->name,
-        ]);
+        $tags = Tag::orderBy('name')->get();
 
-        return response()->json(['message' => 'Tag created successfully', 'data' => $tag], 201);
+        return Inertia::render('Tags/Index', [
+            'tags' => $tags,
+        ]);
     }
 
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:50', 'unique:tags,name'],
+        ]);
 
-    public function destroy(string $id): JsonResponse
+        $normalizedName = Str::lower(trim($validated['name']));
+        $slug = Str::slug($normalizedName);
+
+        $tag = Tag::firstOrCreate(
+            ['slug' => $slug],
+            ['name' => $validated['name']]
+        );
+
+        $message = $tag->wasRecentlyCreated ? 'Tag created successfully.' : 'Tag already exists.';
+        $type = $tag->wasRecentlyCreated ? 'success' : 'info';
+
+        return redirect()->back()->with('flash', [
+            'type' => $type,
+            'message' => $message,
+            'data' => $tag,
+        ]);
+    }
+
+    public function destroy(string $id): RedirectResponse
     {
         $tag = Tag::findOrFail($id);
-
         $tag->delete();
 
-        return response()->json(['message' => 'Tag deleted successfully'], 201);
+        return redirect()->back()->with('flash', [
+            'type' => 'success',
+            'message' => 'Tag deleted successfully.',
+        ]);
     }
 }

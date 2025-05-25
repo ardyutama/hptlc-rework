@@ -14,7 +14,7 @@ class PublicationUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'sometimes|required|string|unique:publications,title,' . $this->publication->id,
+            'title' => 'sometimes|required|string|unique:publications,title,'.$this->publication->id,
             'abstract' => 'sometimes|required|string',
             'publication_file' => 'sometimes|nullable|file|mimes:pdf',
             'published_at' => 'nullable|date',

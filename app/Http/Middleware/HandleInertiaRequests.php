@@ -39,6 +39,7 @@ class HandleInertiaRequests extends Middleware
             'auth.user' => function () {
                 if (auth()->check()) {
                     $user = auth()->user();
+
                     return [
                         'id' => $user->id,
                         'email' => $user->email,
@@ -47,8 +48,10 @@ class HandleInertiaRequests extends Middleware
                         'university_name' => $user->member->university_name ?? null,
                     ];
                 }
+
                 return null;
-            }
+            },
+            'flash' => fn () => $request->session()->get('flash'),
         ]);
     }
 }

@@ -15,16 +15,22 @@ class Publication extends Model
         'abstract',
         'publication_file',
         'published_at',
-        'slug'
+        'slug',
     ];
 
     public function getRouteKeyName(): string
     {
         return 'slug';
     }
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'publication_user');
+    }
+
+    public function authors(): BelongsToMany
+    {
+        return $this->users();
     }
 
     public function tags(): BelongsToMany

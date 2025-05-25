@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Request\Publication;
 
 use Illuminate\Foundation\Http\FormRequest;

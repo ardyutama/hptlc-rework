@@ -14,35 +14,36 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class PublicationService {
+class PublicationService
+{
     public function getFilteredPublications(array $filters): LengthAwarePaginator
     {
         $query = Publication::query();
         $orderBy = $filters['order_by'] ?? 'desc';
 
-        if (!empty($filters['title'])) {
-            $query->where('title', 'like', '%' . $filters['title'] . '%');
+        if (! empty($filters['title'])) {
+            $query->where('title', 'like', '%'.$filters['title'].'%');
         }
 
-        if (!empty($filters['abstract'])) {
-            $query->where('abstract', 'like', '%' . $filters['abstract'] . '%');
+        if (! empty($filters['abstract'])) {
+            $query->where('abstract', 'like', '%'.$filters['abstract'].'%');
         }
 
-        if (!empty($filters['from_date'])) {
+        if (! empty($filters['from_date'])) {
             $query->where('published_at', '>=', $filters['from_date']);
         }
 
-        if (!empty($filters['to_date'])) {
+        if (! empty($filters['to_date'])) {
             $query->where('published_at', '<=', $filters['to_date']);
         }
 
-        if (!empty($filters['author_ids'])) {
+        if (! empty($filters['author_ids'])) {
             $query->whereHas('users', function ($userQuery) use ($filters) {
                 $userQuery->whereIn('users.id', $filters['author_ids']);
             });
         }
 
-        if (!empty($filters['tag_ids'])) {
+        if (! empty($filters['tag_ids'])) {
             $query->whereHas('tags', function ($tagQuery) use ($filters) {
                 $tagQuery->whereIn('tags.id', $filters['tag_ids']);
             });
@@ -50,7 +51,7 @@ class PublicationService {
 
         $query->orderBy('created_at', $orderBy);
 
-        if (!empty($filters['sort_by'])) {
+        if (! empty($filters['sort_by'])) {
             $query->orderBy($filters['sort_by'], $orderBy);
         }
 
@@ -60,9 +61,9 @@ class PublicationService {
             'tags' => function ($query) {
                 $query->select('id', 'name');
             },
-            'users'=> function ($query) {
+            'users' => function ($query) {
                 $query->select('id', 'email', 'name');
-            }
+            },
         ])->paginate($perPage);
     }
 
@@ -85,25 +86,26 @@ class PublicationService {
                 $month = $publication->created_at->month;
                 $day = $publication->created_at->day;
                 $path = "publications/{$year}/{$month}/{$day}/{$publication->id}";
-                $filePath = $request->file('publication_file')->storeAs($path, $titleSlug . '.pdf');
+                $filePath = $request->file('publication_file')->storeAs($path, $titleSlug.'.pdf');
 
                 $publication->publication_file = $filePath;
                 $publication->save();
             }
 
-            if (!empty($validated['tag_ids'])) {
+            if (! empty($validated['tag_ids'])) {
                 $publication->tags()->attach($validated['tag_ids']);
             }
 
-            if (!empty($validated['author_ids'])) {
+            if (! empty($validated['author_ids'])) {
                 $publication->users()->attach($validated['author_ids']);
             }
 
             DB::commit();
+
             return $publication->fresh(['tags', 'users']);
         } catch (\Exception $exception) {
             DB::rollBack();
-            Log::error('Publication creation error: ' . $exception->getMessage());
+            Log::error('Publication creation error: '.$exception->getMessage());
             throw $exception;
         }
     }
@@ -114,7 +116,7 @@ class PublicationService {
         try {
             $validated = $request->validated();
 
-            if (!empty($validated['title'])) {
+            if (! empty($validated['title'])) {
                 $validated['slug'] = Str::slug($validated['title']);
             }
 
@@ -125,10 +127,10 @@ class PublicationService {
 
                 $directoryPath = $publication->publication_file
                     ? dirname($publication->publication_file)
-                    : "publications/" . date('Y/m/d') . "/{$publication->id}";
+                    : 'publications/'.date('Y/m/d')."/{$publication->id}";
 
                 $slug = $validated['slug'] ?? $publication->slug;
-                $validated['publication_file'] = $request->file('publication_file')->storeAs($directoryPath, $slug . '.pdf');
+                $validated['publication_file'] = $request->file('publication_file')->storeAs($directoryPath, $slug.'.pdf');
             }
 
             $publication->update(array_filter($validated, function ($value) {
@@ -144,10 +146,11 @@ class PublicationService {
             }
 
             DB::commit();
+
             return $publication->fresh(['tags', 'users']);
         } catch (\Exception $exception) {
             DB::rollBack();
-            Log::error('Publication update error: ' . $exception->getMessage());
+            Log::error('Publication update error: '.$exception->getMessage());
             throw $exception;
         }
     }
