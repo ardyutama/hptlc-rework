@@ -44,6 +44,7 @@ export default function ArticleForm({
 	const [markdownPreview, setMarkdownPreview] = useState<string>("");
 
 	console.log(data);
+    console.log(errors);
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		clearErrors();
@@ -68,6 +69,7 @@ export default function ArticleForm({
 	};
 
 	const scrollToFirstError = () => {
+        console.log('Error with this Data', data)
 		const firstErrorElement = document.querySelector("[data-error]");
 		if (firstErrorElement) {
 			firstErrorElement.scrollIntoView({

@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Article extends Model
+class Article extends Model implements HasMedia
 {
-    use HasFactory, HasUlids, SoftDeletes;
+    use HasFactory, HasUlids, SoftDeletes, InteractsWithMedia;
 
     public const STATUS_DRAFT = 'draft';
 
@@ -41,6 +44,11 @@ class Article extends Model
         'deleted_at' => 'datetime',
     ];
 
+    protected $appends = [
+        'thumbnail_image_url',
+        'featured_image_url',
+    ];
+
     public function getRouteKeyName(): string
     {
         return 'slug';
@@ -67,4 +75,41 @@ class Article extends Model
     {
         $this->increment('view_count');
     }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('featured_images')
+            ->singleFile();
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->width(400)
+            ->height(300)
+            ->optimize()
+            ->format('webp')
+            ->quality(75);
+
+        $this->addMediaConversion('medium')
+            ->width(800)
+            ->height(600)
+            ->optimize()
+            ->format('webp')
+            ->quality(80);
+    }
+
+    public function getThumbnailImageUrlAttribute(): ?string
+    {
+        return $this->getFirstMediaUrl('featured_images', 'thumb') ?: null;
+    }
+
+    /**
+     * Get the URL for the medium conversion of the featured image.
+     */
+    public function getFeaturedImageUrlAttribute(): ?string
+    {
+        return $this->getFirstMediaUrl('featured_images', 'medium') ?: null;
+    }
+
 }

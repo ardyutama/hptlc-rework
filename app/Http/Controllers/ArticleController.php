@@ -24,7 +24,7 @@ class ArticleController extends Controller
 
     public function index(Request $request): InertiaResponse
     {
-//        Gate::authorize('viewAny', Article::class);
+        Gate::authorize('viewAny', Article::class);
 
         $filters = $request->only([
             'search',
@@ -54,7 +54,7 @@ class ArticleController extends Controller
 
     public function create(): InertiaResponse
     {
-//        Gate::authorize('create', Article::class);
+        Gate::authorize('create', Article::class);
 
         $tags = Tag::orderBy('name')->get(['id', 'name']);
 
@@ -73,7 +73,7 @@ class ArticleController extends Controller
         try {
             $article = $this->articleService->createArticle($validated);
 
-            return redirect()->route('articles.edit', $article)->with('flash', [
+            return redirect()->route('articles.index', $article)->with('flash', [
                 'type' => 'success',
                 'message' => 'Article created successfully!',
             ]);
@@ -87,7 +87,7 @@ class ArticleController extends Controller
 
     public function show(Article $article): InertiaResponse
     {
-//        Gate::authorize('view', Article::class);
+        Gate::authorize('view', Article::class);
 
         $article->load('tags', 'authors.member');
         $article->incrementViewCount();
@@ -102,7 +102,7 @@ class ArticleController extends Controller
 
     public function edit(Article $article): InertiaResponse
     {
-//        Gate::authorize('update', Article::class);
+        Gate::authorize('update', Article::class);
 
         $tags = Tag::orderBy('name')->get(['id', 'name']);
         $article->load('tags');
@@ -118,7 +118,7 @@ class ArticleController extends Controller
 
     public function update(ArticleUpdateRequest $request, Article $article): RedirectResponse
     {
-//        Gate::authorize('update', Article::class);
+        Gate::authorize('update', Article::class);
 
         $validated = $request->validated();
 
@@ -139,7 +139,7 @@ class ArticleController extends Controller
 
     public function destroy(Article $article): RedirectResponse
     {
-//        Gate::authorize('delete', Article::class);
+        Gate::authorize('delete', Article::class);
 
         try {
             $this->articleService->deleteArticle($article);
