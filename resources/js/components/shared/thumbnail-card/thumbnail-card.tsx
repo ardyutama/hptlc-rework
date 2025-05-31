@@ -9,6 +9,8 @@ type CardProps = {
 	id?: string;
 	tags: string[];
 	thumbnailImage?: string | null;
+	thumbnail_image_url?: string | null;
+	featured_image_url?: string | null;
 	title: string;
 	date?: string | null;
 	hrefLink: string;
@@ -19,26 +21,37 @@ type CardProps = {
 const ThumbnailCard = React.memo(function ThumbnailCard({
 	id,
 	tags,
-	thumbnailImage,
+	thumbnail_image_url,
+	featured_image_url,
 	title,
 	date,
 	hrefLink,
 	description,
 	downloadPath,
 }: CardProps) {
-	const getImageUrl = (path: string | null | undefined): string | undefined => {
-		if (!path) return undefined;
-		return `/storage/${path}`;
-	};
+	const primaryImageUrl = thumbnail_image_url || featured_image_url || null;
+	const srcSet = [
+		thumbnail_image_url ? `${thumbnail_image_url} 400w` : "",
+		featured_image_url ? `${featured_image_url} 800w` : "",
+	]
+		.filter(Boolean)
+		.join(", ");
 
-	const imageUrl = getImageUrl(thumbnailImage);
+	const sizes = `
+        (max-width: 767px) 100vw,
+        (min-width: 768px) 50vw,
+        (min-width: 1024px) 33vw,
+        400px
+    `;
 
 	return (
 		<article className="flex h-full flex-col">
 			<div className="aspect-[4/3] w-full flex-shrink-0 overflow-hidden bg-slate-100 dark:bg-slate-800">
-				{imageUrl && (
+				{primaryImageUrl && (
 					<img
-						src={imageUrl}
+						src={primaryImageUrl}
+						srcSet={srcSet}
+						sizes={sizes}
 						alt={title}
 						className="h-full w-full object-cover"
 						loading="lazy"

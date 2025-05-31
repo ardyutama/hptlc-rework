@@ -20,8 +20,6 @@ class ArticleService
 
     protected const MARKDOWN_PATH = 'articles/markdown';
 
-    protected const FEATURED_IMAGE_PATH = 'articles/featured_image';
-
     protected const WORDS_PER_MINUTE = 200; // Constant for reading time calculation
 
     public function getHeroArticles(int $limit = 4): Collection
@@ -39,7 +37,7 @@ class ArticleService
     public function getAllArticles(int $perPage = 10, array $filters = []): LengthAwarePaginator
     {
         $query = Article::query()
-            ->with(['tags', 'authors.member']) // Eager load media for Spatie
+            ->with(['tags', 'authors.member', 'media']) // Eager load media for Spatie
             ->where('status', Article::STATUS_PUBLISHED) // Only show published articles for public view
             ->whereNotNull('published_at')
             ->where('published_at', '<=', Carbon::now()); // Only show articles where published_at is in the past
@@ -99,10 +97,6 @@ class ArticleService
                 $markdownPath = $this->saveMarkdownContent($data['markdown_content'], $slug);
             }
 
-            if (isset($data['featured_image']) && $data['featured_image'] instanceof UploadedFile) {
-                $featuredImagePath = $this->saveFeaturedImage($data['featured_image'], $slug);
-            }
-
             $readingTime = ! empty($data['markdown_content'])
                 ? $this->calculateReadingTime($data['markdown_content'])
                 : 1;
@@ -113,12 +107,16 @@ class ArticleService
                 'title' => $data['title'],
                 'slug' => $slug,
                 'markdown_path' => $markdownPath,
-                'featured_image' => $featuredImagePath,
                 'excerpt' => $excerpt,
                 'reading_time' => $readingTime,
                 'status' => $data['status'] ?? 'draft',
                 'published_at' => ($data['status'] ?? '') === 'published' ? now() : null,
             ]);
+
+            if (isset($data['featured_image']) && $data['featured_image'] instanceof UploadedFile) {
+                $article->addMediaFromRequest('featured_image')
+                    ->toMediaCollection('featured_images');
+            }
 
             if (auth()->check()) {
                 $article->authors()->attach(auth()->id());
@@ -138,10 +136,6 @@ class ArticleService
                 $this->deleteMarkdownFile($markdownPath);
             }
 
-            if ($featuredImagePath) {
-                $this->deleteFeaturedImage($featuredImagePath);
-            }
-
             Log::error('Error creating article: '.$e->getMessage());
             throw $e;
         }
@@ -152,8 +146,6 @@ class ArticleService
         DB::beginTransaction();
 
         $oldMarkdownPath = $article->markdown_path;
-        $oldFeaturedImagePath = $article->featured_image;
-        $newFeaturedImagePath = null;
         $newMarkdownPath = null;
 
         try {
@@ -167,16 +159,11 @@ class ArticleService
             $data['markdown_path'] = $newMarkdownPath;
 
             if (isset($data['remove_featured_image']) && $data['remove_featured_image']) {
-                if ($oldFeaturedImagePath) {
-                    $this->deleteFeaturedImage($oldFeaturedImagePath);
-                }
-                $data['featured_image'] = null;
-                $oldFeaturedImagePath = null;
+                $article->clearMediaCollection('featured_images');
             } elseif (isset($data['featured_image']) && $data['featured_image'] instanceof UploadedFile) {
-                $newFeaturedImagePath = $this->saveFeaturedImage($data['featured_image'], $data['slug'] ?? $article->slug);
-                $data['featured_image'] = $newFeaturedImagePath;
-            } else {
-                unset($data['featured_image']);
+                $article->clearMediaCollection('featured_images');
+                $article->addMediaFromRequest('featured_image')
+                    ->toMediaCollection('featured_images');
             }
 
             if (isset($data['markdown_content'])) {
@@ -187,7 +174,7 @@ class ArticleService
                 $data['excerpt'] = $data['excerpt'] ?? Str::limit(strip_tags($data['markdown_content'] ?? $article->markdownContent), 150);
             }
 
-            $article->fill(Arr::except($data, ['markdown_content', 'remove_featured_image']));
+            $article->fill(Arr::except($data, ['markdown_content', 'remove_featured_image', 'featured_image', 'existing_tag_ids', 'new_tag_names']));
 
             if ($article->isDirty('status') && $article->status === Article::STATUS_PUBLISHED && is_null($article->published_at)) {
                 $article->published_at = now();
@@ -207,19 +194,12 @@ class ArticleService
                 $this->deleteMarkdownFile($oldMarkdownPath);
             }
 
-            if ($oldFeaturedImagePath && $newFeaturedImagePath) {
-                $this->deleteFeaturedImage($oldFeaturedImagePath);
-            }
-
             return $article;
         } catch (\Exception $e) {
             DB::rollBack();
 
             if (isset($newMarkdownPath) && $newMarkdownPath !== $oldMarkdownPath) {
                 $this->deleteMarkdownFile($newMarkdownPath);
-            }
-            if (isset($newFeaturedImagePath)) {
-                $this->deleteFeaturedImage($newFeaturedImagePath);
             }
 
             Log::error('Error updating article: '.$e->getMessage());
@@ -232,19 +212,16 @@ class ArticleService
         DB::beginTransaction();
 
         $markdownPath = $article->markdown_path;
-        $featuredImagePath = $article->featured_image;
 
         try {
             $article->tags()->detach();
             $article->authors()->detach();
+            $article->clearMediaCollection('featured_images');
 
             DB::commit();
 
             if ($markdownPath) {
                 $this->deleteMarkdownFile($markdownPath);
-            }
-            if ($featuredImagePath) {
-                $this->deleteFeaturedImage($featuredImagePath);
             }
 
         } catch (\Exception $e) {
@@ -322,24 +299,6 @@ class ArticleService
     }
 
     protected function deleteMarkdownFile(?string $path): void
-    {
-        if ($path && Storage::disk(self::STORAGE_DISK)->exists($path)) {
-            Storage::disk(self::STORAGE_DISK)->delete($path);
-        }
-    }
-
-    protected function saveFeaturedImage(UploadedFile $file, string $slug): string
-    {
-        $path = $file->store(self::FEATURED_IMAGE_PATH, self::STORAGE_DISK);
-
-        if (! $path) {
-            throw new \Exception('Failed to save featured image.');
-        }
-
-        return $path;
-    }
-
-    protected function deleteFeaturedImage(?string $path): void
     {
         if ($path && Storage::disk(self::STORAGE_DISK)->exists($path)) {
             Storage::disk(self::STORAGE_DISK)->delete($path);

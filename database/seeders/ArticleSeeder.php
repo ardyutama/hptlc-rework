@@ -19,7 +19,6 @@ class ArticleSeeder extends Seeder
                 'title' => 'Getting Started with Laravel Eloquent',
                 'slug' => 'getting-started-laravel-eloquent',
                 'markdown_path' => 'markdowns/eloquent.md', // Example path
-                'featured_image' => 'images/eloquent.jpg', // Example path
                 'excerpt' => 'An introduction to Laravel\'s powerful ORM.',
                 'reading_time' => 7,
                 'view_count' => 150,
@@ -32,7 +31,6 @@ class ArticleSeeder extends Seeder
                 'title' => 'Building REST APIs in Laravel',
                 'slug' => 'building-rest-apis-laravel',
                 'markdown_path' => 'markdowns/apis.md', // Example path
-                'featured_image' => null, // No featured image
                 'excerpt' => 'Learn how to create powerful APIs using Laravel.',
                 'reading_time' => 10,
                 'view_count' => 200,
@@ -45,7 +43,6 @@ class ArticleSeeder extends Seeder
                 'title' => 'Draft Article Example',
                 'slug' => 'draft-article-example',
                 'markdown_path' => null, // No markdown yet
-                'featured_image' => 'images/draft.png', // Example path
                 'excerpt' => 'This article is currently a work in progress.',
                 'reading_time' => 3,
                 'view_count' => 5,
@@ -58,7 +55,6 @@ class ArticleSeeder extends Seeder
                 'title' => 'Archived Content Example',
                 'slug' => 'archived-content-example',
                 'markdown_path' => 'markdowns/archived.md', // Example path
-                'featured_image' => 'images/archived.jpg', // Example path
                 'excerpt' => 'This content is no longer actively maintained or promoted.',
                 'reading_time' => 5,
                 'view_count' => 80,
@@ -71,7 +67,6 @@ class ArticleSeeder extends Seeder
                 'title' => 'Another Published Article',
                 'slug' => 'another-published-article',
                 'markdown_path' => 'markdowns/another.md', // Example path
-                'featured_image' => null, // No featured image
                 'excerpt' => 'More great content for you to read.',
                 'reading_time' => 6,
                 'view_count' => 120,

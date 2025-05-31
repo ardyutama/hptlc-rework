@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->string('markdown_path')->nullable();
-            $table->string('featured_image')->nullable();
             $table->text('excerpt')->nullable();
             $table->integer('reading_time')->default(1);
             $table->integer('view_count')->default(0);

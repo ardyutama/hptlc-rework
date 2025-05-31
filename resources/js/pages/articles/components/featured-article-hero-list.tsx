@@ -18,7 +18,8 @@ export default function FeaturedArticleHeroList() {
 					<ThumbnailCard
 						key={item.id}
 						id={item.id}
-						thumbnailImage={item.featured_image}
+						thumbnail_image_url={item.thumbnail_image_url}
+						featured_image_url={item.featured_image_url}
 						tags={item.tags.map((tag) => tag.name)}
 						hrefLink={item.slug}
 						title={item.title}
