@@ -37,39 +37,30 @@ export default function ArticleForm({
 
 	const [markdownFile, setMarkdownFile] = useState<File | null>(null);
 	const [imagePreview, setImagePreview] = useState<string | null>(
-		article?.featured_image ? `/storage/${article.featured_image}` : null,
+		article?.thumbnail_image_url ?? null,
 	);
 	const [showMarkdownPreview, setShowMarkdownPreview] =
 		useState<boolean>(false);
 	const [markdownPreview, setMarkdownPreview] = useState<string>("");
 
-	console.log(data);
-    console.log(errors);
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		clearErrors();
 
 		if (isEdit && article?.id) {
-			put(route("articles.update", article.id) , {
+			put(route("articles.update", article.id), {
 				forceFormData: true,
 				onError: scrollToFirstError,
-				onSuccess: () => {
-					console.log('Articles Updated with this Data', data)
-				}
 			});
 		} else {
 			post(route("articles.store"), {
 				forceFormData: true,
 				onError: scrollToFirstError,
-				onSuccess: () => {
-					console.log('Articles Created with this Data', data)
-				}
 			});
 		}
 	};
 
 	const scrollToFirstError = () => {
-        console.log('Error with this Data', data)
 		const firstErrorElement = document.querySelector("[data-error]");
 		if (firstErrorElement) {
 			firstErrorElement.scrollIntoView({

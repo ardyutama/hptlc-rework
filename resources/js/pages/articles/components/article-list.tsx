@@ -42,8 +42,8 @@ export default function ArticleList() {
 					<ThumbnailCard
 						key={item.id}
 						id={item.id}
-                        thumbnail_image_url={item.thumbnail_image_url}
-                        featured_image_url={item.featured_image_url}
+						thumbnail_image_url={item.thumbnail_image_url}
+						featured_image_url={item.featured_image_url}
 						tags={item.tags.map((tag) => tag.name)}
 						hrefLink={item.slug}
 						title={item.title}

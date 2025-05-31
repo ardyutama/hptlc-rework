@@ -9,8 +9,8 @@ type CardProps = {
 	id?: string;
 	tags: string[];
 	thumbnailImage?: string | null;
-    thumbnail_image_url?: string | null;
-    featured_image_url?: string | null;
+	thumbnail_image_url?: string | null;
+	featured_image_url?: string | null;
 	title: string;
 	date?: string | null;
 	hrefLink: string;
@@ -21,23 +21,23 @@ type CardProps = {
 const ThumbnailCard = React.memo(function ThumbnailCard({
 	id,
 	tags,
-    thumbnail_image_url,
-    featured_image_url,
+	thumbnail_image_url,
+	featured_image_url,
 	title,
 	date,
 	hrefLink,
 	description,
 	downloadPath,
 }: CardProps) {
+	const primaryImageUrl = thumbnail_image_url || featured_image_url || null;
+	const srcSet = [
+		thumbnail_image_url ? `${thumbnail_image_url} 400w` : "",
+		featured_image_url ? `${featured_image_url} 800w` : "",
+	]
+		.filter(Boolean)
+		.join(", ");
 
-    const primaryImageUrl = thumbnail_image_url || featured_image_url || null;
-
-    const srcSet = [
-        thumbnail_image_url ? `${thumbnail_image_url} 400w` : "",
-        featured_image_url ? `${featured_image_url} 800w` : "",
-    ].filter(Boolean).join(", ");
-
-    const sizes = `
+	const sizes = `
         (max-width: 767px) 100vw,
         (min-width: 768px) 50vw,
         (min-width: 1024px) 33vw,
@@ -47,16 +47,16 @@ const ThumbnailCard = React.memo(function ThumbnailCard({
 	return (
 		<article className="flex h-full flex-col">
 			<div className="aspect-[4/3] w-full flex-shrink-0 overflow-hidden bg-slate-100 dark:bg-slate-800">
-                {primaryImageUrl && (
-                    <img
-                        src={primaryImageUrl}
-                        srcSet={srcSet}
-                        sizes={sizes}
-                        alt={title}
-                        className="h-full w-full object-cover"
-                        loading="lazy"
-                    />
-                )}
+				{primaryImageUrl && (
+					<img
+						src={primaryImageUrl}
+						srcSet={srcSet}
+						sizes={sizes}
+						alt={title}
+						className="h-full w-full object-cover"
+						loading="lazy"
+					/>
+				)}
 			</div>
 			<div className="my-2 flex flex-wrap gap-1">
 				{tags.map((tag) => (

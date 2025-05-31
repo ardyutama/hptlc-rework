@@ -163,7 +163,7 @@ class ArticleService
             } elseif (isset($data['featured_image']) && $data['featured_image'] instanceof UploadedFile) {
                 $article->clearMediaCollection('featured_images');
                 $article->addMediaFromRequest('featured_image')
-                ->toMediaCollection('featured_images');
+                    ->toMediaCollection('featured_images');
             }
 
             if (isset($data['markdown_content'])) {

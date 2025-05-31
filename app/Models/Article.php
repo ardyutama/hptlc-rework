@@ -7,13 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Article extends Model implements HasMedia
 {
-    use HasFactory, HasUlids, SoftDeletes, InteractsWithMedia;
+    use HasFactory, HasUlids, InteractsWithMedia, SoftDeletes;
 
     public const STATUS_DRAFT = 'draft';
 
@@ -31,7 +32,6 @@ class Article extends Model implements HasMedia
         'title',
         'slug',
         'markdown_path',
-        'featured_image',
         'excerpt',
         'reading_time',
         'status',
@@ -87,16 +87,18 @@ class Article extends Model implements HasMedia
         $this->addMediaConversion('thumb')
             ->width(400)
             ->height(300)
-            ->optimize()
+            ->fit(Fit::Crop, 400, 300)
             ->format('webp')
-            ->quality(75);
+            ->quality(75)
+            ->optimize();
 
         $this->addMediaConversion('medium')
             ->width(800)
             ->height(600)
-            ->optimize()
+            ->fit(Fit::Crop, 800, 600)
             ->format('webp')
-            ->quality(80);
+            ->quality(80)
+            ->optimize();
     }
 
     public function getThumbnailImageUrlAttribute(): ?string
@@ -104,12 +106,8 @@ class Article extends Model implements HasMedia
         return $this->getFirstMediaUrl('featured_images', 'thumb') ?: null;
     }
 
-    /**
-     * Get the URL for the medium conversion of the featured image.
-     */
     public function getFeaturedImageUrlAttribute(): ?string
     {
         return $this->getFirstMediaUrl('featured_images', 'medium') ?: null;
     }
-
 }

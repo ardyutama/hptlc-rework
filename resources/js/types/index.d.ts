@@ -105,8 +105,8 @@ export interface Article {
 	title: string;
 	slug: string;
 	markdown_path: string | null;
-    thumbnail_image_url?: string | null;
-    featured_image_url?: string | null;
+	thumbnail_image_url?: string | null;
+	featured_image_url?: string | null;
 	excerpt: string | null;
 	reading_time: number;
 	view_count: number;
@@ -150,7 +150,7 @@ export type PageProps<
 	};
 	ziggy: Config & { location: string };
 	flash: {
-        type?: string;
+		type?: string;
 		message?: string;
 		info?: string;
 	};
