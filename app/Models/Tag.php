@@ -22,7 +22,7 @@ class Tag extends Model
             ->withTimestamps();
     }
 
-    public function publication(): BelongsToMany
+    public function publications(): BelongsToMany
     {
         return $this->belongsToMany(Publication::class, 'publication_tag', 'tag_id', 'publication_id');
     }
