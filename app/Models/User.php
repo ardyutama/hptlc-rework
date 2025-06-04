@@ -31,9 +31,12 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
-    /**
-     * Check if the user is an admin.
-     */
+    public function publications(): BelongsToMany
+    {
+        return $this->belongsToMany(Publication::class, 'publication_user')
+            ->withTimestamps();
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';

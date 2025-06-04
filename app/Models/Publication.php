@@ -18,6 +18,11 @@ class Publication extends Model
         'slug',
     ];
 
+    protected $casts = [
+        'published_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
     public function getRouteKeyName(): string
     {
         return 'slug';

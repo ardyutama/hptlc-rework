@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Request\Publication\PublicationRequest;
 use App\Http\Request\Publication\PublicationStoreRequest;
 use App\Http\Request\Publication\PublicationUpdateRequest;
 use App\Models\Publication;
+use App\Models\Tag;
 use App\Services\PublicationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Inertia\Response;
-use Symfony\Component\HttpFoundation\Response as HttpResponse;
+use Inertia\Response as InertiaResponse;
 
 class PublicationController extends Controller
 {
@@ -22,135 +22,111 @@ class PublicationController extends Controller
         $this->publicationService = $publicationService;
     }
 
-    public function index(PublicationRequest $request): Response|JsonResponse
+    public function index(Request $request): InertiaResponse
     {
-        $validated = $request->validated();
-        $publications = $this->publicationService->getFilteredPublications($validated);
+        $filters = $request->only([
+            'search',
+            'tag',
+            'author',
+            'from_date',
+            'to_date',
+            'sort_by',
+            'sort_direction',
+        ]);
 
-        if ($request->wantsJson()) {
-            return response()->json([
-                'data' => $publications,
-            ]);
-        }
+        $perPage = (int) $request->input('per_page', 10);
+        $publications = $this->publicationService->getAllPublication($perPage, $filters);
+
+        $tags = Tag::orderBy('name')->get(['id', 'name']);
 
         return Inertia::render('publications/index', [
             'publications' => $publications,
-            'filters' => $request->only([
-                'title', 'abstract', 'from_date', 'to_date',
-                'author_ids', 'tag_ids', 'per_page', 'sort_by', 'order_by',
-            ]),
+            'filters' => $filters,
+            'tags' => $tags,
         ]);
     }
 
-    public function create(): Response
+    public function create(): InertiaResponse
     {
-        return Inertia::render('Publications/Create', [
-            'tags' => $this->publicationService->getTagsForForm(),
-            'authors' => $this->publicationService->getAuthorsForForm(),
+        $tags = Tag::orderBy('name')->get(['id', 'name']);
+
+        return Inertia::render('publications/create', [
+            'tags' => $tags,
         ]);
     }
 
-    public function store(PublicationStoreRequest $request): RedirectResponse|JsonResponse
+    public function store(PublicationStoreRequest $request): RedirectResponse
     {
+        $validated = $request->validated();
         try {
-            $publication = $this->publicationService->createPublication($request);
+            $publication = $this->publicationService->createPublication($validated);
 
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'message' => 'Publication created successfully.',
-                    'data' => $publication,
-                ], HttpResponse::HTTP_CREATED);
-            }
-
-            return redirect()->route('publications.index')
-                ->with('success', 'Publication created successfully.');
-        } catch (\Exception $exception) {
-            if ($request->wantsJson()) {
-                return response()->json(['message' => $exception->getMessage()], HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
-            }
-
-            return redirect()->back()
-                ->with('error', 'Failed to create publication: '.$exception->getMessage())
-                ->withInput();
+            return redirect()->route('publications.index', $publication)->with('flash', [
+                'type' => 'success',
+                'message' => 'Publication created successfully!',
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('flash', [
+                'type' => 'error',
+                'message' => 'An error occurred while creating the publication. '.$e->getMessage(), // Optionally show specific error or a generic one
+            ]);
         }
     }
 
-    public function show(): Response|JsonResponse
+    public function show(Publication $publication): InertiaResponse
     {
-        //        $publication->load(['tags', 'users']);
-        //
-        //        if (request()->wantsJson()) {
-        //            return response()->json($publication);
-        //        }
+        $publication->load('tags', 'authors.member');
 
-        return Inertia::render('publications/show');
+        return Inertia::render('publications/show', [
+            'publication' => $publication,
+        ]);
     }
 
-    //    public function show(Publication $publication): Response|JsonResponse
-    //    {
-    //        $publication->load(['tags', 'users']);
-    //
-    //        if (request()->wantsJson()) {
-    //            return response()->json($publication);
-    //        }
-    //
-    //        return Inertia::render('publications/show', [
-    //            'publication' => $publication
-    //        ]);
-    //    }
-
-    public function edit(Publication $publication): Response
+    public function edit(Publication $publication): InertiaResponse
     {
-        return Inertia::render('Publications/Edit', [
-            'publication' => $publication->load(['tags', 'users']),
-            'tags' => $this->publicationService->getTagsForForm(),
-            'authors' => $this->publicationService->getAuthorsForForm(),
+        $publication->load('tags', 'authors.member');
+        $tags = Tag::orderBy('name')->get(['id', 'name']);
+
+        return Inertia::render('publications/edit', [
+            'publication' => $publication,
+            'tags' => $tags,
         ]);
     }
 
     public function update(PublicationUpdateRequest $request, Publication $publication): RedirectResponse|JsonResponse
     {
+        $validated = $request->validated();
+
         try {
-            $updated = $this->publicationService->updatePublication($publication, $request);
+            $updated = $this->publicationService->updatePublication($publication, $validated);
 
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'message' => 'Publication updated successfully.',
-                    'data' => $updated,
+            return redirect()->route('publications.index', $updated)
+                ->with('flash', [
+                    'type' => 'success',
+                    'message' => 'Publication updated successfully!',
                 ]);
-            }
-
-            return redirect()->route('publications.index')
-                ->with('success', 'Publication updated successfully.');
-        } catch (\Exception $exception) {
-            if ($request->wantsJson()) {
-                return response()->json(['message' => $exception->getMessage()], HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
-            }
-
-            return redirect()->back()
-                ->with('error', 'Failed to update publication: '.$exception->getMessage())
-                ->withInput();
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('flash', [
+                'type' => 'error',
+                'message' => 'An error occurred while updating the Publication. '.$e->getMessage(),
+            ]);
         }
     }
 
-    public function destroy(Publication $publication): RedirectResponse|JsonResponse
+    public function destroy(Publication $publication): RedirectResponse
     {
         try {
             $this->publicationService->deletePublication($publication);
 
-            if (request()->wantsJson()) {
-                return response()->json(['message' => 'Publication deleted successfully.']);
-            }
-
-            return redirect()->route('publications.index')
-                ->with('success', 'Publication deleted successfully.');
-        } catch (\Exception $exception) {
-            if (request()->wantsJson()) {
-                return response()->json(['message' => $exception->getMessage()], HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
-            }
-
-            return redirect()->back()
-                ->with('error', 'Failed to delete publication: '.$exception->getMessage());
+            return redirect()->route('publications.index')->with('flash', [
+                'type' => 'success',
+                'message' => 'Publication deleted successfully.',
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('flash', [
+                'type' => 'error',
+                'message' => 'An error occurred while deleting the publication. '.$e->getMessage(), // Optionally show specific error
+            ]);
         }
     }
 }
