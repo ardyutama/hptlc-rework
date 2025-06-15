@@ -2,11 +2,13 @@ import {
 	format,
 	formatDistanceToNow,
 	isPast,
+	isThisYear, // New import: Check if it's within the current year
 	isToday,
+	isTomorrow, // New import: Check if it's tomorrow
 	isYesterday,
 	parseISO,
 } from "date-fns";
-import { enUS } from "date-fns/locale";
+import { enUS } from "date-fns/locale"; // Or your preferred locale
 
 export function formatDate(dateString: string): string {
 	const targetDate = parseISO(dateString);
@@ -19,17 +21,32 @@ export function formatDate(dateString: string): string {
 		return "Invalid Date";
 	}
 
+	const now = new Date();
+
+	if (isTomorrow(targetDate)) {
+		return "Tomorrow";
+	}
+	if (targetDate > now && !isTomorrow(targetDate)) {
+		return format(targetDate, "MMM d, yyyy");
+	}
+
 	if (isToday(targetDate)) {
 		return format(targetDate, "HH:mm");
 	}
 
 	if (isYesterday(targetDate)) {
-		return "Yesterday";
+		return "Yesterday"; //
 	}
 
-	if (isPast(targetDate) && !isToday(targetDate) && !isYesterday(targetDate)) {
+	const sevenDaysAgo = new Date();
+	sevenDaysAgo.setDate(now.getDate() - 7);
+	if (targetDate >= sevenDaysAgo) {
 		return formatDistanceToNow(targetDate, { addSuffix: true, locale: enUS });
 	}
 
-	return format(targetDate, "yyyy-MM-dd");
+	if (isThisYear(targetDate)) {
+		return format(targetDate, "MMM d");
+	}
+
+	return format(targetDate, "MMM d, yyyy");
 }

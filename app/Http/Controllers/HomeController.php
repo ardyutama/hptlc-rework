@@ -24,17 +24,17 @@ class HomeController extends Controller
             ->limit($limit)
             ->get();
 
-        //        $latestPublications = Publication::query()
-        //            ->with('tags','authors')
-        //            ->whereNotNull('published_at')
-        //            ->where('published_at', '<=', Carbon::now())
-        //            ->orderBy('published_at', 'desc')
-        //            ->limit($limit)
-        //            ->get();
+        $latestPublications = Publication::query()
+            ->with('tags', 'authors')
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', Carbon::now())
+            ->orderBy('published_at', 'desc')
+            ->limit($limit)
+            ->get();
 
         return Inertia::render('welcome/index', [
             'latestArticles' => $latestArticles,
-            //            'latestPublications' => $latestPublications,
+            'latestPublications' => $latestPublications,
         ]);
     }
 }

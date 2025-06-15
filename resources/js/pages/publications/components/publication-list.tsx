@@ -1,4 +1,5 @@
-import ThumbnailCard from "@/components/domain/articles/thumbnail-card";
+import ArticleCard from "@/components/domain/articles/article-card";
+import PublicationCard from "@/components/domain/publications/publication-card";
 import { Button } from "@/components/ui/button";
 import ContentLayout from "@/layouts/content-layout";
 import type { PageProps, PaginatedCollection, Publication } from "@/types";
@@ -11,10 +12,9 @@ interface PublicationHeroProps extends PageProps {
 }
 
 export default function PublicationList() {
-	const MAX_CONTENT = 8;
+	const { publications } = usePage<PublicationHeroProps>().props;
 	const [currentPage, setCurrentPage] = useState(1);
 	const totalPages = 145;
-	const { publications } = usePage<PublicationHeroProps>().props;
 
 	const handlePrevPage = () => {
 		if (currentPage > 1) {
@@ -30,21 +30,23 @@ export default function PublicationList() {
 
 	return (
 		<ContentLayout>
-			<div className="flex items-center justify-between">
-				<h1 className="font-bold text-2xl tracking-tight">All Publications</h1>
+			<div className="mb-8 flex items-center justify-between">
+				<h1 className="font-bold text-3xl text-neutral-800 tracking-tight dark:text-neutral-200">
+					All Publications
+				</h1>
 				<Button variant="outline" size="sm" className="flex items-center gap-2">
 					<SlidersHorizontal className="h-4 w-4" />
 					Filter
 				</Button>
 			</div>
 
-			<div className="grid grid-cols-1 gap-8 pt-10">
-				{publications.data.slice(0, MAX_CONTENT).map((item) => (
-					<ThumbnailCard
+			<div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+				{publications.data.map((item) => (
+					<PublicationCard
 						key={item.id}
 						id={item.id}
 						tags={item.tags.map((tag) => tag.name)}
-						hrefLink={"/publications/show"}
+						hrefLink={item.slug}
 						title={item.title}
 						description={item.abstract}
 						date={item.published_at}
@@ -53,7 +55,7 @@ export default function PublicationList() {
 				))}
 			</div>
 
-			<div className="flex items-center justify-center gap-4 pt-4">
+			<div className="flex items-center justify-center gap-4 pt-12 pb-8">
 				<Button
 					variant="outline"
 					size="icon"

@@ -1,4 +1,4 @@
-import ThumbnailCard from "@/components/domain/articles/thumbnail-card";
+import ArticleCard from "@/components/domain/articles/article-card";
 import type { Article, PageProps } from "@/types";
 import { usePage } from "@inertiajs/react";
 import type React from "react";
@@ -14,7 +14,7 @@ export default function ArticlesSection() {
 	return (
 		<>
 			{latestArticles.slice(0, MAX_CONTENT).map((item) => (
-				<ThumbnailCard
+				<ArticleCard
 					key={item.id}
 					id={item.id}
 					thumbnail_image_url={item.thumbnail_image_url}
