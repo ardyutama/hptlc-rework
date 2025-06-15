@@ -1,14 +1,20 @@
-import ThumbnailCard from "@/components/shared/thumbnail-card/thumbnail-card";
+import ThumbnailCard from "@/components/domain/articles/thumbnail-card";
 import { Button } from "@/components/ui/button";
-import { publicationData } from "@/data/mock-data";
 import ContentLayout from "@/layouts/content-layout";
+import type { PageProps, PaginatedCollection, Publication } from "@/types";
+import { usePage } from "@inertiajs/react";
 import { ChevronLeft, ChevronRight, SlidersHorizontal } from "lucide-react";
 import React, { useState } from "react";
+
+interface PublicationHeroProps extends PageProps {
+	publications: PaginatedCollection<Publication>;
+}
 
 export default function PublicationList() {
 	const MAX_CONTENT = 8;
 	const [currentPage, setCurrentPage] = useState(1);
 	const totalPages = 145;
+	const { publications } = usePage<PublicationHeroProps>().props;
 
 	const handlePrevPage = () => {
 		if (currentPage > 1) {
@@ -33,7 +39,7 @@ export default function PublicationList() {
 			</div>
 
 			<div className="grid grid-cols-1 gap-8 pt-10">
-				{publicationData.slice(0, MAX_CONTENT).map((item) => (
+				{publications.data.slice(0, MAX_CONTENT).map((item) => (
 					<ThumbnailCard
 						key={item.id}
 						id={item.id}
@@ -42,7 +48,7 @@ export default function PublicationList() {
 						title={item.title}
 						description={item.abstract}
 						date={item.published_at}
-						downloadPath={item.publication_file}
+						publicationPdfUrl={item.publication_file}
 					/>
 				))}
 			</div>

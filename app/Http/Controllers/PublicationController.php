@@ -36,10 +36,11 @@ class PublicationController extends Controller
 
         $perPage = (int) $request->input('per_page', 10);
         $publications = $this->publicationService->getAllPublication($perPage, $filters);
-
+        $heroPublication = $this->publicationService->getHeroPublication();
         $tags = Tag::orderBy('name')->get(['id', 'name']);
 
         return Inertia::render('publications/index', [
+            'heroPublications' => $heroPublication,
             'publications' => $publications,
             'filters' => $filters,
             'tags' => $tags,
@@ -68,7 +69,7 @@ class PublicationController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->withInput()->with('flash', [
                 'type' => 'error',
-                'message' => 'An error occurred while creating the publication. '.$e->getMessage(), // Optionally show specific error or a generic one
+                'message' => 'An error occurred while creating the publication. '.$e->getMessage(),
             ]);
         }
     }
@@ -125,7 +126,7 @@ class PublicationController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
                 'type' => 'error',
-                'message' => 'An error occurred while deleting the publication. '.$e->getMessage(), // Optionally show specific error
+                'message' => 'An error occurred while deleting the publication. '.$e->getMessage(),
             ]);
         }
     }

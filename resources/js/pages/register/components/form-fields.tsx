@@ -1,4 +1,4 @@
-import { FormField } from "@/components/shared/form-field";
+import { FormField } from "@/components/common/form-field";
 
 interface FormFieldsProps {
 	data: Record<string, string>;

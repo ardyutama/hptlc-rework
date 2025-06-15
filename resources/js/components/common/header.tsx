@@ -1,4 +1,4 @@
-import DrawerNavigation from "@/components/shared/drawer-navigation";
+import DrawerNavigation from "@/components/common/drawer-navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {

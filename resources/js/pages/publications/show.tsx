@@ -1,21 +1,16 @@
-import EllipsisBadge from "@/components/shared/ellipsis-badge";
-import ThumbnailCard from "@/components/shared/thumbnail-card/thumbnail-card";
+import EllipsisBadge from "@/components/common/ellipsis-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { publicationData } from "@/data/mock-data";
 import ContentLayout from "@/layouts/content-layout";
 import { MainLayout } from "@/layouts/main-layout";
-import type { Publication } from "@/types";
 import { Link } from "@inertiajs/react";
 import { Calendar, ChevronLeft, Download, FileText, Tag } from "lucide-react";
 import type React from "react";
 
-function PublicationShow() {
-	const MAX_CONTENT = 4;
-
+function PublicationShow({ publication }) {
+	console.log(publication);
 	return (
 		<ContentLayout className="min-h-screen py-6 md:py-12 lg:py-16">
-			{/* Back Button */}
 			<Link
 				href={"/publications"}
 				className="group mb-6 inline-flex items-center gap-2 font-medium text-gray-600 text-sm hover:text-gray-900"
@@ -135,18 +130,18 @@ function PublicationShow() {
 					Related Publications
 				</h2>
 				<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-					{publicationData.slice(0, MAX_CONTENT).map((item: Publication) => (
-						<ThumbnailCard
-							key={item.id}
-							id={item.id}
-							tags={item.tags.map((tag) => tag.name)}
-							hrefLink="publications/show"
-							title={item.title}
-							description={item.abstract}
-							date={item.published_at}
-							downloadPath={item.publication_file}
-						/>
-					))}
+					{/*{publicationData.slice(0, MAX_CONTENT).map((item: Publication) => (*/}
+					{/*	<ThumbnailCard*/}
+					{/*		key={item.id}*/}
+					{/*		id={item.id}*/}
+					{/*		tags={item.tags.map((tag) => tag.name)}*/}
+					{/*		hrefLink="publications/show"*/}
+					{/*		title={item.title}*/}
+					{/*		description={item.abstract}*/}
+					{/*		date={item.published_at}*/}
+					{/*		downloadPath={item.publication_file}*/}
+					{/*	/>*/}
+					{/*))}*/}
 				</div>
 			</div>
 		</ContentLayout>

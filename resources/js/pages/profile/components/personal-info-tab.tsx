@@ -1,5 +1,5 @@
-import { FormField } from "@/components/shared/form-field";
-import SelectField from "@/components/shared/select-field";
+import { FormField } from "@/components/common/form-field";
+import SelectField from "@/components/common/select-field";
 import { TabsContent } from "@/components/ui/tabs";
 import DatePickerField from "@/pages/profile/components/birthdate-picker";
 import type { ProfileFormData } from "@/types";
