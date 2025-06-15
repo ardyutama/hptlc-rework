@@ -36,10 +36,11 @@ class PublicationController extends Controller
 
         $perPage = (int) $request->input('per_page', 10);
         $publications = $this->publicationService->getAllPublication($perPage, $filters);
-
+        $heroPublication = $this->publicationService->getHeroPublication();
         $tags = Tag::orderBy('name')->get(['id', 'name']);
 
         return Inertia::render('publications/index', [
+            'heroPublications' => $heroPublication,
             'publications' => $publications,
             'filters' => $filters,
             'tags' => $tags,

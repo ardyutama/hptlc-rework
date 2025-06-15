@@ -6,6 +6,7 @@ use App\Http\Request\Publication\PublicationStoreRequest;
 use App\Http\Request\Publication\PublicationUpdateRequest;
 use App\Models\Publication;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -13,10 +14,20 @@ use Illuminate\Support\Str;
 
 class PublicationService
 {
+    public function getHeroPublication(int $limit = 4): Collection
+    {
+        return Publication::query()
+            ->with(['tags', 'authors.member'])
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', Carbon::now())
+            ->orderBy('published_at', 'desc')
+            ->limit($limit)
+            ->get();
+    }
     public function getAllPublication(int $perPage, array $filters): LengthAwarePaginator
     {
         $query = Publication::query()
-            ->with(['tags', 'authors.member', 'media']) // Eager load media for Spatie
+            ->with(['tags', 'authors.member'])
             ->whereNotNull('published_at')
             ->where('published_at', '<=', Carbon::now());
 

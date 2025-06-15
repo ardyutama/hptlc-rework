@@ -15,7 +15,7 @@ type CardProps = {
 	date?: string | null;
 	hrefLink: string;
 	description?: string;
-	downloadPath?: string;
+	publicationPdfUrl?: string;
 };
 
 const ThumbnailCard = React.memo(function ThumbnailCard({
@@ -27,9 +27,10 @@ const ThumbnailCard = React.memo(function ThumbnailCard({
 	date,
 	hrefLink,
 	description,
-	downloadPath,
+	publicationPdfUrl,
 }: CardProps) {
 	const primaryImageUrl = thumbnail_image_url || featured_image_url || null;
+    const isPublication = !!publicationPdfUrl;
 	const srcSet = [
 		thumbnail_image_url ? `${thumbnail_image_url} 400w` : "",
 		featured_image_url ? `${featured_image_url} 800w` : "",
@@ -46,18 +47,20 @@ const ThumbnailCard = React.memo(function ThumbnailCard({
 
 	return (
 		<article className="flex h-full flex-col">
-			<div className="aspect-[4/3] w-full flex-shrink-0 overflow-hidden bg-slate-100 dark:bg-slate-800">
-				{primaryImageUrl && (
-					<img
-						src={primaryImageUrl}
-						srcSet={srcSet}
-						sizes={sizes}
-						alt={title}
-						className="h-full w-full object-cover"
-						loading="lazy"
-					/>
-				)}
-			</div>
+            {isPublication &&
+                <div className="aspect-[4/3] w-full flex-shrink-0 overflow-hidden bg-slate-100 dark:bg-slate-800">
+                    {primaryImageUrl && (
+                        <img
+                            src={primaryImageUrl}
+                            srcSet={srcSet}
+                            sizes={sizes}
+                            alt={title}
+                            className="h-full w-full object-cover"
+                            loading="lazy"
+                        />
+                    )}
+                </div>
+            }
 			<div className="my-2 flex flex-wrap gap-1">
 				{tags.map((tag) => (
 					<EllipsisBadge
@@ -77,11 +80,17 @@ const ThumbnailCard = React.memo(function ThumbnailCard({
 			{description && <p className="truncate py-2 text-sm">{description}</p>}
 			<div className="mt-auto flex items-center">
 				<p className="text-base">{date ? formatDate(date) : ""}</p>
-				{downloadPath && (
-					<Button variant="ghost" className="ml-4">
-						Download PDF
-					</Button>
-				)}
+				{publicationPdfUrl && (
+						<Button asChild variant="ghost" className="ml-4">
+							<a
+								href={publicationPdfUrl}
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								Download PDF
+							</a>
+						</Button>
+					)}
 			</div>
 		</article>
 	);
