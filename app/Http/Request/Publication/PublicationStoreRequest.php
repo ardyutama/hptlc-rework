@@ -16,7 +16,7 @@ class PublicationStoreRequest extends FormRequest
         return [
             'title' => 'required|string|unique:publications|max:255',
             'abstract' => 'required|string',
-            'publication_file' => 'nullable|file|mimes:pdf',
+            'publication_file' => 'required|file|mimes:pdf',
             'published_at' => 'nullable|date',
             'tag_ids' => 'array|exists:tags,id',
             'author_ids' => 'array|exists:users,id',

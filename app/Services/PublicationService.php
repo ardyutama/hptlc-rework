@@ -24,6 +24,7 @@ class PublicationService
             ->limit($limit)
             ->get();
     }
+
     public function getAllPublication(int $perPage, array $filters): LengthAwarePaginator
     {
         $query = Publication::query()

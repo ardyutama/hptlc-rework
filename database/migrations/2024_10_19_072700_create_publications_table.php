@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title')->unique();
             $table->text('abstract');
             $table->string('slug')->unique()->nullable();
-            $table->binary('publication_file')->nullable();
+            $table->binary('publication_file');
             $table->dateTime('published_at')->nullable();
             $table->timestamps();
         });

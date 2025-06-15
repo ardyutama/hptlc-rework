@@ -69,7 +69,7 @@ class PublicationController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->withInput()->with('flash', [
                 'type' => 'error',
-                'message' => 'An error occurred while creating the publication. '.$e->getMessage(), // Optionally show specific error or a generic one
+                'message' => 'An error occurred while creating the publication. '.$e->getMessage(),
             ]);
         }
     }
@@ -126,7 +126,7 @@ class PublicationController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('flash', [
                 'type' => 'error',
-                'message' => 'An error occurred while deleting the publication. '.$e->getMessage(), // Optionally show specific error
+                'message' => 'An error occurred while deleting the publication. '.$e->getMessage(),
             ]);
         }
     }
