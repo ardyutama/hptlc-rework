@@ -1,4 +1,4 @@
-import FeaturedHero from "@/components/shared/featured-hero/featured-hero";
+import FeaturedHero from "@/components/domain/featured-hero/featured-hero";
 import { MainLayout } from "@/layouts/main-layout";
 import ArticleList from "@/pages/articles/components/article-list";
 import FeaturedArticleHeroList from "@/pages/articles/components/featured-article-hero-list";

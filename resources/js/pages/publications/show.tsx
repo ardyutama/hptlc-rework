@@ -1,4 +1,4 @@
-import EllipsisBadge from "@/components/shared/ellipsis-badge";
+import EllipsisBadge from "@/components/common/ellipsis-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import ContentLayout from "@/layouts/content-layout";

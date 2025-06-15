@@ -1,4 +1,4 @@
-import ThumbnailCard from "@/components/shared/thumbnail-card/thumbnail-card";
+import ThumbnailCard from "@/components/domain/articles/thumbnail-card";
 import { Button } from "@/components/ui/button";
 import ContentLayout from "@/layouts/content-layout";
 import type { PageProps, PaginatedCollection, Publication } from "@/types";

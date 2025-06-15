@@ -1,5 +1,5 @@
-import FeaturedHeroItem from "@/components/shared/featured-hero/featured-hero-item";
-import ThumbnailCard from "@/components/shared/thumbnail-card/thumbnail-card";
+import FeaturedHeroItem from "@/components/domain/featured-hero/featured-hero-item";
+import ThumbnailCard from "@/components/domain/articles/thumbnail-card";
 import type { PageProps, Publication } from "@/types";
 import { usePage } from "@inertiajs/react";
 import type React from "react";

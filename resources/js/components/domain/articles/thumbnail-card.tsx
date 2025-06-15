@@ -1,4 +1,4 @@
-import EllipsisBadge from "@/components/shared/ellipsis-badge";
+import EllipsisBadge from "@/components/common/ellipsis-badge";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/hooks/formatDate";
 import { Link } from "@inertiajs/react";

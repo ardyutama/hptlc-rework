@@ -1,4 +1,4 @@
-import ThumbnailCard from "@/components/shared/thumbnail-card/thumbnail-card";
+import ThumbnailCard from "@/components/domain/articles/thumbnail-card";
 import type { Article, PageProps } from "@/types";
 import { usePage } from "@inertiajs/react";
 import type React from "react";

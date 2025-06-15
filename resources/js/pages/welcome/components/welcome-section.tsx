@@ -1,4 +1,4 @@
-import ThumbnailGrid from "@/components/shared/thumbnail-card/thumbnail-grid";
+import ThumbnailGrid from "@/components/layout-helpers/thumbnail-grid";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import ContentLayout from "@/layouts/content-layout";

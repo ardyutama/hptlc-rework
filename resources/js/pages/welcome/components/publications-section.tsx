@@ -1,4 +1,4 @@
-import ThumbnailCard from "@/components/shared/thumbnail-card/thumbnail-card";
+import ThumbnailCard from "@/components/domain/articles/thumbnail-card";
 import { publicationData } from "@/data/mock-data";
 import type { Publication } from "@/types";
 import type React from "react";

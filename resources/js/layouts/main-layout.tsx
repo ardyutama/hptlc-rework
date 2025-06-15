@@ -1,5 +1,5 @@
-import Footer from "@/components/shared/footer";
-import Header from "@/components/shared/header";
+import Footer from "@/components/common/footer";
+import Header from "@/components/common/header";
 import { Toaster } from "@/components/ui/sonner";
 import { Head } from "@inertiajs/react";
 import type React from "react";
