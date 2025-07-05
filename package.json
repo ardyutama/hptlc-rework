@@ -45,6 +45,7 @@
         "react-day-picker": "^8.10.1",
         "react-dom": "^18.3.1",
         "sonner": "^2.0.3",
+        "swiper": "^11.2.8",
         "tailwind-merge": "^3.0.2",
         "vaul": "^1.1.2"
     }

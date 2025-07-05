@@ -34,10 +34,6 @@ export default function PublicationList() {
 				<h1 className="font-bold text-3xl text-neutral-800 tracking-tight dark:text-neutral-200">
 					All Publications
 				</h1>
-				<Button variant="outline" size="sm" className="flex items-center gap-2">
-					<SlidersHorizontal className="h-4 w-4" />
-					Filter
-				</Button>
 			</div>
 
 			<div className="grid grid-cols-1 gap-8 md:grid-cols-2">

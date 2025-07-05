@@ -6,8 +6,9 @@ import { MainLayout } from "@/layouts/main-layout";
 import { Link } from "@inertiajs/react";
 import { Calendar, ChevronLeft, Download, FileText, Tag } from "lucide-react";
 import type React from "react";
+import {Publication} from "@/types";
 
-function PublicationShow({ publication }) {
+function PublicationShow({ publication }  : Publication) {
 	console.log(publication);
 	return (
 		<ContentLayout className="min-h-screen py-6 md:py-12 lg:py-16">
