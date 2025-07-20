@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { PageProps, Publication } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
-import type React from "react";
+import ImagePublication from '@/assets/img/img_publication.png';
 import {Autoplay, Navigation, Pagination, Parallax, Scrollbar} from "swiper/modules";
 import { SwiperSlide } from "swiper/react";
 import { Swiper } from "swiper/react";
@@ -31,9 +31,17 @@ export default function FeaturedPublicationHeroList() {
 			>
 				<div
 					slot="container-start"
-					className="absolute top-0 left-0 h-full w-[130%] bg-center bg-cover bg-[url(https://swiperjs.com/demos/images/nature-1.jpg)]"
+					className={`absolute top-0 left-0 h-full w-[130%]`}
 					data-swiper-parallax="-23%"
-				/>
+				>
+					<img
+						src={ImagePublication}
+						alt="Featured Publication Background"
+						className="h-full w-full object-cover object-center"
+					>
+					</img>
+				</div>
+					
                 <div className="absolute inset-0  bg-gradient-to-t from-black/80 via-black/50 to-transparent "/>
 
 				{heroPublications.slice(0, MAX_FEATURED_PUBLICATION_HERO).map((pub) => (
