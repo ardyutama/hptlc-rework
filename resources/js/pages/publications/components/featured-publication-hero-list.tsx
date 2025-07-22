@@ -1,9 +1,15 @@
+import ImagePublication from "@/assets/img/img_publication.png";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { PageProps, Publication } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
-import ImagePublication from '@/assets/img/img_publication.png';
-import {Autoplay, Navigation, Pagination, Parallax, Scrollbar} from "swiper/modules";
+import {
+	Autoplay,
+	Navigation,
+	Pagination,
+	Parallax,
+	Scrollbar,
+} from "swiper/modules";
 import { SwiperSlide } from "swiper/react";
 import { Swiper } from "swiper/react";
 
@@ -16,38 +22,37 @@ export default function FeaturedPublicationHeroList() {
 	const MAX_FEATURED_PUBLICATION_HERO = 6;
 
 	return (
-        <section>
+		<section>
 			<Swiper
 				spaceBetween={30}
 				centeredSlides={true}
 				autoplay={{
-				    delay: 5000,
-				    disableOnInteraction: false,
+					delay: 5000,
+					disableOnInteraction: false,
 				}}
-                pagination={true}
+				pagination={true}
 				parallax={true}
-				modules={[ Scrollbar, Parallax, Navigation, Autoplay, Pagination]}
+				modules={[Scrollbar, Parallax, Navigation, Autoplay, Pagination]}
 				className=" h-96 shadow-xl md:h-[400px] lg:h-[450px] xl:h-[500px]"
 			>
 				<div
 					slot="container-start"
-					className={`absolute top-0 left-0 h-full w-[130%]`}
+					className="absolute top-0 left-0 h-full w-[130%]"
 					data-swiper-parallax="-23%"
 				>
 					<img
 						src={ImagePublication}
 						alt="Featured Publication Background"
 						className="h-full w-full object-cover object-center"
-					>
-					</img>
+					/>
 				</div>
-					
-                <div className="absolute inset-0  bg-gradient-to-t from-black/80 via-black/50 to-transparent "/>
+
+				<div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent " />
 
 				{heroPublications.slice(0, MAX_FEATURED_PUBLICATION_HERO).map((pub) => (
 					<SwiperSlide key={pub.id}>
 						<div className="relative h-full w-full">
-                            <div className="flex flex-col justify-end text-white p-6 h-full pb-12">
+							<div className="flex h-full flex-col justify-end p-6 pb-12 text-white">
 								<h3 className="mb-2 font-bold text-3xl leading-tight md:text-4xl">
 									{pub.title}
 								</h3>
@@ -70,11 +75,11 @@ export default function FeaturedPublicationHeroList() {
 										Read More
 									</Link>
 								</Button>
+							</div>
 						</div>
-                        </div>
 					</SwiperSlide>
 				))}
 			</Swiper>
 		</section>
-    );
+	);
 }

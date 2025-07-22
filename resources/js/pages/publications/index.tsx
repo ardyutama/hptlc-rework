@@ -6,7 +6,7 @@ import type React from "react";
 const PublicationPage = () => {
 	return (
 		<>
-            <FeaturedPublicationHeroList />
+			<FeaturedPublicationHeroList />
 			<PublicationList />
 		</>
 	);
