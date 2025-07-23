@@ -125,21 +125,20 @@ export interface PaginationLink {
 	active: boolean;
 }
 
-export interface PaginationMeta {
-	current_page: number;
-	from: number;
-	last_page: number;
-	links: PaginationLink[];
-	path: string;
-	per_page: number;
-	to: number;
-	total: number;
-}
-
 export interface PaginatedCollection<T> {
 	data: T[];
-	links: PaginationLink[];
-	meta: PaginationMeta;
+    current_page: number;
+    first_page_url: string | null;
+    from: number | null;
+    last_page: number;
+    last_page_url: string | null;
+    links: PaginationLink[];
+    next_page_url: string | null;
+    path: string;
+    per_page: number;
+    prev_page_url: string | null;
+    to: number | null;
+    total: number;
 }
 
 export type PageProps<
