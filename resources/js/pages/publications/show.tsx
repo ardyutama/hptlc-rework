@@ -3,11 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import ContentLayout from "@/layouts/content-layout";
 import { MainLayout } from "@/layouts/main-layout";
+import type { Publication } from "@/types";
 import { Link } from "@inertiajs/react";
 import { Calendar, ChevronLeft, Download, FileText, Tag } from "lucide-react";
 import type React from "react";
 
-function PublicationShow({ publication }) {
+function PublicationShow({ publication }: Publication) {
 	console.log(publication);
 	return (
 		<ContentLayout className="min-h-screen py-6 md:py-12 lg:py-16">

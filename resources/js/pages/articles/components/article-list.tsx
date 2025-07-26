@@ -1,4 +1,4 @@
-import ThumbnailCard from "@/components/domain/articles/thumbnail-card";
+import ArticleCard from "@/components/domain/articles/article-card";
 import { Button } from "@/components/ui/button";
 import ContentLayout from "@/layouts/content-layout";
 import type { Article, PageProps, PaginatedCollection } from "@/types";
@@ -39,7 +39,7 @@ export default function ArticleList() {
 
 			<div className="grid grid-cols-1 gap-6 pt-6 md:grid-cols-2">
 				{articles.data.slice(0, MAX_CONTENT).map((item) => (
-					<ThumbnailCard
+					<ArticleCard
 						key={item.id}
 						id={item.id}
 						thumbnail_image_url={item.thumbnail_image_url}

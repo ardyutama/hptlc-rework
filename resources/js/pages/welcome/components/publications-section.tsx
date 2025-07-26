@@ -1,23 +1,28 @@
-import ThumbnailCard from "@/components/domain/articles/thumbnail-card";
-import { publicationData } from "@/data/mock-data";
-import type { Publication } from "@/types";
+import PublicationCard from "@/components/domain/publications/publication-card";
+import type { PageProps, Publication } from "@/types";
+import { usePage } from "@inertiajs/react";
 import type React from "react";
 
-const MAX_CONTENT = 4;
+interface PublicationsPageProps extends PageProps {
+	latestPublications: Publication[];
+}
 
 export default function PublicationsSection() {
+	const MAX_CONTENT = 4;
+	const { latestPublications } = usePage<PublicationsPageProps>().props;
+
 	return (
 		<>
-			{publicationData.slice(0, MAX_CONTENT).map((item: Publication) => (
-				<ThumbnailCard
+			{latestPublications.slice(0, MAX_CONTENT).map((item: Publication) => (
+				<PublicationCard
 					key={item.id}
 					id={item.id}
 					tags={item.tags.map((tag) => tag.name)}
-					hrefLink={"publications/show"}
+					hrefLink={item.slug}
 					title={item.title}
 					description={item.abstract}
 					date={item.published_at}
-					downloadPath={item.publication_file}
+					publicationPdfUrl={item.publication_file}
 				/>
 			))}
 		</>

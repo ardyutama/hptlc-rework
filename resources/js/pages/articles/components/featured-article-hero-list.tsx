@@ -1,5 +1,5 @@
+import ArticleCard from "@/components/domain/articles/article-card";
 import FeaturedHeroItem from "@/components/domain/featured-hero/featured-hero-item";
-import ThumbnailCard from "@/components/domain/articles/thumbnail-card";
 import type { Article, PageProps } from "@/types";
 import { usePage } from "@inertiajs/react";
 import type React from "react";
@@ -15,7 +15,7 @@ export default function FeaturedArticleHeroList() {
 		<>
 			{heroArticles.slice(0, MAX_FEATURED_ARTICLE_HERO).map((item) => (
 				<FeaturedHeroItem key={item.id}>
-					<ThumbnailCard
+					<ArticleCard
 						key={item.id}
 						id={item.id}
 						thumbnail_image_url={item.thumbnail_image_url}
