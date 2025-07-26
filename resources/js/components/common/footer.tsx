@@ -4,13 +4,12 @@ import { ExternalLink, Instagram, Mail, MapPin, Phone } from "lucide-react";
 export default function Footer() {
 	return (
 		<footer className="relative overflow-hidden bg-neutral-950 py-12 text-white md:py-16 lg:py-20">
-			<div className="pointer-events-none absolute inset-0 bg-radial-gradient-to-t from-transparent via-neutral-900/10 to-transparent"></div>
+			<div className="pointer-events-none absolute inset-0 bg-radial-gradient-to-t from-transparent via-neutral-900/10 to-transparent" />
 
 			<ContentLayout>
 				<div className="relative z-10 w-full px-6 md:px-8 lg:px-12">
 					<div className="grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-3 lg:grid-cols-5">
 						{" "}
-						{/* Reduced gap-y */}
 						<div className="col-span-1 flex flex-col justify-between md:col-span-3 lg:col-span-2">
 							<h4 className="font-extrabold text-3xl text-neutral-100 leading-tight tracking-tight lg:text-4xl">
 								HPTLC
@@ -172,10 +171,8 @@ export default function Footer() {
 						</div>
 					</div>
 
-					{/* Footer Bottom / Copyright */}
 					<div className="mt-12 border-neutral-800 border-t pt-6 text-center text-neutral-600 text-xs">
 						{" "}
-						{/* Reduced mt and pt, smaller text */}
 						<p>
 							© {new Date().getFullYear()} HPTLC Association Indonesia Chapter.
 							All rights reserved.

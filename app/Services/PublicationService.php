@@ -66,7 +66,7 @@ class PublicationService
 
         $query->orderBy($sortField, $sortDirection);
 
-        return $query->paginate($perPage);
+        return $query->paginate($perPage)->withQueryString();
     }
 
     public function createPublication(PublicationStoreRequest $request): Publication
