@@ -9,7 +9,6 @@ import { Calendar, ChevronLeft, Download, FileText, Tag } from "lucide-react";
 import type React from "react";
 
 function PublicationShow({ publication }: Publication) {
-	console.log(publication);
 	return (
 		<ContentLayout className="min-h-screen py-6 md:py-12 lg:py-16">
 			<Link
@@ -21,11 +20,9 @@ function PublicationShow({ publication }: Publication) {
 			</Link>
 
 			<div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-				{/* Main Content */}
 				<div className="lg:col-span-8">
 					<Card className="overflow-hidden">
 						<CardContent className="p-6">
-							{/* Publication Header */}
 							<div className="mb-6">
 								<h1 className="mb-4 font-bold text-2xl tracking-tight md:text-3xl lg:text-4xl">
 									Tes Title
@@ -87,7 +84,6 @@ function PublicationShow({ publication }: Publication) {
 					</Card>
 				</div>
 
-				{/* Sidebar - can contain authors info, publication details, etc. */}
 				<div className="lg:col-span-4">
 					<Card>
 						<CardContent className="p-6">

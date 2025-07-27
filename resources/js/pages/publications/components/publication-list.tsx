@@ -22,7 +22,6 @@ interface PublicationHeroProps extends PageProps {
 
 export default function PublicationList() {
 	const { publications, tags, filters } = usePage<PublicationHeroProps>().props;
-	console.log("Publications:", publications);
 	const { current_page, last_page, links: paginationLinks } = publications;
 
 	const handleTagFilterChange = (selectedTagIds: string[]) => {
