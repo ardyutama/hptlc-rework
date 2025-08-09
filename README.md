@@ -1,66 +1,93 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Specification: HPTLC Indonesia Researcher Portal
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This document outlines the official specification, architecture, and development guidelines for the HPTLC Indonesia web application. Its purpose is to serve as the single source of truth for all stakeholders, developers, and future contributors.
 
-## About Laravel
+## 1. Project Purpose & Vision
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+* **Purpose:** To serve as the central digital platform for the Indonesian HPTLC (High-Performance Thin-Layer Chromatography) community. The website will showcase Indonesian researchers and their work, facilitate knowledge sharing, and inform the public about the organization's activities.
+* **Vision:** To elevate the visibility of Indonesian scientific contributions in the field of HPTLC, foster a collaborative research environment, and become the definitive, accessible resource for HPTLC knowledge in Indonesia.
+* **Core Principles:**
+    * **Performance & Accessibility:** The site must be lightweight, fast-loading on low-speed networks, and accessible to people with disabilities.
+    * **Scalability:** The architecture must support future growth in users, content, and features without major overhauls.
+    * **Ease of Use:** The user interface (UI) and user experience (UX) should be intuitive for both content consumers and researcher contributors.
+    * **Discoverability:** Content must be structured for excellent Search Engine Optimization (SEO) to maximize reach.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 2. Target Audience
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1.  **Researchers & Members:** Active members of the HPTLC organization who need a platform to publish their work, gain visibility, and connect with peers. They are the primary content creators.
+2.  **Public & Students:** Visitors (e.g., university students, aspiring scientists, journalists) who want to learn about HPTLC, find Indonesian research, and discover experts in the field.
+3.  **Organization Administrators:** Internal users responsible for managing members, verifying content quality, and updating organizational information.
 
-## Learning Laravel
+## 3. Core Modules & Functional Requirements
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+The application is composed of several key modules, as defined by the database schema.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+* **User & Member Management**
+    * **Schema:** `users`, `members` tables
+    * Users can register and log in to the system.
+    * Each `user` account has a `role` of either 'admin' or 'user'.
+    * A registered `user` is linked to a `member` profile, which contains detailed information like name, university, and contact details.
+    * Admins have permissions to manage users and site content.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+* **Publications Module**
+    * **Schema:** `publications`, `publication_user`, `publication_tag` tables
+    * Authenticated researchers (`users`) can submit publications.
+    * Each publication requires a `title` and `abstract`.
+    * A binary `publication_file` (e.g., PDF) must be uploaded for each publication.
+    * Publications can be associated with multiple authors (`publication_user`) and `tags` (`publication_tag`).
+    * Admins can review and approve publications, setting a `published_at` date.
 
-## Laravel Sponsors
+* **Articles Module**
+    * **Schema:** `articles`, `article_user`, `article_tag` tables
+    * This module is for less formal content like blog posts, news, and tutorials.
+    * Articles have a `status` of 'draft', 'published', or 'archived'.
+    * Content is stored as a path to a Markdown file (`markdown_path`).
+    * Includes metadata like `reading_time` and `view_count` to be managed by the application.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+* **Media & Gallery Module**
+    * **Schema:** `media` table
+    * A centralized system for managing all media assets (images, documents).
+    * Media is polymorphic (`ulidMorphs('model')`), meaning it can be attached to various models like Articles, Publications, or Member profiles.
+    * Handles file uploads, storage on disk, and potential image conversions/optimizations (`generated_conversions`).
 
-### Premium Partners
+## 4. Future Feature: AI-Assisted Writing Co-pilot
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+This feature will be a key differentiator, providing value to researcher members.
 
-## Contributing
+* **Goal:** To provide researchers with an AI tool that reviews their draft publications and articles to improve grammar, clarity, and style **without** altering the scientific context or meaning.
+* **User Story:** "As a researcher, before submitting my article, I want to run it through an AI reviewer to catch grammatical errors and suggest more professional phrasing, so I can present my work with higher confidence."
+* **AI Mandate & Constraints:**
+    * **MUST:** Suggest improvements for grammar, spelling, punctuation, and sentence structure.
+    * **MUST:** Preserve the original scientific context, terminology, and data.
+    * **MUST NOT:** Introduce new scientific claims, alter data, or change core interpretations.
+    * **SHOULD:** Provide suggestions as non-destructive overlays or trackable changes that the user can accept or reject individually.
+    * **Input:** The text content from the article's `markdown_path` or publication's `abstract`.
+    * **Output:** A JSON object containing an array of suggestions, each with the original text, suggested change, and an explanation for the change.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 5. Technical Stack & Architecture
 
-## Code of Conduct
+This project uses a modern, monolithic architecture with a clear separation of concerns.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+* **Backend:** Laravel. The application logic, routing, and data management are handled by a robust PHP framework. The database schema is managed via Laravel Migrations.
+* **Frontend:** React with Inertia.js. This provides the power and interactivity of a React single-page application (SPA) without the complexity of building and managing a separate API.
+* **Styling:** Tailwind CSS with the `@tailwindcss/vite` plugin, using a utility-first approach for rapid, consistent, and responsive design.
+* **UI Components:** A combination of Radix UI primitives (for accessibility) and other libraries like `lucide-react` (icons) and `sonner` (notifications) to build a high-quality, accessible component library.
+* **Tooling:**
+    * **Vite:** For fast frontend asset bundling and an optimized development experience.
+    * **TypeScript:** For type safety in the frontend codebase.
+    * **@biomejs/biome:** For code formatting and linting to maintain code quality.
 
-## Security Vulnerabilities
+## 6. Non-Functional Requirements & Guidelines
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+* **Performance:**
+    * All images uploaded via the `media` manager must be optimized (e.g., converted to WebP, compressed).
+    * Leverage Laravel's caching (`cache` table) for frequently accessed data like published articles, tags, and settings.
+    * Utilize Vite's code-splitting and tree-shaking to keep JavaScript bundles small.
+* **SEO:**
+    * The `slug` column in `articles`, `publications`, and `tags` must be used to generate clean, human-readable URLs.
+    * Inertia.js provides server-side rendering (SSR) capabilities which should be utilized to ensure pages are fully rendered for search engine crawlers.
+    * Dynamically generate `<title>` and `<meta description>` tags for each article and publication page.
+* **UI/UX & Responsiveness:**
+    * All pages must be fully responsive and tested on screen sizes from 360px (mobile) to 1920px (desktop) and above.
+    * Adhere to WCAG 2.1 AA accessibility standards. The use of Radix UI components provides a strong foundation for this.
+    * Animations should be purposeful and smooth, using libraries like `tailwindcss-animate`.
