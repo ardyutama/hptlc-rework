@@ -1,24 +1,17 @@
 import ContentLayout from "@/layouts/content-layout";
 import { MainLayout } from "@/layouts/main-layout";
-import type { PageProps } from "@/types";
+import type {PageProps, Tag} from "@/types";
 import type React from "react";
+import PublicationForm from "@/pages/publications/components/publication-form";
 
 interface PublicationCreatePageProps extends PageProps {
-    tags: { id: string; name: string }[];
+    tags: Tag[];
 }
 
 function PublicationCreatePage({ tags }: PublicationCreatePageProps) {
     return (
         <ContentLayout>
-            <div className="mb-8 ">
-                <h1 className="font-bold text-3xl tracking-tight">
-                    Create New Publication
-                </h1>
-                <p className="mt-2 text-gray-500">
-                    Compose a new article using Markdown formatting.
-                </p>
-            </div>
-            {/*<ArticleForm tags={tags} statuses={statuses} isEdit={false} />*/}
+            <PublicationForm tags={tags} />
         </ContentLayout>
     );
 }

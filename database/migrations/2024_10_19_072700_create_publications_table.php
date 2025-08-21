@@ -15,8 +15,8 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->string('title')->unique();
             $table->text('abstract');
-            $table->string('slug')->unique()->nullable();
-            $table->binary('publication_file');
+            $table->string('slug')->unique();
+            $table->string('status')->default('in_review');
             $table->dateTime('published_at')->nullable();
             $table->timestamps();
         });

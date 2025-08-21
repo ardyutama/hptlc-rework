@@ -58,9 +58,8 @@ class PublicationController extends Controller
 
     public function store(PublicationStoreRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
         try {
-            $publication = $this->publicationService->createPublication($validated);
+            $publication = $this->publicationService->createPublication($request);
 
             return redirect()->route('publications.index', $publication)->with('flash', [
                 'type' => 'success',
