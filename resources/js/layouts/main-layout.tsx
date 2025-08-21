@@ -13,13 +13,12 @@ export function MainLayout({ title, children }: MainLayoutProps) {
 	return (
 		<>
 			<Head title={title} />
-            <Toaster richColors position="bottom-right" duration={5000} />
             <FlashMessageHandler />
+            <Toaster richColors position="bottom-right" duration={1500} />
 			<main className="relative flex min-h-svh flex-1 flex-col bg-background">
 				<Header />
 				{children}
 				<Footer />
-				<Toaster />
 			</main>
 		</>
 	);
