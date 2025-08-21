@@ -5,7 +5,8 @@
         "build": "vite build",
         "dev": "vite",
         "lint:client": "npx @biomejs/biome check --write ./resources/js/",
-        "lint:server": "./vendor/bin/pint"
+        "lint:server": "./vendor/bin/pint",
+        "tree": "treee -l 4 --ignore \"node_modules/, vendor/, storage/\" --link"
     },
     "devDependencies": {
         "@biomejs/biome": "1.9.4",
@@ -48,6 +49,7 @@
         "sonner": "^2.0.3",
         "swiper": "^11.2.8",
         "tailwind-merge": "^3.0.2",
+        "tree-cli": "^0.6.7",
         "vaul": "^1.1.2"
     }
 }
