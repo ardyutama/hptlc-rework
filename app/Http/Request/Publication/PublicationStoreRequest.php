@@ -14,7 +14,7 @@ class PublicationStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
+            'title' => 'required|string|unique:publications|max:255',
             'abstract' => 'required|string',
             'publication_file' => 'required|file|mimes:pdf|max:10240',
             'existing_tag_ids' => 'nullable|array',
