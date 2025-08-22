@@ -7,7 +7,6 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import TagsSelector from "@/pages/articles/components/article-form/tag-selector";
-import type { FormErrors } from "@/types";
 import FormFooter from "@/pages/publications/components/publication-form/form-footer";
 import PublicationBasicInfo from "@/pages/publications/components/publication-form/publication-basic-info";
 import PublicationFileUpload from "@/pages/publications/components/publication-form/publication-file-upload";
@@ -15,6 +14,7 @@ import type {
 	PublicationFormData,
 	PublicationFormProps,
 } from "@/pages/publications/components/publication-form/types";
+import type { FormErrors } from "@/types";
 import { useForm } from "@inertiajs/react";
 import { useState } from "react";
 

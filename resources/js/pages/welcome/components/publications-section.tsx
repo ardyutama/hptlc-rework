@@ -10,20 +10,18 @@ interface PublicationsPageProps extends PageProps {
 export default function PublicationsSection() {
 	const MAX_CONTENT = 4;
 	const { latestPublications } = usePage<PublicationsPageProps>().props;
-
 	return (
 		<>
 			{latestPublications.slice(0, MAX_CONTENT).map((item: Publication) => (
-				<PublicationCard
-					key={item.id}
-					id={item.id}
-					tags={item.tags.map((tag) => tag.name)}
-					hrefLink={item.slug}
-					title={item.title}
-					description={item.abstract}
-					date={item.published_at}
-					publicationPdfUrl={item.publication_file}
-				/>
+                <PublicationCard
+                    key={item.id}
+                    tags={item.tags}
+                    slug={item.slug}
+                    title={item.title}
+                    abstract={item.abstract}
+                    published_at={item.published_at}
+                    authors={item.authors}
+                />
 			))}
 		</>
 	);

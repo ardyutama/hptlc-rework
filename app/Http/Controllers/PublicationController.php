@@ -76,9 +76,10 @@ class PublicationController extends Controller
     public function show(Publication $publication): InertiaResponse
     {
         $publication->load('tags', 'authors.member');
-
+        $relatedPublications = $this->publicationService->getRelatedPublications($publication, 4);
         return Inertia::render('publications/show', [
             'publication' => $publication,
+            'relatedPublications' => $relatedPublications,
         ]);
     }
 

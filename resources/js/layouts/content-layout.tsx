@@ -33,7 +33,6 @@ export default function ContentLayout({
 }: ContentLayoutProps) {
 	return (
 		<section
-			// Apply responsive padding to the section itself, ensuring content never touches edges
 			className={cn(
 				"flex w-full flex-1 justify-center",
 				paddingX,
@@ -41,7 +40,6 @@ export default function ContentLayout({
 				className,
 			)}
 		>
-			{/* The inner div constrains the content width */}
 			<div className={cn("w-full", maxWidth, contentClassName)}>{children}</div>
 		</section>
 	);

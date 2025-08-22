@@ -23,7 +23,6 @@ interface PublicationHeroProps extends PageProps {
 export default function PublicationList() {
 	const { publications, tags, filters } = usePage<PublicationHeroProps>().props;
 	const { current_page, last_page, links: paginationLinks } = publications;
-
 	const handleTagFilterChange = (selectedTagIds: string[]) => {
 		router.get(
 			route("publications.index"),
@@ -67,13 +66,12 @@ export default function PublicationList() {
 					publications.data.map((item) => (
 						<PublicationCard
 							key={item.id}
-							id={item.id}
-							tags={item.tags.map((tag) => tag.name)}
-							hrefLink={item.slug}
+							tags={item.tags}
+							slug={item.slug}
 							title={item.title}
-							description={item.abstract}
-							date={item.published_at}
-							publicationPdfUrl={item.publication_file}
+							abstract={item.abstract}
+                            published_at={item.published_at}
+                            authors={item.authors}
 						/>
 					))
 				) : (

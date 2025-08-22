@@ -25,7 +25,7 @@ class HomeController extends Controller
             ->get();
 
         $latestPublications = Publication::query()
-            ->with('tags', 'authors')
+            ->with('tags', 'authors.member')
             ->whereNotNull('published_at')
             ->where('published_at', '<=', Carbon::now())
             ->orderBy('published_at', 'desc')
