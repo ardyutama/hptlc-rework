@@ -92,7 +92,7 @@ export type Publication = {
 	title: string;
 	abstract: string;
 	slug: string;
-	publication_file: File;
+    publication_file_url: string;
 	published_at: string;
 	created_at: string;
 	updated_at: string;

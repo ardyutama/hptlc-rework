@@ -121,6 +121,25 @@ class PublicationService
         }
     }
 
+    public function getRelatedPublications(Publication $currentPublication, int $limit = 4): Collection
+    {
+        $tagIds = $currentPublication->tags->pluck('id');
+
+        if ($tagIds->isEmpty()) {
+            return new Collection();
+        }
+
+        return Publication::query()
+            ->with(['tags', 'authors.member'])
+            ->where('id', '!=', $currentPublication->id) // Exclude the current publication
+            ->whereHas('tags', fn ($q) => $q->whereIn('tags.id', $tagIds)) // Must have at least one common tag
+            ->withCount(['tags' => fn ($q) => $q->whereIn('tags.id', $tagIds)]) // Count common tags for ranking
+            ->orderByDesc('tags_count') // Order by most common tags
+            ->orderByDesc('published_at') // Then by most recent
+            ->take($limit)
+            ->get();
+    }
+
     public function updatePublication(Publication $publication, PublicationUpdateRequest $request): Publication
     {
         DB::beginTransaction();

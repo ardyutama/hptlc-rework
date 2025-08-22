@@ -1,54 +1,65 @@
-import EllipsisBadge from "@/components/common/ellipsis-badge";
-import { formatDate } from "@/hooks/formatDate";
+import { Badge } from "@/components/ui/badge";
+import type { Publication } from "@/types";
 import { Link } from "@inertiajs/react";
-import { Tag } from "lucide-react";
-import React from "react";
+import { Calendar, Users } from "lucide-react";
+import {formatDate} from "@/hooks/formatDate";
 
-type CardProps = {
-	id?: string;
-	tags: string[];
-	thumbnailImage?: string | null;
-	thumbnail_image_url?: string | null;
-	featured_image_url?: string | null;
-	title: string;
-	date?: string | null;
-	hrefLink: string;
-	description?: string;
-	publicationPdfUrl?: File;
-};
+type PublicationCardProps = Pick<
+	Publication,
+	"slug" | "title" | "abstract" | "authors" | "tags" | "published_at"
+>;
 
-const PublicationCard = React.memo(function PublicationCard({
-	id,
-	tags,
+export default function PublicationCard({
+	slug,
 	title,
-	date,
-	hrefLink,
-	description,
-}: CardProps) {
-	return (
-		<article className="flex h-full flex-col">
-			<div className="my-2 flex flex-wrap gap-1">
-				{tags.map((tag) => (
-					<EllipsisBadge
-						key={tag}
-						icon={<Tag className="h-3 w-3 flex-shrink-0" />}
-						maxWidth="max-w-[150px]"
-					>
-						{tag}
-					</EllipsisBadge>
-				))}
-			</div>
-			<Link href={`/publications/${hrefLink}`} className="flex-grow">
-				<h4 className="inline-block cursor-pointer pb-2 font-bold text-2xl tracking-tight hover:underline hover:decoration-solid">
-					{title}
-				</h4>
-			</Link>
-			{description && <p className="truncate py-2 text-sm">{description}</p>}
-			<div className="mt-auto flex items-center">
-				<p className="text-base">{date ? formatDate(date) : ""}</p>
-			</div>
-		</article>
-	);
-});
+	abstract,
+	authors,
+	tags,
+	published_at,
+}: PublicationCardProps) {
+	const formattedDate = published_at
+		? formatDate(published_at)
+		: "N/A";
 
-export default PublicationCard;
+	const authorList = authors
+		.map((author) => `${author?.member?.first_name} ${author?.member?.last_name}`)
+		.join(", ");
+
+	return (
+		<Link
+			href={route("publications.show", slug)}
+			className="group hover:-translate-y-1 flex h-full flex-col rounded-lg border bg-card text-card-foreground shadow-sm transition-transform duration-200 ease-in-out"
+		>
+			<div className="flex h-full flex-col justify-between p-6">
+				<div>
+					<div className="mb-3 flex flex-wrap gap-2">
+						{tags.slice(0, 3).map((tag) => (
+							<Badge key={tag.id} variant="secondary">
+								{tag.name}
+							</Badge>
+						))}
+					</div>
+
+					<h2 className="mb-2 font-bold text-neutral-800 text-xl tracking-tight group-hover:text-blue-600 dark:text-neutral-200">
+						{title}
+					</h2>
+
+					<p className="mb-4 line-clamp-3 text-neutral-600 text-sm dark:text-neutral-400">
+						{abstract}
+					</p>
+				</div>
+
+				<div className="mt-auto space-y-3 border-t pt-4 text-neutral-500 text-xs dark:text-neutral-400">
+					<div className="flex items-start gap-2">
+						<Users className="h-4 w-4 shrink-0" />
+						<span className="font-medium">{authorList}</span>
+					</div>
+					<div className="flex items-center gap-2">
+						<Calendar className="h-4 w-4 shrink-0" />
+						<span>{formattedDate}</span>
+					</div>
+				</div>
+			</div>
+		</Link>
+	);
+}
