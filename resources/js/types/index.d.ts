@@ -141,6 +141,10 @@ export interface PaginatedCollection<T> {
 	total: number;
 }
 
+export type FormErrors = {
+	[key: string]: string;
+};
+
 export type PageProps<
 	T extends Record<string, unknown> = Record<string, unknown>,
 > = T & {

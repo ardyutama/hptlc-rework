@@ -27,7 +27,7 @@ class Publication extends Model implements HasMedia
     ];
 
     protected $appends = [
-        'publication_file_url'
+        'publication_file_url',
     ];
 
     public function getPublicationFileUrlAttribute(): ?string

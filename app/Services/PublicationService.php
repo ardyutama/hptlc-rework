@@ -92,7 +92,7 @@ class PublicationService
 
             $newTagNames = $request->input('new_tag_names', []);
 
-            if (!empty($newTagNames)) {
+            if (! empty($newTagNames)) {
                 foreach ($newTagNames as $tagName) {
                     $newTag = Tag::firstOrCreate(
                         ['slug' => Str::slug($tagName)],
@@ -102,7 +102,7 @@ class PublicationService
                 }
             }
 
-            if (!empty($allTagIds)) {
+            if (! empty($allTagIds)) {
                 $publication->tags()->sync(array_unique($allTagIds));
             }
 
