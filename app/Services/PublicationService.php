@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\Request\Publication\PublicationStoreRequest;
 use App\Http\Request\Publication\PublicationUpdateRequest;
 use App\Models\Publication;
+use App\Models\Tag;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -73,21 +74,41 @@ class PublicationService
     {
         DB::beginTransaction();
         try {
-            $slug = Str::slug($request['title']);
+            $slug = Str::slug($request->input('title'));
 
             $publication = Publication::create([
-                'title' => $request['title'],
-                'abstract' => $request['abstract'],
+                'title' => $request->input('title'),
+                'abstract' => $request->input('abstract'),
                 'slug' => $slug,
-                'published_at' => $request['published_at'] ?? now(),
+                'status' => 'in_review',
+                'published_at' => $request->input('published_at') ?? now(),
             ]);
 
             if (auth()->check()) {
                 $publication->authors()->attach(auth()->id());
             }
 
-            if (! empty($request['tag_ids'])) {
-                $publication->tags()->attach($request['tag_ids']);
+            $allTagIds = $request->input('existing_tag_ids', []);
+
+            $newTagNames = $request->input('new_tag_names', []);
+
+            if (! empty($newTagNames)) {
+                foreach ($newTagNames as $tagName) {
+                    $newTag = Tag::firstOrCreate(
+                        ['slug' => Str::slug($tagName)],
+                        ['name' => $tagName]
+                    );
+                    $allTagIds[] = $newTag->id;
+                }
+            }
+
+            if (! empty($allTagIds)) {
+                $publication->tags()->sync(array_unique($allTagIds));
+            }
+
+            if ($request->hasFile('publication_file') && $request->file('publication_file')->isValid()) {
+                $publication->addMediaFromRequest('publication_file')
+                    ->toMediaCollection('publications');
             }
 
             DB::commit();

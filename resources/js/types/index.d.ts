@@ -92,7 +92,7 @@ export type Publication = {
 	title: string;
 	abstract: string;
 	slug: string;
-	publication_file: string;
+	publication_file: File;
 	published_at: string;
 	created_at: string;
 	updated_at: string;
@@ -140,6 +140,10 @@ export interface PaginatedCollection<T> {
 	to: number | null;
 	total: number;
 }
+
+export type FormErrors = {
+	[key: string]: string;
+};
 
 export type PageProps<
 	T extends Record<string, unknown> = Record<string, unknown>,

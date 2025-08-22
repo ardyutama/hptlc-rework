@@ -19,7 +19,6 @@ class PublicationSeeder extends Seeder
                 'title' => 'The Future of AI Research',
                 'abstract' => 'An overview of current trends and future directions in Artificial Intelligence research.',
                 'slug' => 'the-future-of-ai-research',
-                'publication_file' => base64_encode('dummy binary data for file 1'), // Placeholder binary
                 'published_at' => Carbon::parse('2024-01-10 10:00:00'),
             ],
             [
@@ -27,7 +26,6 @@ class PublicationSeeder extends Seeder
                 'title' => 'Climate Change Impacts on Cities',
                 'abstract' => 'Analyzing the effects of global warming on urban infrastructure and populations.',
                 'slug' => 'climate-change-impacts-cities',
-                'publication_file' => base64_encode('dummy binary data for file 3'),
                 'published_at' => Carbon::parse('2024-02-01 11:00:00'),
             ],
             [
@@ -35,7 +33,6 @@ class PublicationSeeder extends Seeder
                 'title' => 'Blockchain Technology Explained',
                 'abstract' => 'A comprehensive guide to understanding blockchain principles and applications.',
                 'slug' => 'blockchain-explained',
-                'publication_file' => base64_encode('dummy binary data for file 2'), // Placeholder binary
                 'published_at' => null, // Unpublished
             ],
             [
@@ -43,7 +40,6 @@ class PublicationSeeder extends Seeder
                 'title' => 'Renewable Energy Sources',
                 'abstract' => 'Exploring sustainable energy options and their viability.',
                 'slug' => 'renewable-energy',
-                'publication_file' => base64_encode('dummy binary data for file 4'), // No file
                 'published_at' => Carbon::parse('2024-04-15 13:00:00'),
             ],
         ];

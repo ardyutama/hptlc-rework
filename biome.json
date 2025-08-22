@@ -35,11 +35,13 @@
                     "options": {
                         "attributes": ["classList"],
                         "functions": ["clsx", "cva", "cn"]
-                    }
+                    },
+                    "level": "info"
                 }
             },
             "correctness": {
-                "noChildrenProp": "off"
+                "noChildrenProp": "off",
+                "useExhaustiveDependencies": "warn"
             }
 		}
 	},

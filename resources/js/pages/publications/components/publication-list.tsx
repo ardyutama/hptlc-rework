@@ -56,9 +56,9 @@ export default function PublicationList() {
 
 			<div className="mb-8">
 				<TagFilter
-					availableTags={tags} // All tags from the backend
-					initialSelectedTagIds={filters.tag || []} // Currently selected tags from the URL
-					onTagsChange={handleTagFilterChange} // Callback when selected tags change
+					availableTags={tags}
+					initialSelectedTagIds={filters.tag || []}
+					onTagsChange={handleTagFilterChange}
 				/>
 			</div>
 
@@ -83,7 +83,7 @@ export default function PublicationList() {
 				)}
 			</div>
 
-			{publications.data.length > 0 && ( // Only show pagination if there are publications
+			{publications.data.length > 0 && (
 				<div className="flex items-center justify-center gap-4 pt-12 pb-8">
 					<Button
 						variant="outline"

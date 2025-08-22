@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Publication extends Model
+class Publication extends Model implements HasMedia
 {
-    use HasUlids;
+    use HasUlids, InteractsWithMedia;
 
     protected $fillable = [
         'title',
@@ -16,12 +18,22 @@ class Publication extends Model
         'publication_file',
         'published_at',
         'slug',
+        'status',
     ];
 
     protected $casts = [
         'published_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
+
+    protected $appends = [
+        'publication_file_url',
+    ];
+
+    public function getPublicationFileUrlAttribute(): ?string
+    {
+        return $this->getFirstMediaUrl('publications');
+    }
 
     public function getRouteKeyName(): string
     {

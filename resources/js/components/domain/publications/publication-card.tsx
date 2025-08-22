@@ -1,5 +1,4 @@
 import EllipsisBadge from "@/components/common/ellipsis-badge";
-import { Button } from "@/components/ui/button";
 import { formatDate } from "@/hooks/formatDate";
 import { Link } from "@inertiajs/react";
 import { Tag } from "lucide-react";
@@ -15,7 +14,7 @@ type CardProps = {
 	date?: string | null;
 	hrefLink: string;
 	description?: string;
-	publicationPdfUrl?: string;
+	publicationPdfUrl?: File;
 };
 
 const PublicationCard = React.memo(function PublicationCard({
