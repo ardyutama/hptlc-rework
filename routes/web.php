@@ -13,6 +13,7 @@ Route::get('/', [HomeController::class, 'index'])->name('welcome');
 
 Route::resource('publications', PublicationController::class);
 
+Route::post('/publications/{publication}', [PublicationController::class, 'updatePublication'])->name('publications.update');
 Route::get('/articles', [ArticleController::class, 'index'])->name('articles');
 
 Route::middleware('auth')->group(function () {

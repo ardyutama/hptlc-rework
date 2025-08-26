@@ -8,6 +8,16 @@ export interface User {
 	member?: Member | null;
 }
 
+export interface AuthenticatedUser {
+    id: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    university_name?: string;
+    role: string;
+}
+
+
 export interface UserData {
 	email: string;
 	id: string;
@@ -149,7 +159,7 @@ export type PageProps<
 	T extends Record<string, unknown> = Record<string, unknown>,
 > = T & {
 	auth: {
-		user: User;
+		user: AuthenticatedUser;
 	};
 	ziggy: Config & { location: string };
 	flash: {

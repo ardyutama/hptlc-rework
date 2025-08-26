@@ -84,6 +84,8 @@ class PublicationService
                 'published_at' => $request->input('published_at') ?? now(),
             ]);
 
+            Log::info('Publication: '.$publication);
+
             if (auth()->check()) {
                 $publication->authors()->attach(auth()->id());
             }
@@ -140,29 +142,41 @@ class PublicationService
             ->get();
     }
 
-    public function updatePublication(Publication $publication, PublicationUpdateRequest $request): Publication
+    public function updatePublication(PublicationUpdateRequest $request, Publication $publication): Publication
     {
         DB::beginTransaction();
         try {
-            if (! empty($validated['title'])) {
+            $validated = $request->validated();
+            $allTagIds = $validated['existing_tag_ids'] ?? [];
+            if (!empty($validated['new_tag_names'])) {
+                foreach ($validated['new_tag_names'] as $tagName) {
+                    $newTag = Tag::firstOrCreate(
+                        ['slug' => Str::slug($tagName)],
+                        ['name' => $tagName]
+                    );
+                    $allTagIds[] = $newTag->id;
+                }
+            }
+            $publication->tags()->sync($allTagIds);
+            if (isset($validated['author_ids'])) {
+                $publication->authors()->sync($validated['author_ids']);
+            }
+
+            if ($request->hasFile('publication_file')) {
+                $publication->clearMediaCollection('publications');
+                $publication->addMediaFromRequest('publication_file')
+                    ->toMediaCollection('publications');
+            }
+
+            if (!empty($validated['title'])) {
                 $validated['slug'] = Str::slug($validated['title']);
             }
 
-            $publication->update(array_filter($validated, function ($value) {
-                return $value !== null;
-            }));
-
-            if (isset($validated['tag_ids'])) {
-                $publication->tags()->sync($validated['tag_ids']);
-            }
-
-            if (isset($validated['author_ids'])) {
-                $publication->users()->sync($validated['author_ids']);
-            }
+            $publication->update($validated);
 
             DB::commit();
 
-            return $publication->fresh(['tags', 'users']);
+            return $publication->fresh(['tags', 'authors', 'authors.member']);
         } catch (\Exception $exception) {
             DB::rollBack();
             Log::error('Publication update error: '.$exception->getMessage());

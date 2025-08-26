@@ -1,11 +1,12 @@
 import { MainLayout } from "@/layouts/main-layout";
-import type { PageProps, Publication } from "@/types";
-import { ArrowLeft, Download, Tag as TagIcon } from "lucide-react";
+import type {AuthenticatedUser, PageProps, Publication} from "@/types";
+import {ArrowLeft, Download, Pencil, Tag as TagIcon} from "lucide-react";
 import ContentLayout from "@/layouts/content-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import PublicationCard from "@/components/domain/publications/publication-card";
 import { format } from "date-fns";
+import {Link, usePage} from "@inertiajs/react";
 
 interface PublicationShowProps extends PageProps {
     publication: Publication;
@@ -13,20 +14,50 @@ interface PublicationShowProps extends PageProps {
 }
 
 const PublicationShowPage = ({ publication, relatedPublications }: PublicationShowProps) => {
-
+    const { auth } = usePage<PageProps>().props;
+    const user = auth.user;
     const formattedDate = publication.published_at
         ? format(new Date(publication.published_at), "MMMM d, yyyy")
         : "Date not available";
 
+    const canEdit = (() => {
+        if (!user) return false;
+
+        if (user.role.includes('admin') || user.role.includes('editor')) {
+            return true;
+        }
+
+        // According to the BRD, authors cannot edit already published content.
+        // This logic would be used for 'needs_revision' or 'draft' statuses.
+        // const isAuthor = publication.authors.some(author => author.id === user.id);
+        // if (isAuthor && ['needs_revision', 'draft'].includes(publication.status)) {
+        //     return true;
+        // }
+
+        return false;
+    })();
+
     return (
         <ContentLayout>
-            <button
-                onClick={() => window.history.back()}
-                className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-8"
-            >
-                <ArrowLeft className="h-4 w-4" />
-                Back to Publications
-            </button>
+            <div className="flex justify-between items-center mb-8">
+                <button
+                    onClick={() => window.history.back()}
+                    className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-8"
+                >
+                    <ArrowLeft className="h-4 w-4" />
+                    Back to Publications
+                </button>
+
+                {canEdit && (
+                    <Link href={route('publications.edit', publication.slug)}>
+                        <Button variant="outline" className="gap-2">
+                            <Pencil className="h-4 w-4" />
+                            Edit Publication
+                        </Button>
+                    </Link>
+                )}
+
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 md:gap-12">
                 <article className="md:col-span-2 min-h-[500px]">

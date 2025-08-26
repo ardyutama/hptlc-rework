@@ -6,10 +6,12 @@ use App\Http\Request\Publication\PublicationStoreRequest;
 use App\Http\Request\Publication\PublicationUpdateRequest;
 use App\Models\Publication;
 use App\Models\Tag;
+use App\Models\User;
 use App\Services\PublicationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 
@@ -86,21 +88,29 @@ class PublicationController extends Controller
     public function edit(Publication $publication): InertiaResponse
     {
         $publication->load('tags', 'authors.member');
+
         $tags = Tag::orderBy('name')->get(['id', 'name']);
+
+        $users = User::whereHas('member')
+            ->with('member:id,user_id,first_name,last_name')
+            ->get(['id']);
 
         return Inertia::render('publications/edit', [
             'publication' => $publication,
             'tags' => $tags,
+            'users' => $users,
         ]);
     }
 
-    public function update(PublicationUpdateRequest $request, Publication $publication): RedirectResponse|JsonResponse
+    public function update(PublicationUpdateRequest $request, Publication $publication): Publication
     {
-        $validated = $request->validated();
+        return $this->publicationService->updatePublication($request, $publication);
+    }
 
+    public function updatePublication(PublicationUpdateRequest $request, Publication $publication): RedirectResponse|JsonResponse
+    {
         try {
-            $updated = $this->publicationService->updatePublication($publication, $validated);
-
+            $updated = $this->publicationService->updatePublication($request, $publication);
             return redirect()->route('publications.index', $updated)
                 ->with('flash', [
                     'type' => 'success',

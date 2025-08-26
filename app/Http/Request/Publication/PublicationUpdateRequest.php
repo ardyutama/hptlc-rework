@@ -14,14 +14,20 @@ class PublicationUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'sometimes|required|string|unique:publications,title,'.$this->publication->id,
-            'abstract' => 'sometimes|required|string',
-            'publication_file' => 'sometimes|nullable|file|mimes:pdf',
-            'published_at' => 'nullable|date',
-            'tag_ids' => 'sometimes|array',
-            'tag_ids.*' => 'sometimes|exists:tags,id',
-            'author_ids' => 'sometimes|array',
-            'author_ids.*' => 'sometimes|exists:users,id',
+            'title' => [
+                'sometimes',
+                'required',
+                'string',
+                'max:255',
+            ],
+            'abstract' => ['sometimes', 'required', 'string'],
+            'publication_file' => ['nullable', 'string', 'file', 'mimes:pdf', 'max:10240'],
+            'existing_tag_ids' => ['nullable', 'array'],
+            'existing_tag_ids.*' => ['string', 'exists:tags,id'],
+            'new_tag_names' => ['nullable', 'array'],
+            'new_tag_names.*' => ['string', 'max:50'],
+            'author_ids' => ['sometimes', 'array'],
+            'author_ids.*' => ['string', 'exists:users,id'],
         ];
     }
 }

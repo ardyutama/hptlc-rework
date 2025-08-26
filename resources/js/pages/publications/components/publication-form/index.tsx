@@ -28,9 +28,11 @@ export default function PublicationForm({
 		useForm<PublicationFormData>({
 			title: publication?.title || "",
 			abstract: publication?.abstract || "",
-			publication_file: publication?.publication_file || null,
+			publication_file: publication?.publication_file_url || null,
 			existing_tag_ids: publication?.tags?.map((tag) => tag.id) || [],
 			new_tag_names: [],
+            author_ids: publication?.authors?.map((author) => author.id) || [],
+            ...(isEdit && { _method: "PUT" }),
 		});
 
 	const handleSubmit = (e: React.FormEvent) => {
@@ -42,9 +44,8 @@ export default function PublicationForm({
 	const handleConfirmSubmit = () => {
 		const url =
 			isEdit && publication?.id
-				? route("publications.update", publication.id)
+				? route("publications.update", publication)
 				: route("publications.store");
-
 		post(url, {
 			forceFormData: true,
 			onSuccess: () => setConfirmModalOpen(false),
@@ -101,7 +102,11 @@ export default function PublicationForm({
 				onConfirm={handleConfirmSubmit}
 				isProcessing={processing}
 				title="Confirm Submission"
-				description="Are you sure you want to submit this publication for review? You will not be able to edit it while it is being reviewed."
+                description={
+                    isEdit
+                        ? "Are you sure you want to save these changes?"
+                        : "Are you sure you want to submit this publication for review?"
+                }
 				confirmText="Submit for Review"
 			/>
 		</>
