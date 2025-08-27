@@ -15,7 +15,6 @@ class Publication extends Model implements HasMedia
     protected $fillable = [
         'title',
         'abstract',
-        'publication_file',
         'published_at',
         'slug',
         'status',

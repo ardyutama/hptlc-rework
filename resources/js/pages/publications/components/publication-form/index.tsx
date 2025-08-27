@@ -24,7 +24,7 @@ export default function PublicationForm({
 	isEdit = false,
 }: PublicationFormProps) {
 	const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
-	const { data, setData, post, put, processing, errors, clearErrors } =
+	const { data, setData, post, processing, errors, clearErrors } =
 		useForm<PublicationFormData>({
 			title: publication?.title || "",
 			abstract: publication?.abstract || "",
@@ -34,7 +34,6 @@ export default function PublicationForm({
             author_ids: publication?.authors?.map((author) => author.id) || [],
             ...(isEdit && { _method: "PUT" }),
 		});
-
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		clearErrors();
@@ -42,9 +41,13 @@ export default function PublicationForm({
 	};
 
 	const handleConfirmSubmit = () => {
+        if (typeof data.publication_file == "string") {
+            data.publication_file = null
+        }
+
 		const url =
 			isEdit && publication?.id
-				? route("publications.update", publication)
+				? route("publications.update", publication.slug)
 				: route("publications.store");
 		post(url, {
 			forceFormData: true,

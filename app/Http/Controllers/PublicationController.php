@@ -102,12 +102,7 @@ class PublicationController extends Controller
         ]);
     }
 
-    public function update(PublicationUpdateRequest $request, Publication $publication): Publication
-    {
-        return $this->publicationService->updatePublication($request, $publication);
-    }
-
-    public function updatePublication(PublicationUpdateRequest $request, Publication $publication): RedirectResponse|JsonResponse
+    public function update(PublicationUpdateRequest $request, Publication $publication): RedirectResponse|JsonResponse
     {
         try {
             $updated = $this->publicationService->updatePublication($request, $publication);

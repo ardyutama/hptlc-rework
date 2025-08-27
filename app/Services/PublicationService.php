@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -84,8 +85,6 @@ class PublicationService
                 'published_at' => $request->input('published_at') ?? now(),
             ]);
 
-            Log::info('Publication: '.$publication);
-
             if (auth()->check()) {
                 $publication->authors()->attach(auth()->id());
             }
@@ -158,14 +157,9 @@ class PublicationService
                 }
             }
             $publication->tags()->sync($allTagIds);
+
             if (isset($validated['author_ids'])) {
                 $publication->authors()->sync($validated['author_ids']);
-            }
-
-            if ($request->hasFile('publication_file')) {
-                $publication->clearMediaCollection('publications');
-                $publication->addMediaFromRequest('publication_file')
-                    ->toMediaCollection('publications');
             }
 
             if (!empty($validated['title'])) {
@@ -173,6 +167,12 @@ class PublicationService
             }
 
             $publication->update($validated);
+
+            if ($request->publication_file !== null && $request->hasFile('publication_file')) {
+                $publication->clearMediaCollection('publications');
+                $publication->addMediaFromRequest('publication_file')
+                    ->toMediaCollection('publications');
+            }
 
             DB::commit();
 

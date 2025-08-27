@@ -10,14 +10,12 @@ interface PublicationEditPageProps extends PageProps {
     users: User[];
 }
 
-function PublicationEditPage({ publication, tags, users }: PublicationEditPageProps) {
-    console.log(users);
+function PublicationEditPage({ publication, tags }: PublicationEditPageProps) {
     return (
         <ContentLayout>
             <PublicationForm
                 publication={publication}
                 tags={tags}
-                // users={users}
                 isEdit={true}
             />
         </ContentLayout>

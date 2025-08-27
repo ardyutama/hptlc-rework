@@ -21,7 +21,7 @@ class PublicationUpdateRequest extends FormRequest
                 'max:255',
             ],
             'abstract' => ['sometimes', 'required', 'string'],
-            'publication_file' => ['nullable', 'string', 'file', 'mimes:pdf', 'max:10240'],
+            'publication_file' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],
             'existing_tag_ids' => ['nullable', 'array'],
             'existing_tag_ids.*' => ['string', 'exists:tags,id'],
             'new_tag_names' => ['nullable', 'array'],

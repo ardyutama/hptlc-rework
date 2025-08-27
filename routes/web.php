@@ -11,9 +11,14 @@ use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'index'])->name('welcome');
 
-Route::resource('publications', PublicationController::class);
+//Route::resource('publications', PublicationController::class);
 
-Route::post('/publications/{publication}', [PublicationController::class, 'updatePublication'])->name('publications.update');
+Route::get('/publications', [PublicationController::class, 'index'])->name('publications.index');
+Route::get('/publications/create', [PublicationController::class, 'create'])->name('publications.create');
+Route::post('/publications', [PublicationController::class, 'store'])->name('publications.store');
+Route::get('/publications/{publication}', [PublicationController::class, 'show'])->name('publications.show');
+Route::get('/publications/{publication}/edit', [PublicationController::class, 'edit'])->name('publications.edit');
+Route::put('/publications/{publication}', [PublicationController::class, 'update'])->name('publications.update');
 Route::get('/articles', [ArticleController::class, 'index'])->name('articles');
 
 Route::middleware('auth')->group(function () {
