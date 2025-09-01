@@ -15,7 +15,7 @@ interface PublicationShowProps extends PageProps {
 
 const PublicationShowPage = ({ publication, relatedPublications }: PublicationShowProps) => {
     const { auth } = usePage<PageProps>().props;
-    const user = auth.user;
+    const user = auth?.user;
     const formattedDate = publication.published_at
         ? format(new Date(publication.published_at), "MMMM d, yyyy")
         : "Date not available";

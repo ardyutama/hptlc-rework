@@ -11,8 +11,6 @@ use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'index'])->name('welcome');
 
-//Route::resource('publications', PublicationController::class);
-
 Route::get('/publications', [PublicationController::class, 'index'])->name('publications.index');
 Route::get('/publications/create', [PublicationController::class, 'create'])->name('publications.create');
 Route::post('/publications', [PublicationController::class, 'store'])->name('publications.store');

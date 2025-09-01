@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Request\Publication\PublicationStoreRequest;
 use App\Http\Request\Publication\PublicationUpdateRequest;
 use App\Models\Publication;
-use App\Models\Tag;
-use App\Models\User;
 use App\Services\PublicationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -39,7 +37,7 @@ class PublicationController extends Controller
         $perPage = (int) $request->input('per_page', 10);
         $publications = $this->publicationService->getAllPublication($perPage, $filters);
         $heroPublication = $this->publicationService->getHeroPublication();
-        $tags = Tag::orderBy('name')->get(['id', 'name']);
+        $tags = $this->publicationService->getAvailableTags();
 
         return Inertia::render('publications/index', [
             'heroPublications' => $heroPublication,
@@ -51,7 +49,7 @@ class PublicationController extends Controller
 
     public function create(): InertiaResponse
     {
-        $tags = Tag::orderBy('name')->get(['id', 'name']);
+        $tags = $this->publicationService->getAvailableTags();
 
         return Inertia::render('publications/create', [
             'tags' => $tags,
@@ -68,6 +66,7 @@ class PublicationController extends Controller
                 'message' => 'Publication created successfully!',
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to create publication: '.$e->getMessage());
             return redirect()->back()->withInput()->with('flash', [
                 'type' => 'error',
                 'message' => 'An error occurred while creating the publication. '.$e->getMessage(),
@@ -77,7 +76,6 @@ class PublicationController extends Controller
 
     public function show(Publication $publication): InertiaResponse
     {
-        $publication->load('tags', 'authors.member');
         $relatedPublications = $this->publicationService->getRelatedPublications($publication, 4);
         return Inertia::render('publications/show', [
             'publication' => $publication,
@@ -89,16 +87,11 @@ class PublicationController extends Controller
     {
         $publication->load('tags', 'authors.member');
 
-        $tags = Tag::orderBy('name')->get(['id', 'name']);
-
-        $users = User::whereHas('member')
-            ->with('member:id,user_id,first_name,last_name')
-            ->get(['id']);
+        $tags = $this->publicationService->getAvailableTags();
 
         return Inertia::render('publications/edit', [
             'publication' => $publication,
             'tags' => $tags,
-            'users' => $users,
         ]);
     }
 
@@ -112,6 +105,7 @@ class PublicationController extends Controller
                     'message' => 'Publication updated successfully!',
                 ]);
         } catch (\Exception $e) {
+            Log::error('Failed to create publication: '.$e->getMessage());
             return redirect()->back()->withInput()->with('flash', [
                 'type' => 'error',
                 'message' => 'An error occurred while updating the Publication. '.$e->getMessage(),
@@ -129,6 +123,7 @@ class PublicationController extends Controller
                 'message' => 'Publication deleted successfully.',
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to create publication: '.$e->getMessage());
             return redirect()->back()->with('flash', [
                 'type' => 'error',
                 'message' => 'An error occurred while deleting the publication. '.$e->getMessage(),

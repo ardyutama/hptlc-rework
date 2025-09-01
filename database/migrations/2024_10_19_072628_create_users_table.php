@@ -15,7 +15,7 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role', ['admin', 'user'])->default('user');
+            $table->enum('role', ['admin', 'editor', 'user'])->default('user');
             $table->boolean('is_active')->default(true);
             $table->rememberToken();
             $table->timestamps();

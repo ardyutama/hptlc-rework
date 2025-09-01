@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\PublicationStatus;
 use App\Http\Request\Publication\PublicationStoreRequest;
 use App\Http\Request\Publication\PublicationUpdateRequest;
 use App\Models\Publication;
@@ -200,5 +201,14 @@ class PublicationService
             Log::error('Error deleting publication: '.$e->getMessage());
             throw new \Exception($e->getMessage());
         }
+    }
+
+    public function getAvailableTags(): Collection
+    {
+        return Tag::whereHas('publications', function ($query) {
+            $query->where('status', PublicationStatus::PUBLISHED);
+        })
+            ->orderBy('name')
+            ->get(['id', 'name', 'slug']);
     }
 }

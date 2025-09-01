@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\PublicationStatus;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -18,9 +19,11 @@ class Publication extends Model implements HasMedia
         'published_at',
         'slug',
         'status',
+        'editor_feedback'
     ];
 
     protected $casts = [
+        'status' => PublicationStatus::class,
         'published_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
@@ -28,6 +31,8 @@ class Publication extends Model implements HasMedia
     protected $appends = [
         'publication_file_url',
     ];
+
+    protected $with = ['authors.member', 'tags', 'media'];
 
     public function getPublicationFileUrlAttribute(): ?string
     {
