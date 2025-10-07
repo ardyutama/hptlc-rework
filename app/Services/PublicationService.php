@@ -133,11 +133,12 @@ class PublicationService
 
         return Publication::query()
             ->with(['tags', 'authors.member'])
-            ->where('id', '!=', $currentPublication->id) // Exclude the current publication
-            ->whereHas('tags', fn ($q) => $q->whereIn('tags.id', $tagIds)) // Must have at least one common tag
-            ->withCount(['tags' => fn ($q) => $q->whereIn('tags.id', $tagIds)]) // Count common tags for ranking
-            ->orderByDesc('tags_count') // Order by most common tags
-            ->orderByDesc('published_at') // Then by most recent
+            ->whereNotNull('published_at')
+            ->where('id', '!=', $currentPublication->id)
+            ->whereHas('tags', fn ($q) => $q->whereIn('tags.id', $tagIds))
+            ->withCount(['tags' => fn ($q) => $q->whereIn('tags.id', $tagIds)])
+            ->orderByDesc('tags_count')
+            ->orderByDesc('published_at')
             ->take($limit)
             ->get();
     }

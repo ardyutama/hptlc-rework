@@ -31,8 +31,8 @@ export default function PublicationForm({
 			publication_file: publication?.publication_file_url || null,
 			existing_tag_ids: publication?.tags?.map((tag) => tag.id) || [],
 			new_tag_names: [],
-            author_ids: publication?.authors?.map((author) => author.id) || [],
-            ...(isEdit && { _method: "PUT" }),
+			author_ids: publication?.authors?.map((author) => author.id) || [],
+			...(isEdit && { _method: "PUT" }),
 		});
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -41,9 +41,9 @@ export default function PublicationForm({
 	};
 
 	const handleConfirmSubmit = () => {
-        if (typeof data.publication_file == "string") {
-            data.publication_file = null
-        }
+		if (typeof data.publication_file === "string") {
+			data.publication_file = null;
+		}
 
 		const url =
 			isEdit && publication?.id
@@ -105,11 +105,11 @@ export default function PublicationForm({
 				onConfirm={handleConfirmSubmit}
 				isProcessing={processing}
 				title="Confirm Submission"
-                description={
-                    isEdit
-                        ? "Are you sure you want to save these changes?"
-                        : "Are you sure you want to submit this publication for review?"
-                }
+				description={
+					isEdit
+						? "Are you sure you want to save these changes?"
+						: "Are you sure you want to submit this publication for review?"
+				}
 				confirmText="Submit for Review"
 			/>
 		</>

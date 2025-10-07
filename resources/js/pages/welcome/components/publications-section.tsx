@@ -13,15 +13,15 @@ export default function PublicationsSection() {
 	return (
 		<>
 			{latestPublications.slice(0, MAX_CONTENT).map((item: Publication) => (
-                <PublicationCard
-                    key={item.id}
-                    tags={item.tags}
-                    slug={item.slug}
-                    title={item.title}
-                    abstract={item.abstract}
-                    published_at={item.published_at}
-                    authors={item.authors}
-                />
+				<PublicationCard
+					key={item.id}
+					tags={item.tags}
+					slug={item.slug}
+					title={item.title}
+					abstract={item.abstract}
+					published_at={item.published_at}
+					authors={item.authors}
+				/>
 			))}
 		</>
 	);

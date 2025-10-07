@@ -1,4 +1,3 @@
-import ImagePublication from "@/assets/img/img_publication.png";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { PageProps, Publication } from "@/types";
@@ -41,7 +40,7 @@ export default function FeaturedPublicationHeroList() {
 					data-swiper-parallax="-23%"
 				>
 					<img
-						src={ImagePublication}
+						src="/assets/img/img_publication.png"
 						alt="Featured Publication Background"
 						className="h-full w-full object-cover object-center"
 					/>

@@ -1,120 +1,138 @@
-import { MainLayout } from "@/layouts/main-layout";
-import type {AuthenticatedUser, PageProps, Publication} from "@/types";
-import {ArrowLeft, Download, Pencil, Tag as TagIcon} from "lucide-react";
-import ContentLayout from "@/layouts/content-layout";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import PublicationCard from "@/components/domain/publications/publication-card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import ContentLayout from "@/layouts/content-layout";
+import { MainLayout } from "@/layouts/main-layout";
+import type { AuthenticatedUser, PageProps, Publication } from "@/types";
+import { Link, usePage } from "@inertiajs/react";
 import { format } from "date-fns";
-import {Link, usePage} from "@inertiajs/react";
+import { ArrowLeft, Download, Pencil, Tag as TagIcon } from "lucide-react";
 
 interface PublicationShowProps extends PageProps {
-    publication: Publication;
-    relatedPublications: Publication[];
+	publication: Publication;
+	relatedPublications: Publication[];
 }
 
-const PublicationShowPage = ({ publication, relatedPublications }: PublicationShowProps) => {
-    const { auth } = usePage<PageProps>().props;
-    const user = auth?.user;
-    const formattedDate = publication.published_at
-        ? format(new Date(publication.published_at), "MMMM d, yyyy")
-        : "Date not available";
+const PublicationShowPage = ({
+	publication,
+	relatedPublications,
+}: PublicationShowProps) => {
+	const { auth } = usePage<PageProps>().props;
+	const user = auth?.user;
+	const formattedDate = publication.published_at
+		? format(new Date(publication.published_at), "MMMM d, yyyy")
+		: "Date not available";
 
-    const canEdit = (() => {
-        if (!user) return false;
+	const canEdit = (() => {
+		if (!user) return false;
 
-        if (user.role.includes('admin') || user.role.includes('editor')) {
-            return true;
-        }
+		if (user.role.includes("admin") || user.role.includes("editor")) {
+			return true;
+		}
 
-        // According to the BRD, authors cannot edit already published content.
-        // This logic would be used for 'needs_revision' or 'draft' statuses.
-        // const isAuthor = publication.authors.some(author => author.id === user.id);
-        // if (isAuthor && ['needs_revision', 'draft'].includes(publication.status)) {
-        //     return true;
-        // }
+		// const isAuthor = publication.authors.some(
+		// 	(author) => author.id === user.id,
+		// );
+		// if (isAuthor && ["needs_revision", "draft"].includes(publication.status)) {
+		// 	return true;
+		// }
 
-        return false;
-    })();
+		return false;
+	})();
 
-    return (
-        <ContentLayout>
-            <div className="flex justify-between items-center mb-8">
-                <button
-                    onClick={() => window.history.back()}
-                    className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-8"
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                    Back to Publications
-                </button>
+	return (
+		<ContentLayout>
+			<div className="mb-8 flex items-center justify-between">
+				<button
+					type="button"
+					onClick={() => window.history.back()}
+					className="mb-8 inline-flex items-center gap-2 text-gray-600 text-sm hover:text-gray-900"
+				>
+					<ArrowLeft className="h-4 w-4" />
+					Back to Publications
+				</button>
 
-                {canEdit && (
-                    <Link href={route('publications.edit', publication.slug)}>
-                        <Button variant="outline" className="gap-2">
-                            <Pencil className="h-4 w-4" />
-                            Edit Publication
-                        </Button>
-                    </Link>
-                )}
+				{canEdit && (
+					<Link href={route("publications.edit", publication.slug)}>
+						<Button variant="outline" className="gap-2">
+							<Pencil className="h-4 w-4" />
+							Edit Publication
+						</Button>
+					</Link>
+				)}
+			</div>
 
-            </div>
+			<div className="grid grid-cols-1 md:grid-cols-3 md:gap-12">
+				<article className="min-h-[500px] md:col-span-2">
+					<div className="mb-4 flex flex-wrap items-center gap-2">
+						<TagIcon className="h-4 w-4 text-gray-400" />
+						{publication.tags.map((tag) => (
+							<Badge key={tag.id} variant="secondary">
+								{tag.name}
+							</Badge>
+						))}
+					</div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 md:gap-12">
-                <article className="md:col-span-2 min-h-[500px]">
-                    <div className="flex flex-wrap items-center gap-2 mb-4">
-                        <TagIcon className="h-4 w-4 text-gray-400" />
-                        {publication.tags.map((tag) => (
-                            <Badge key={tag.id} variant="secondary">{tag.name}</Badge>
-                        ))}
-                    </div>
+					<h1 className="mb-4 font-bold text-4xl">{publication.title}</h1>
+					<p className="mb-2 text-gray-500">Published on {formattedDate}</p>
+					<p className="mb-6 text-gray-500">
+						By:{" "}
+						{publication.authors
+							?.map(
+								(author) =>
+									`${author?.member?.first_name} ${author?.member?.last_name}`,
+							)
+							.join(", ")}
+					</p>
 
-                    <h1 className="font-bold text-4xl mb-4">{publication.title}</h1>
-                    <p className="text-gray-500 mb-2">
-                        Published on {formattedDate}
-                    </p>
-                    <p className="text-gray-500 mb-6">
-                        By: {publication.authors?.map((author) => `${author?.member?.first_name} ${author?.member?.last_name}`).join(", ")}
-                    </p>
+					<a
+						href={publication.publication_file_url ?? '#'}
+						download
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						<Button className="mb-8 gap-2">
+							<Download className="h-4 w-4" />
+							Download PDF
+						</Button>
+					</a>
 
-                    <a href={publication.publication_file_url} download target="_blank" rel="noopener noreferrer">
-                        <Button className="mb-8 gap-2">
-                            <Download className="h-4 w-4" />
-                            Download PDF
-                        </Button>
-                    </a>
+					<div className="prose max-w-none">
+						<p>{publication.abstract}</p>
+					</div>
+				</article>
 
-                    <div className="prose max-w-none">
-                        <p>{publication.abstract}</p>
-                    </div>
-                </article>
-
-                <aside className="md:col-span-1 mt-12 md:mt-0">
-                    <h2 className="font-bold text-2xl mb-4 border-b pb-2">Related Publications</h2>
-                    <div className="space-y-8">
-                        {relatedPublications.length > 0 ? (
-                            relatedPublications.map((related) => (
-                                <PublicationCard
-                                    key={related.id}
-                                    tags={related.tags}
-                                    slug={related.slug}
-                                    title={related.title}
-                                    abstract={related.abstract}
-                                    published_at={related.published_at}
-                                    authors={related.authors}
-                                />
-                            ))
-                        ) : (
-                            <p className="text-sm text-gray-500">No related publications found.</p>
-                        )}
-                    </div>
-                </aside>
-            </div>
-        </ContentLayout>
-    );
+				<aside className="mt-12 md:col-span-1 md:mt-0">
+					<h2 className="mb-4 border-b pb-2 font-bold text-2xl">
+						Related Publications
+					</h2>
+					<div className="space-y-8">
+						{relatedPublications.length > 0 ? (
+							relatedPublications.map((related) => (
+								<PublicationCard
+									key={related.id}
+									tags={related.tags}
+									slug={related.slug}
+									title={related.title}
+									abstract={related.abstract}
+									published_at={related.published_at}
+									authors={related.authors}
+								/>
+							))
+						) : (
+							<p className="text-gray-500 text-sm">
+								No related publications found.
+							</p>
+						)}
+					</div>
+				</aside>
+			</div>
+		</ContentLayout>
+	);
 };
 
 PublicationShowPage.layout = (page: React.ReactNode) => (
-    <MainLayout children={page} title={ (page as any).props.publication.title } />
+	<MainLayout children={page} title={(page as any).props.publication.title} />
 );
 
 export default PublicationShowPage;

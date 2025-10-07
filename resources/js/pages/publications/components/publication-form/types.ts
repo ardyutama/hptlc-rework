@@ -7,11 +7,11 @@ export interface PublicationFormProps {
 }
 
 export type PublicationFormData = {
-    title: string;
-    abstract: string;
-    publication_file: File | string | null;
-    existing_tag_ids: string[];
-    new_tag_names: string[];
-    author_ids: string[];
-    _method?: 'PUT';
+	title: string;
+	abstract: string;
+	publication_file: File | string | null;
+	existing_tag_ids: string[];
+	new_tag_names: string[];
+	author_ids: string[];
+	_method?: "PUT";
 };

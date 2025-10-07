@@ -8,9 +8,9 @@ import type React from "react";
 const WelcomePage = () => {
 	return (
 		<>
-			<WelcomeSection hrefNav={"/articles"} title={"Articles"}>
-				<ArticlesSection />
-			</WelcomeSection>
+			{/*<WelcomeSection hrefNav={"/articles"} title={"Articles"}>*/}
+			{/*	<ArticlesSection />*/}
+			{/*</WelcomeSection>*/}
 			<AboutUs />
 			<WelcomeSection hrefNav={"/publications"} title={"Publications"}>
 				<PublicationsSection />
