@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import ContentLayout from "@/layouts/content-layout";
 import { MainLayout } from "@/layouts/main-layout";
-import type { AuthenticatedUser, PageProps, Publication } from "@/types";
+import type { PageProps, Publication } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
 import { format } from "date-fns";
 import { ArrowLeft, Download, Pencil, Tag as TagIcon } from "lucide-react";
@@ -46,10 +46,12 @@ const PublicationShowPage = ({
 				<button
 					type="button"
 					onClick={() => window.history.back()}
-					className="mb-8 inline-flex items-center gap-2 text-gray-600 text-sm hover:text-gray-900"
+					className="inline-flex items-center gap-2 text-gray-600 text-sm hover:text-gray-900"
 				>
 					<ArrowLeft className="h-4 w-4" />
-					Back to Publications
+                    <p className="">
+                        Back to Publications
+                    </p>
 				</button>
 
 				{canEdit && (
