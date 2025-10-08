@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
@@ -19,6 +20,8 @@ Route::get('/publications/{publication}/edit', [PublicationController::class, 'e
 Route::put('/publications/{publication}', [PublicationController::class, 'update'])->name('publications.update');
 Route::get('/articles', [ArticleController::class, 'index'])->name('articles');
 
+Route::get('about-us', [AboutUsController::class, 'index'])->name('about-us');
+
 Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('/profile', [MemberController::class, 'edit'])->name('profile.edit');
@@ -33,7 +36,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/tags', [TagController::class, 'index'])->name('tags.index');
     Route::post('/tags', [TagController::class, 'store'])->name('tags.store');
-    Route::post('/tags/find-or-create', [TagController::class, 'findOrCreate'])->name('tags.findOrCreate');
     Route::delete('/tags/{id}', [TagController::class, 'destroy'])->name('tags.destroy');
 });
 

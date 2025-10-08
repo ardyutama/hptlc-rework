@@ -14,7 +14,7 @@ const navItems = [
 	{
 		id: 2,
 		title: "About Us",
-		url: "#",
+		url: "/about-us",
 	},
 ];
 

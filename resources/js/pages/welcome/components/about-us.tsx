@@ -7,10 +7,12 @@ export default function AboutUs() {
 			<ContentLayout className="min-h-0">
 				<div className="container relative z-10 mx-auto md:px-6 lg:px-8">
 					<div className="max-w-2xl text-white">
-						<h4 className="flex items-center font-bold text-2xl tracking-tight md:text-3xl lg:text-4xl">
+						<a className="flex items-center font-bold text-2xl tracking-tight md:text-3xl lg:text-4xl"
+                            href="/about-us"
+                        >
 							About Us
 							<ArrowRight size={18} className="ml-2" />
-						</h4>
+						</a>
 						<p className="pt-3 text-lg opacity-90 md:text-xl">
 							Empowering Scientific Excellence HPTLC Association Indonesia
 							Chapter
