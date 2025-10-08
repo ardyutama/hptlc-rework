@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\PublicationStatus;
 use App\Http\Request\Publication\PublicationStoreRequest;
 use App\Http\Request\Publication\PublicationUpdateRequest;
 use App\Models\Publication;
@@ -10,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -131,38 +133,52 @@ class PublicationService
 
         return Publication::query()
             ->with(['tags', 'authors.member'])
-            ->where('id', '!=', $currentPublication->id) // Exclude the current publication
-            ->whereHas('tags', fn ($q) => $q->whereIn('tags.id', $tagIds)) // Must have at least one common tag
-            ->withCount(['tags' => fn ($q) => $q->whereIn('tags.id', $tagIds)]) // Count common tags for ranking
-            ->orderByDesc('tags_count') // Order by most common tags
-            ->orderByDesc('published_at') // Then by most recent
+            ->whereNotNull('published_at')
+            ->where('id', '!=', $currentPublication->id)
+            ->whereHas('tags', fn ($q) => $q->whereIn('tags.id', $tagIds))
+            ->withCount(['tags' => fn ($q) => $q->whereIn('tags.id', $tagIds)])
+            ->orderByDesc('tags_count')
+            ->orderByDesc('published_at')
             ->take($limit)
             ->get();
     }
 
-    public function updatePublication(Publication $publication, PublicationUpdateRequest $request): Publication
+    public function updatePublication(PublicationUpdateRequest $request, Publication $publication): Publication
     {
         DB::beginTransaction();
         try {
-            if (! empty($validated['title'])) {
+            $validated = $request->validated();
+            $allTagIds = $validated['existing_tag_ids'] ?? [];
+            if (!empty($validated['new_tag_names'])) {
+                foreach ($validated['new_tag_names'] as $tagName) {
+                    $newTag = Tag::firstOrCreate(
+                        ['slug' => Str::slug($tagName)],
+                        ['name' => $tagName]
+                    );
+                    $allTagIds[] = $newTag->id;
+                }
+            }
+            $publication->tags()->sync($allTagIds);
+
+            if (isset($validated['author_ids'])) {
+                $publication->authors()->sync($validated['author_ids']);
+            }
+
+            if (!empty($validated['title'])) {
                 $validated['slug'] = Str::slug($validated['title']);
             }
 
-            $publication->update(array_filter($validated, function ($value) {
-                return $value !== null;
-            }));
+            $publication->update($validated);
 
-            if (isset($validated['tag_ids'])) {
-                $publication->tags()->sync($validated['tag_ids']);
-            }
-
-            if (isset($validated['author_ids'])) {
-                $publication->users()->sync($validated['author_ids']);
+            if ($request->publication_file !== null && $request->hasFile('publication_file')) {
+                $publication->clearMediaCollection('publications');
+                $publication->addMediaFromRequest('publication_file')
+                    ->toMediaCollection('publications');
             }
 
             DB::commit();
 
-            return $publication->fresh(['tags', 'users']);
+            return $publication->fresh(['tags', 'authors', 'authors.member']);
         } catch (\Exception $exception) {
             DB::rollBack();
             Log::error('Publication update error: '.$exception->getMessage());
@@ -186,5 +202,14 @@ class PublicationService
             Log::error('Error deleting publication: '.$e->getMessage());
             throw new \Exception($e->getMessage());
         }
+    }
+
+    public function getAvailableTags(): Collection
+    {
+        return Tag::whereHas('publications', function ($query) {
+            $query->where('status', PublicationStatus::PUBLISHED);
+        })
+            ->orderBy('name')
+            ->get(['id', 'name', 'slug']);
     }
 }

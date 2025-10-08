@@ -1,10 +1,10 @@
 # Business Requirements Document (BRD)
 
 **Project:** HPTLC Indonesia Researcher Portal
-**Version:** 1.0
+**Version:** 1.1 (Focused Scope)
 **Date:** August 10, 2025
 
-This document outlines the business goals, functional scope, and user requirements for the HPTLC Indonesia web application.
+This document outlines the business goals, functional scope, and user requirements for the HPTLC Indonesia web application, with a primary focus on creating a dedicated portal for academic publications.
 
 ---
 
@@ -12,9 +12,9 @@ This document outlines the business goals, functional scope, and user requiremen
 
 * **Vision:** To establish the HPTLC Indonesia web application as the premier digital hub for the nation's chromatography research community, enhancing visibility, fostering collaboration, and serving as the definitive public resource for HPTLC knowledge in Indonesia.
 * **Business Goals:**
-    * Increase active member engagement and content submission.
+    * Increase active member engagement and submission of formal research publications.
     * Elevate the national and international profile of Indonesian HPTLC researchers.
-    * Become a primary resource for students and industry professionals seeking information on HPTLC.
+    * Become a primary resource for students and industry professionals seeking Indonesian HPTLC research.
     * Improve operational efficiency in managing organizational content and member information.
 
 ### 2. Target Audience
@@ -25,7 +25,7 @@ This document outlines the business goals, functional scope, and user requiremen
 
 ### 3. Scope & Functional Requirements
 
-The application will include the following modules and features, described through user stories:
+The application will launch with the following modules and features, centered on managing researcher profiles and their formal publications.
 
 **Module: User & Member Management**
 
@@ -37,34 +37,29 @@ The application will include the following modules and features, described throu
 
 * As a Member, I want to submit my formal research publications, including an abstract and a full PDF file, for review.
 * As a Member submitting a publication, I want to add other registered members as co-authors so all contributors are properly credited.
-* As an Editor/Admin, I want to review, approve, and publish submitted publications to make them publicly available.
-
-**Module: Articles**
-
-* As a Member, I want to write and submit less formal content, such as blog posts, news, or tutorials, in a draft state.
-* As an Editor/Admin, I want to review and publish articles to share timely information with the community.
+* As an Editor/Admin, I want to review submitted publications, provide feedback if revisions are needed, and approve them to be published.
 
 **Module: AI-Assisted Writing Co-pilot (Future Feature)**
 
-* As a Member, I want the AI to review my draft article or publication to improve grammar, clarity, and style without changing the scientific meaning, so I can present my work with higher confidence.
+* As a Member, I want the AI to review my draft publication's abstract or text to improve grammar, clarity, and style without changing the scientific meaning, so I can present my work with higher confidence.
 
 **Module: General Features**
 
-* As a visitor, I want to browse and search for articles and publications by topic, tag, or author.
-* As a visitor, I want to view a gallery of the organization's activities.
+* As a visitor, I want to browse and search for publications by topic, tag, or author.
 * As a visitor, I want to read about the organization's history and mission on an "About Us" page.
 
 ### 4. Content Workflow & Governance
 
-To ensure content quality and consistency, the following workflow will be implemented:
+To ensure content quality and consistency, the following workflow will be implemented for all publications, managed by a `status` field and a dedicated `editor_feedback` field.
 
-1.  **Submission:** A Member submits an Article or Publication, which enters the system with an `in_review` status.
+1.  **Submission:** A Member submits a Publication. The system saves it with a status of `in_review`.
 2.  **Notification:** System administrators and editors are notified of the new submission.
-3.  **Review:** An Editor or Admin reviews the submission against defined content standards (e.g., citation format, word count).
+3.  **Review:** An Editor or Admin reviews the submission against defined content standards (e.g., citation format, scientific relevance).
 4.  **Feedback/Approval:**
-    * If approved, the content is published.
-    * If revisions are needed, the submission is returned to the author with comments, and its status is changed to `needs_revision`.
-5.  **Resubmission:** The author can edit and resubmit their work.
+    * **Approval:** If the submission meets all standards, the status is changed to `published`, and the publication becomes publicly visible.
+    * **Revisions Needed:** If the submission requires changes, the Editor/Admin adds comments to the `editor_feedback` field, and its status is changed to `needs_revision`. The author is then notified.
+5.  **Resubmission:** The author can edit their work based on the feedback and resubmit it, which returns the status to `in_review` for another cycle.
+6.  **Archiving:** An Editor or Admin can change a publication's status to `archived` to unpublish it from the public portal while retaining it in the system for administrative purposes.
 
 ### 5. User Roles & Permissions
 
@@ -72,10 +67,11 @@ The application will have three primary roles with distinct permissions:
 
 | Permission | User/Researcher | Editor | Admin |
 | :--- | :---: | :---: | :---: |
-| Submit Article/Publication | ✅ | ✅ | ✅ |
+| Submit Publication | ✅ | ✅ | ✅ |
 | Edit Own Submissions (draft) | ✅ | ✅ | ✅ |
 | Edit Any Submission | ❌ | ✅ | ✅ |
 | Publish/Archive Content | ❌ | ✅ | ✅ |
 | Manage Tags & Categories | ❌ | ✅ | ✅ |
 | Manage User Profiles & Roles | ❌ | ❌ | ✅ |
 | View Admin Dashboard | ❌ | ✅ | ✅ |
+

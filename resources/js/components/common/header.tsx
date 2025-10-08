@@ -13,11 +13,6 @@ const navItems = [
 	},
 	{
 		id: 2,
-		title: "Articles",
-		url: "/articles",
-	},
-	{
-		id: 5,
 		title: "About Us",
 		url: "#",
 	},

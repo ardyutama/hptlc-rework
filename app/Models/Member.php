@@ -20,6 +20,7 @@ class Member extends Model
         'birth_date',
         'joined_date',
         'user_id',
+        'biography',
     ];
 
     protected $casts = [

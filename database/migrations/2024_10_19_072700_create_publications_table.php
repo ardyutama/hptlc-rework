@@ -16,9 +16,11 @@ return new class extends Migration
             $table->string('title')->unique();
             $table->text('abstract');
             $table->string('slug')->unique();
-            $table->string('status')->default('in_review');
+            $table->enum('status', ['in_review', 'needs_revision', 'published', 'archived'])->default('in_review');
+            $table->text('editor_feedback')->nullable();
             $table->dateTime('published_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('publication_tag', function (Blueprint $table) {

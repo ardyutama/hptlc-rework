@@ -24,15 +24,16 @@ export default function PublicationForm({
 	isEdit = false,
 }: PublicationFormProps) {
 	const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
-	const { data, setData, post, put, processing, errors, clearErrors } =
+	const { data, setData, post, processing, errors, clearErrors } =
 		useForm<PublicationFormData>({
 			title: publication?.title || "",
 			abstract: publication?.abstract || "",
-			publication_file: publication?.publication_file || null,
+			publication_file: publication?.publication_file_url || null,
 			existing_tag_ids: publication?.tags?.map((tag) => tag.id) || [],
 			new_tag_names: [],
+			author_ids: publication?.authors?.map((author) => author.id) || [],
+			...(isEdit && { _method: "PUT" }),
 		});
-
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		clearErrors();
@@ -40,11 +41,14 @@ export default function PublicationForm({
 	};
 
 	const handleConfirmSubmit = () => {
+		if (typeof data.publication_file === "string") {
+			data.publication_file = null;
+		}
+
 		const url =
 			isEdit && publication?.id
-				? route("publications.update", publication.id)
+				? route("publications.update", publication.slug)
 				: route("publications.store");
-
 		post(url, {
 			forceFormData: true,
 			onSuccess: () => setConfirmModalOpen(false),
@@ -101,7 +105,11 @@ export default function PublicationForm({
 				onConfirm={handleConfirmSubmit}
 				isProcessing={processing}
 				title="Confirm Submission"
-				description="Are you sure you want to submit this publication for review? You will not be able to edit it while it is being reviewed."
+				description={
+					isEdit
+						? "Are you sure you want to save these changes?"
+						: "Are you sure you want to submit this publication for review?"
+				}
 				confirmText="Submit for Review"
 			/>
 		</>

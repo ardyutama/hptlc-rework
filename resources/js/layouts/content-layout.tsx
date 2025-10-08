@@ -34,13 +34,15 @@ export default function ContentLayout({
 	return (
 		<section
 			className={cn(
-				"flex w-full flex-1 justify-center",
+				"relative flex min-h-screen w-full flex-1 justify-center",
 				paddingX,
 				paddingY,
 				className,
 			)}
 		>
-			<div className={cn("w-full", maxWidth, contentClassName)}>{children}</div>
+			<div className={cn("flex w-full flex-col", maxWidth, contentClassName)}>
+				{children}
+			</div>
 		</section>
 	);
 }

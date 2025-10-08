@@ -1,8 +1,8 @@
 import { Badge } from "@/components/ui/badge";
+import { formatDate } from "@/hooks/formatDate";
 import type { Publication } from "@/types";
 import { Link } from "@inertiajs/react";
 import { Calendar, Users } from "lucide-react";
-import {formatDate} from "@/hooks/formatDate";
 
 type PublicationCardProps = Pick<
 	Publication,
@@ -17,12 +17,12 @@ export default function PublicationCard({
 	tags,
 	published_at,
 }: PublicationCardProps) {
-	const formattedDate = published_at
-		? formatDate(published_at)
-		: "N/A";
+	const formattedDate = published_at ? formatDate(published_at) : "N/A";
 
 	const authorList = authors
-		.map((author) => `${author?.member?.first_name} ${author?.member?.last_name}`)
+		.map(
+			(author) => `${author?.member?.first_name} ${author?.member?.last_name}`,
+		)
 		.join(", ");
 
 	return (

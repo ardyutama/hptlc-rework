@@ -8,6 +8,15 @@ export interface User {
 	member?: Member | null;
 }
 
+export interface AuthenticatedUser {
+	id: string;
+	email: string;
+	first_name: string;
+	last_name: string;
+	university_name?: string;
+	role: string;
+}
+
 export interface UserData {
 	email: string;
 	id: string;
@@ -92,13 +101,17 @@ export type Publication = {
 	title: string;
 	abstract: string;
 	slug: string;
-    publication_file_url: string;
-	published_at: string;
+	status: "in_review" | "needs_revision" | "published" | "archived";
+	editor_feedback: string | null;
+	publication_file_url: string | null;
+	published_at: string | null;
 	created_at: string;
 	updated_at: string;
+	deleted_at: string | null;
 	tags: PublicationTag[];
 	authors: PublicationUser[];
 };
+// ------------------------------
 
 export interface Article {
 	id: string;
@@ -149,7 +162,7 @@ export type PageProps<
 	T extends Record<string, unknown> = Record<string, unknown>,
 > = T & {
 	auth: {
-		user: User;
+		user: AuthenticatedUser;
 	};
 	ziggy: Config & { location: string };
 	flash: {
