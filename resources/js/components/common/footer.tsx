@@ -3,10 +3,10 @@ import { ExternalLink, Instagram, Mail, MapPin, Phone } from "lucide-react";
 
 export default function Footer() {
 	return (
-		<footer className="relative overflow-hidden bg-neutral-950 py-12 text-white md:py-16 lg:py-20">
+		<footer className="relative overflow-hidden bg-neutral-950 py-12 text-white">
 			<div className="pointer-events-none absolute inset-0 bg-radial-gradient-to-t from-transparent via-neutral-900/10 to-transparent" />
 
-			<ContentLayout>
+			<ContentLayout maxWidth="w-full" className="min-h-0">
 				<div className="relative z-10 w-full px-6 md:px-8 lg:px-12">
 					<div className="grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-3 lg:grid-cols-5">
 						{" "}

@@ -6,7 +6,8 @@
         "dev": "vite",
         "lint:client": "npx @biomejs/biome check --write ./resources/js/",
         "lint:server": "./vendor/bin/pint",
-        "tree": "treee -l 4 --ignore \"node_modules/, vendor/, storage/\" --link"
+        "tree": "treee -l 4 --ignore \"node_modules/, vendor/, storage/\" --link",
+        "scan": "vite && npx react-scan@latest http://127.0.0.1:8000"
     },
     "devDependencies": {
         "@biomejs/biome": "1.9.4",
@@ -41,12 +42,14 @@
         "clsx": "^2.1.1",
         "date-fns": "^3.6.0",
         "embla-carousel-react": "^8.5.2",
+        "gsap": "^3.13.0",
         "lucide-react": "^0.475.0",
         "next-themes": "^0.4.6",
         "react": "^19",
         "react-day-picker": "^9.9.0",
         "react-dom": "^19",
         "react-dropzone": "^14.3.8",
+        "react-scan": "^0.4.3",
         "sonner": "^2.0.3",
         "swiper": "^11.2.8",
         "tailwind-merge": "^3.0.2",
